@@ -1,4 +1,5 @@
 import { Logo } from "@/components/app/Logo";
+import { PrimitiveShowcase } from "@/components/app/PrimitiveShowcase";
 import { ThemeShowcase } from "@/components/app/ThemeShowcase";
 import { ThemeToggle } from "@/components/app/theme-toggle";
 import { categoryColors, chartColors } from "@/styles/tokens";
@@ -59,6 +60,7 @@ export default function Home() {
         </div>
 
         <ThemeShowcase />
+        <PrimitiveShowcase />
 
         <div className="mt-8">
           <p className="mb-3 text-xs font-medium tracking-wider text-muted-foreground uppercase">
