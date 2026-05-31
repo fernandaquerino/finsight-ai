@@ -20,6 +20,21 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Code Quality
+
+This project uses ESLint with the Next.js Core Web Vitals and TypeScript presets, plus Prettier with `prettier-plugin-tailwindcss`.
+
+Recommended VSCode settings live in `.vscode/settings.json` and enable format on save with Prettier. Install the Prettier and ESLint VSCode extensions to use the same setup in the editor.
+
+Useful commands:
+
+```bash
+npm run lint
+npm run type-check
+npm run format
+npm run format:check
+```
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
