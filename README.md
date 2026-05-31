@@ -76,6 +76,46 @@ npm run format
 npm run format:check
 ```
 
+## Git Hooks
+
+This project uses Husky to run lightweight checks before commits:
+
+- `pre-commit` runs `lint-staged`, applying ESLint and Prettier only to staged files.
+- `commit-msg` runs commitlint to enforce Conventional Commits.
+
+After installing dependencies, npm runs the Husky setup through the `prepare` script. If needed, run it manually:
+
+```bash
+npm run prepare
+```
+
+Commit messages should use this format:
+
+```txt
+type: short description
+```
+
+Valid examples:
+
+```txt
+feat: add authentication setup
+fix: handle empty transaction list
+docs: update project documentation
+chore: configure husky hooks
+test: add transaction form tests
+refactor: simplify dashboard metrics
+```
+
+Invalid examples:
+
+```txt
+added files
+fix bug
+update
+WIP
+created stuff
+```
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
