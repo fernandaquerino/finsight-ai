@@ -2,8 +2,12 @@
   "name": "finsight-ai",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=20.11 <23"
+  },
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --webpack",
+    "dev:turbo": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "prepare": "husky",
