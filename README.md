@@ -20,6 +20,47 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Local Services
+
+Start Postgres with pgvector and Redis:
+
+```bash
+cp .env.example .env
+docker compose up -d
+npm run dev
+```
+
+The local services use:
+
+- Postgres: `localhost:5434`
+- Redis: `localhost:6379`
+
+Check the app connection to both services:
+
+```bash
+curl http://localhost:3000/api/health
+```
+
+Expected response:
+
+```json
+{
+  "status": "ok",
+  "services": {
+    "postgres": "ok",
+    "redis": "ok"
+  }
+}
+```
+
+Useful service commands:
+
+```bash
+npm run db:up
+npm run db:logs
+npm run db:down
+```
+
 ## Code Quality
 
 This project uses ESLint with the Next.js Core Web Vitals and TypeScript presets, plus Prettier with `prettier-plugin-tailwindcss`.
