@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Dúvidas gerais
+    url: https://github.com/
+    about: Use uma issue apenas quando houver uma tarefa, bug ou melhoria clara para o projeto.

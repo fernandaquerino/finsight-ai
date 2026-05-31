@@ -102,7 +102,7 @@ npm test
 npm run test:e2e
 ```
 
-The CI workflow in `.github/workflows/test.yml` starts `pgvector/pgvector:pg16` and Redis services before running the test suite.
+The CI workflow in `.github/workflows/ci.yml` runs lint, typecheck, env verification, Drizzle migration checks, Vitest, and `next build` on every pull request. The Vitest job starts `pgvector/pgvector:pg16` and Redis services for integration tests.
 
 ## Git Hooks
 
