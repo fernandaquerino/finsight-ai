@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 
 const themeOptions = [
@@ -16,11 +17,24 @@ function isThemeOption(value: string | undefined): value is ThemeOption {
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
-  const selectedTheme: ThemeOption = isThemeOption(theme) ? theme : "system";
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => {
+      setIsMounted(true);
+    });
+
+    return () => {
+      cancelAnimationFrame(frame);
+    };
+  }, []);
+
+  const selectedTheme: ThemeOption | undefined =
+    isMounted && isThemeOption(theme) ? theme : undefined;
 
   return (
     <fieldset
-      className="bg-card inline-flex rounded-lg border p-1 shadow-sm"
+      className="inline-flex rounded-lg border bg-card p-1 shadow-sm"
       aria-label="Theme"
     >
       {themeOptions.map((option) => {
@@ -30,9 +44,10 @@ export function ThemeToggle() {
           <button
             key={option.value}
             type="button"
-            className="text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:ring-ring focus-visible:ring-offset-background data-[selected=true]:bg-primary data-[selected=true]:text-primary-foreground rounded-md px-3 py-1.5 text-xs font-medium transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+            className="rounded-md px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors duration-150 hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none data-[selected=true]:bg-primary data-[selected=true]:text-primary-foreground"
             data-selected={isSelected}
             aria-pressed={isSelected}
+            suppressHydrationWarning
             onClick={() => setTheme(option.value)}
           >
             {option.label}
