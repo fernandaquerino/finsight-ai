@@ -1,0 +1,88 @@
+name: Bug report
+description: Reporte um problema encontrado no projeto
+title: "[BUG] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Obrigada por reportar um problema. Preencha as informações abaixo para facilitar a análise.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Descrição
+      description: Explique claramente o problema encontrado.
+      placeholder: "Ex: Ao enviar o formulário de consulta, a tela fica carregando indefinidamente."
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Passos para reproduzir
+      description: Liste o passo a passo para reproduzir o problema.
+      placeholder: |
+        1. Acesse...
+        2. Clique em...
+        3. Preencha...
+        4. Veja o erro...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Comportamento esperado
+      description: O que deveria acontecer?
+      placeholder: "O pedido deveria ser criado e o usuário redirecionado para a tela de confirmação."
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Comportamento atual
+      description: O que está acontecendo atualmente?
+      placeholder: "A tela permanece em loading e o pedido não é criado."
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Área afetada
+      options:
+        - Site público
+        - Formulário de consulta
+        - Dashboard admin
+        - Banco de dados
+        - Autenticação
+        - Pagamento
+        - Documentação
+        - Outra
+    validations:
+      required: true
+
+  - type: input
+    id: browser
+    attributes:
+      label: Navegador
+      placeholder: "Ex: Chrome, Safari, Firefox"
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidências
+      description: Adicione prints, vídeos, logs ou mensagens de erro, se houver.
+      placeholder: "Cole aqui logs ou screenshots relevantes."
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: Verifiquei se já existe uma issue parecida
+          required: true
+        - label: Removi dados sensíveis dos prints/logs
+          required: true

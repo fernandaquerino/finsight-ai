@@ -1,0 +1,104 @@
+name: Feature request
+description: Sugira ou detalhe uma nova funcionalidade
+title: "[FEAT] "
+labels: ["feature"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use este template para propor uma nova funcionalidade ou detalhar uma entrega do backlog.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Resumo
+      description: Descreva a funcionalidade em poucas frases.
+      placeholder: "Ex: Criar formulário multi-step para solicitação de consulta veicular."
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Contexto
+      description: Explique por que essa funcionalidade é importante.
+      placeholder: "Essa funcionalidade permite que o cliente informe placa, Renavam e serviços desejados."
+    validations:
+      required: true
+
+  - type: textarea
+    id: tasks
+    attributes:
+      label: Tasks
+      description: Liste as tarefas necessárias.
+      placeholder: |
+        - [ ] Criar layout da tela
+        - [ ] Criar schema Zod
+        - [ ] Integrar com API
+        - [ ] Criar feedback de sucesso
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Critérios de aceite
+      description: Liste os critérios que definem quando a issue estará pronta.
+      placeholder: |
+        - [ ] Usuário não consegue avançar com campos inválidos
+        - [ ] Dados são enviados para a API corretamente
+        - [ ] Tela é responsiva
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Área
+      options:
+        - Setup
+        - Design System
+        - Site público
+        - Formulário de consulta
+        - Dashboard admin
+        - Banco de dados
+        - Autenticação
+        - Pagamento
+        - Documentação
+        - Legal/LGPD
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Prioridade
+      options:
+        - Baixa
+        - Média
+        - Alta
+        - Crítica
+    validations:
+      required: true
+
+  - type: input
+    id: estimate
+    attributes:
+      label: Estimativa
+      placeholder: "Ex: 1 SP, 2 SP, 3 SP, 5 SP"
+
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependências
+      placeholder: "Ex: Depende da issue S0-02."
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: Essa issue tem critérios de aceite claros
+          required: true
+        - label: Essa issue não inclui dados sensíveis
+          required: true
