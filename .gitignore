@@ -26,6 +26,9 @@
 .DS_Store
 *.pem
 
+# local docs
+/docs/ai-collaboration.md
+
 # debug
 npm-debug.log*
 yarn-debug.log*
