@@ -76,6 +76,34 @@ npm run format
 npm run format:check
 ```
 
+## Tests
+
+This project uses Vitest with Testing Library for unit and integration tests, and Playwright for E2E tests.
+
+Run unit and integration tests:
+
+```bash
+npm test
+```
+
+Run E2E tests:
+
+```bash
+npm run test:e2e
+```
+
+Integration and E2E health tests need Postgres and Redis. For local runs, start the Docker services first:
+
+```bash
+cp .env.example .env
+docker compose up -d
+npx playwright install chromium
+npm test
+npm run test:e2e
+```
+
+The CI workflow in `.github/workflows/test.yml` starts `pgvector/pgvector:pg16` and Redis services before running the test suite.
+
 ## Git Hooks
 
 This project uses Husky to run lightweight checks before commits:
