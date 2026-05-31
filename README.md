@@ -106,9 +106,9 @@ The CI workflow in `.github/workflows/test.yml` starts `pgvector/pgvector:pg16` 
 
 ## Git Hooks
 
-This project uses Husky to run lightweight checks before commits:
+This project uses Husky to run checks before commits:
 
-- `pre-commit` runs `lint-staged`, applying ESLint and Prettier only to staged files.
+- `pre-commit` runs `lint-staged`, applying ESLint and Prettier only to staged files, then runs `npm test`.
 - `commit-msg` runs commitlint to enforce Conventional Commits.
 
 After installing dependencies, npm runs the Husky setup through the `prepare` script. If needed, run it manually:
