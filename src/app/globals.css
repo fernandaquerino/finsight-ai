@@ -75,6 +75,10 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 
+  --text-micro: 0.6875rem;
+  --text-md: 1rem;
+  --text-metric: 1.625rem;
+
   --radius-xs: var(--radius-xs);
   --radius-sm: var(--radius-sm);
   --radius-md: var(--radius-md);
@@ -112,6 +116,11 @@
   --danger-foreground: 240 10% 12%;
   --info: 212 75% 62%;
   --info-foreground: 240 10% 12%;
+}
+
+/* Financial values: aligned digits, no layout shift when numbers change. */
+@utility tabular-nums {
+  font-variant-numeric: tabular-nums;
 }
 
 body {
