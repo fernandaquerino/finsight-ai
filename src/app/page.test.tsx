@@ -4,17 +4,23 @@ import { describe, expect, it } from "vitest";
 import Home from "@/app/page";
 
 describe("Home page", () => {
-  it("renders the starter heading and documentation link", () => {
+  it("renders the project foundation page", () => {
     render(<Home />);
 
     expect(
       screen.getByRole("heading", {
-        name: "To get started, edit the page.tsx file.",
+        name: "FinSight AI",
       }),
     ).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Documentation" })).toHaveAttribute(
-      "href",
-      expect.stringContaining("nextjs.org/docs"),
+    expect(
+      screen.getByRole("heading", {
+        name: "Converse com seus dados financeiros com clareza e controle.",
+      }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("group", { name: "Theme" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Light" })).toHaveAttribute(
+      "aria-pressed",
+      "false",
     );
   });
 });
