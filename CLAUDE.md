@@ -443,7 +443,7 @@ Antes de qualquer ação no repositório:
 4. **Não refatorar arquivos fora do escopo da tarefa.** Se notar algo a melhorar, apontar e sugerir — não fazer silenciosamente.
 5. **Não alterar arquitetura sem justificar.** Qualquer desvio das convenções de `architecture.md` precisa de razão explícita.
 6. **Não remover testes sem explicar.** Se um teste precisa ser removido, explicar por quê e o que o substitui.
-7. **Rodar validações quando possível:** `pnpm lint`, `pnpm type-check`, `pnpm test`. Reportar resultado.
+7. **Rodar validações quando possível:** `npm lint`, `npm type-check`, `npm test`. Reportar resultado.
 8. **Atualizar documentação quando alterar comportamento.** Se uma função, rota ou componente muda de contrato, atualizar o doc relevante.
 9. **Commits pequenos e descritivos quando solicitado.** Formato: `feat(transactions): add grouped list with master-detail`.
 

@@ -63,17 +63,17 @@
 > `Decision Needed` — scripts exatos podem variar; confirmar com o `package.json` do projeto.
 
 ```bash
-pnpm dev              # Iniciar servidor de desenvolvimento
-pnpm lint             # ESLint
-pnpm type-check       # tsc --noEmit
-pnpm test             # Vitest (unit + integration)
-pnpm test:e2e         # Playwright
-pnpm build            # Build de produção
+npm dev              # Iniciar servidor de desenvolvimento
+npm lint             # ESLint
+npm type-check       # tsc --noEmit
+npm test             # Vitest (unit + integration)
+npm test:e2e         # Playwright
+npm build            # Build de produção
 
-pnpm db:generate      # Gerar migration (drizzle-kit generate)
-pnpm db:migrate       # Aplicar migrations (drizzle-kit migrate)
-pnpm db:studio        # Abrir Drizzle Studio
-pnpm db:seed          # Popular banco de dev
+npm db:generate      # Gerar migration (drizzle-kit generate)
+npm db:migrate       # Aplicar migrations (drizzle-kit migrate)
+npm db:studio        # Abrir Drizzle Studio
+npm db:seed          # Popular banco de dev
 
 docker compose up -d  # Subir Postgres+pgvector e Redis localmente
 ```
