@@ -4,7 +4,6 @@ import { BellIcon, ChevronDownIcon, InfoIcon } from "lucide-react";
 import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
@@ -53,6 +52,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/Button";
 
 export function PrimitiveShowcase() {
   return (
@@ -79,6 +79,7 @@ export function PrimitiveShowcase() {
             <Button variant="secondary">Secondary</Button>
             <Button variant="outline">Outline</Button>
             <Button variant="ghost">Ghost</Button>
+            <Button loading>Loading</Button>
             <Button variant="destructive">Destructive</Button>
             <Button
               variant="outline"
