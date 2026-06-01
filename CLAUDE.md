@@ -84,7 +84,7 @@ src/
   components/
     ui/                   # Primitivos shadcn. Não editar lógica, só tokens.
     app/                  # Componentes de layout/produto genéricos:
-                          # AppShell, PageHeader, MetricCard, EmptyState, etc.
+                          # AppShell, PageHeader, MetricCard, etc.
     charts/               # Wrappers de Recharts/D3. Sem lógica de domínio.
     feedback/             # EmptyState, LoadingState, ErrorState, Toast.
 

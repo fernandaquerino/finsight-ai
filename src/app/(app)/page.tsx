@@ -15,7 +15,7 @@ import { MetricCard } from "@/components/app/MetricCard";
 import { MonthYearPicker } from "@/components/app/MonthYearPicker";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { getMonthName, getToday } from "@/utils/date";
+import { getMonthName, getToday } from "@/lib/date";
 
 export default function DashboardPage() {
   const [selectedDate, setSelectedDate] = useState(getToday);

@@ -17,7 +17,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/Popover";
 import { cn } from "@/lib/utils";
-import { getMonthAndYear } from "@/utils/date";
+import { getMonthAndYear } from "@/lib/date";
 
 const MONTHS = [
   "Jan",
