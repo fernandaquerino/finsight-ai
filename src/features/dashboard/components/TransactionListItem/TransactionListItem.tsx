@@ -11,10 +11,12 @@ import {
   Utensils,
 } from "lucide-react";
 
+import { TransactionAmount } from "@/components/app/TransactionAmount";
 import type {
   Transaction,
   TransactionCategory,
 } from "@/features/dashboard/types/dashboard.types";
+import { formatSignedMoney } from "@/lib/money";
 import { appRoutes } from "@/routes/app-routes";
 import { cn } from "@/lib/utils";
 
@@ -34,14 +36,6 @@ const CATEGORY_CONFIG: Record<TransactionCategory, CategoryConfig> = {
   outro: { icon: ReceiptText, className: "bg-muted text-muted-foreground" },
 };
 
-function formatAmount(amount: number): string {
-  const abs = Math.abs(amount).toLocaleString("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  });
-  return amount >= 0 ? `+${abs}` : `-${abs}`;
-}
-
 type TransactionListItemProps = {
   transaction: Transaction;
 };
@@ -50,8 +44,6 @@ function TransactionListItem({ transaction }: TransactionListItemProps) {
   const { name, source, date, amount, category } = transaction;
   const config = CATEGORY_CONFIG[category] ?? CATEGORY_CONFIG.outro;
   const Icon = config.icon;
-  const isPositive = amount >= 0;
-  const formattedAmount = formatAmount(amount);
 
   return (
     <li>
@@ -76,18 +68,16 @@ function TransactionListItem({ transaction }: TransactionListItemProps) {
           </p>
         </div>
 
-        <span
-          className={cn(
-            "shrink-0 text-sm font-medium tabular-nums",
-            isPositive ? "text-success" : "text-foreground",
-          )}
-          aria-label={`${isPositive ? "Crédito" : "Débito"} de ${formattedAmount}`}
-        >
-          {formattedAmount}
-        </span>
+        <TransactionAmount
+          value={amount}
+          className="shrink-0"
+          ariaLabel={`${amount >= 0 ? "Crédito" : "Débito"} de ${formatSignedMoney(amount)}`}
+        />
       </Link>
     </li>
   );
 }
+
+const formatAmount = formatSignedMoney;
 
 export { TransactionListItem, formatAmount };
