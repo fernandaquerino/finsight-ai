@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { Sidebar } from "./Sidebar";
-import { appRoutes } from "@/routes/app-routes";
+import { appRoutes } from "@/lib/app-routes";
 
 describe("Sidebar — expanded (default)", () => {
   it("renders the navigation groups and routes", () => {

@@ -8,7 +8,7 @@ import { ThemeToggle } from "@/components/app/ThemeToggle";
 import { AIButton } from "@/components/app/AIButton";
 import { IconButton } from "@/components/ui/IconButton";
 import { SearchInput } from "@/components/ui/SearchInput";
-import { appRoutes } from "@/routes/app-routes";
+import { appRoutes } from "@/lib/app-routes";
 import { UserMenu } from "../UserMenu";
 import { NotificationsPanel } from "../NotificationsPanel";
 

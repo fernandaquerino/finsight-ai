@@ -17,7 +17,7 @@ import type {
   TransactionCategory,
 } from "@/features/dashboard/types/dashboard.types";
 import { formatSignedMoney } from "@/lib/money";
-import { appRoutes } from "@/routes/app-routes";
+import { appRoutes } from "@/lib/app-routes";
 import { cn } from "@/lib/utils";
 
 type CategoryConfig = {

@@ -8,7 +8,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/Tooltip";
 import { cn } from "@/lib/utils";
-import type { AppRoute } from "@/routes/app-routes";
+import type { AppRoute } from "@/lib/app-routes";
 
 type SidebarNavItemProps = Readonly<{
   route: AppRoute;

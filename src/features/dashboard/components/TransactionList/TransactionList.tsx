@@ -1,6 +1,6 @@
 import { ChevronRight } from "lucide-react";
 
-import { EmptyState } from "@/components/app/EmptyState";
+import { EmptyState } from "@/components/feedback/EmptyState";
 import { TransactionListSkeleton } from "@/components/app/skeletons";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";

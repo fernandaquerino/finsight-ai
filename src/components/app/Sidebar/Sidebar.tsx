@@ -7,7 +7,7 @@ import {
   isActiveRoute,
   settingsRoute,
   sidebarRouteGroups,
-} from "@/routes/app-routes";
+} from "@/lib/app-routes";
 
 type SidebarProps = Readonly<{
   pathname: string;
