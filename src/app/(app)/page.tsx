@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/Button";
 import { getMonthAndYear, getMonthName, getToday } from "@/utils/date";
-import { Calendar, Download } from "lucide-react";
+import { Calendar, ChevronDown, Download } from "lucide-react";
 
 export default function DashboardPage() {
   const today = getToday();
@@ -25,6 +25,7 @@ export default function DashboardPage() {
           <Button variant="secondary" size="sm">
             <Calendar />
             {currentMonthAndYear}
+            <ChevronDown />
           </Button>
           <Button variant="secondary" size="sm">
             <Download />
