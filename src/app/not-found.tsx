@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 
 import { Logo } from "@/components/app/Icons";
 import { buttonVariants } from "@/components/ui/Button";
-import { appRoutes } from "@/routes/app-routes";
+import { appRoutes } from "@/lib/app-routes";
 
 export const metadata: Metadata = {
   title: "Página não encontrada — FinSight AI",

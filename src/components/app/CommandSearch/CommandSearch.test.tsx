@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
 import { CommandSearch } from "./CommandSearch";
-import { appRoutes } from "@/routes/app-routes";
+import { appRoutes } from "@/lib/app-routes";
 
 describe("CommandSearch", () => {
   it("requests opening from the keyboard shortcut", () => {

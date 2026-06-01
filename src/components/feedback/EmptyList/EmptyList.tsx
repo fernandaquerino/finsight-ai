@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-import { EmptyState } from "@/components/app/EmptyState";
+import { EmptyState } from "@/components/feedback/EmptyState";
 
 type EmptyListProps = Readonly<{
   title: string;

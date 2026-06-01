@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 import { MobileSidebar } from "@/components/app/MobileSidebar";
 import { Sidebar } from "@/components/app/Sidebar";
 import { Topbar } from "@/components/app/Topbar";
-import { getRouteTitle } from "@/routes/app-routes";
+import { getRouteTitle } from "@/lib/app-routes";
 
 type AppShellProps = Readonly<{
   children: ReactNode;

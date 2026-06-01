@@ -15,11 +15,7 @@ import {
   DialogDescription,
   DialogTitle,
 } from "@/components/ui/Dialog";
-import {
-  appRoutes,
-  settingsRoute,
-  sidebarRouteGroups,
-} from "@/routes/app-routes";
+import { appRoutes, settingsRoute, sidebarRouteGroups } from "@/lib/app-routes";
 
 type CommandSearchProps = Readonly<{
   open: boolean;

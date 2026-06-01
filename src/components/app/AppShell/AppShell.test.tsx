@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { AppShell } from "@/components/app/AppShell";
-import { appRoutes, getRouteTitle, isActiveRoute } from "@/routes/app-routes";
+import { appRoutes, getRouteTitle, isActiveRoute } from "@/lib/app-routes";
 
 const pathnameMock = vi.fn(() => appRoutes.dashboard);
 

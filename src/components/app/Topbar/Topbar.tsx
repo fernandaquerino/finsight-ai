@@ -1,15 +1,14 @@
 "use client";
 
-import { MenuIcon, SparklesIcon } from "lucide-react";
-import Link from "next/link";
+import { MenuIcon } from "lucide-react";
 import { useState } from "react";
 
 import { CommandSearch } from "@/components/app/CommandSearch";
 import { ThemeToggle } from "@/components/app/ThemeToggle";
-import { Button } from "@/components/ui/Button";
+import { AIButton } from "@/components/app/AIButton";
 import { IconButton } from "@/components/ui/IconButton";
 import { SearchInput } from "@/components/ui/SearchInput";
-import { appRoutes } from "@/routes/app-routes";
+import { appRoutes } from "@/lib/app-routes";
 import { UserMenu } from "../UserMenu";
 import { NotificationsPanel } from "../NotificationsPanel";
 
@@ -44,17 +43,7 @@ function Topbar({ title, onMenuClick }: TopbarProps) {
           />
         </div>
 
-        <Button
-          asChild
-          variant="soft"
-          size="sm"
-          className="hidden sm:inline-flex"
-        >
-          <Link href={appRoutes.aiChat}>
-            <SparklesIcon />
-            Perguntar à IA
-          </Link>
-        </Button>
+        <AIButton href={appRoutes.aiChat} className="hidden sm:inline-flex" />
 
         <div className="hidden sm:block">
           <ThemeToggle variant="icon" />
