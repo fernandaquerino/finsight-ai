@@ -39,6 +39,7 @@ type BarRect = {
 };
 
 function makeBarShape(fill: string, activeIndex: number | undefined) {
+  // eslint-disable-next-line react/display-name
   return ({ x = 0, y = 0, width = 0, height = 0, index }: BarRect) => {
     const isInactive = activeIndex !== undefined && activeIndex !== index;
     return (
@@ -73,7 +74,8 @@ function BarChart({
           barCategoryGap="35%"
           barGap={3}
           onMouseMove={(state) => {
-            const idx = (state as { activeTooltipIndex?: number }).activeTooltipIndex;
+            const idx = (state as { activeTooltipIndex?: number })
+              .activeTooltipIndex;
             setActiveIndex(typeof idx === "number" ? idx : undefined);
           }}
           onMouseLeave={() => setActiveIndex(undefined)}
@@ -90,7 +92,11 @@ function BarChart({
             axisLine={false}
           />
           <YAxis
-            tick={{ fontSize: 11, fill: CHART_COLORS.axisLabel, fontFamily: MONO }}
+            tick={{
+              fontSize: 11,
+              fill: CHART_COLORS.axisLabel,
+              fontFamily: MONO,
+            }}
             tickLine={false}
             axisLine={false}
             tickFormatter={(v: number) =>
@@ -114,7 +120,8 @@ function BarChart({
                     {props.payload.map((entry) => {
                       const key = String(entry.name ?? "");
                       const color = SERIES_COLORS[key] ?? "#fff";
-                      const value = typeof entry.value === "number" ? entry.value : 0;
+                      const value =
+                        typeof entry.value === "number" ? entry.value : 0;
 
                       return (
                         <div key={key} className="flex items-center gap-2">
