@@ -95,6 +95,25 @@ describe("Input", () => {
     );
   });
 
+  it("uses the ui kit input sizing and surface styles", () => {
+    render(<Input label="Descrição" />);
+
+    const input = screen.getByRole("textbox", { name: "Descrição" });
+
+    expect(input).toHaveClass("h-[38px]");
+    expect(input).toHaveClass("w-full");
+    expect(input).toHaveClass("px-3");
+    expect(input).toHaveClass("py-0");
+    expect(input).toHaveClass("text-[13.5px]");
+    expect(input).toHaveClass("bg-card");
+    expect(input).toHaveClass("text-foreground");
+    expect(input).toHaveClass("border-border");
+    expect(input).toHaveClass("rounded-md");
+    expect(input).toHaveClass("outline-none");
+    expect(input).toHaveClass("transition-[border-color,box-shadow]");
+    expect(input).toHaveClass("duration-[140ms]");
+  });
+
   it("accepts user input", async () => {
     const user = userEvent.setup();
 
@@ -112,9 +131,9 @@ describe("Input", () => {
 
     const input = screen.getByRole("textbox", { name: "Descrição" });
 
-    expect(input).toHaveClass("focus-visible:border-ring");
-    expect(input).toHaveClass("focus-visible:ring-2");
-    expect(input).toHaveClass("focus-visible:ring-ring/25");
-    expect(input).toHaveClass("focus-visible:outline-none");
+    expect(input).toHaveClass("focus-visible:border-primary");
+    expect(input).toHaveClass(
+      "focus-visible:shadow-[0_0_0_3px_hsl(var(--primary)_/_0.12)]",
+    );
   });
 });

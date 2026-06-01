@@ -23,7 +23,7 @@ describe("Button", () => {
   });
 
   it.each([
-    ["destructive", "bg-destructive"],
+    ["destructive", "border-destructive"],
     ["soft", "bg-soft"],
     ["secondary", "border"],
     ["ghost", "hover:bg-muted"],

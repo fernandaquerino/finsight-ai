@@ -4,34 +4,46 @@
   color-scheme: light;
 
   --background: 0 0% 99%;
-  --soft: 248 40% 18%;
-  --soft-2: 248 38% 23%;
   --foreground: 240 10% 12%;
   --card: 0 0% 100%;
   --card-foreground: 240 10% 12%;
+  --muted: 240 5% 96%;
+  --muted-2: 240 6% 93%;
+  --muted-foreground: 240 4% 46%;
+  --border: 240 6% 90%;
+  --border-strong: 240 6% 83%;
   --popover: 0 0% 100%;
   --popover-foreground: 240 10% 12%;
   --primary: 248 53% 50%;
   --primary-foreground: 0 0% 100%;
-  --secondary: 240 5% 96%;
-  --secondary-foreground: 240 10% 12%;
-  --muted: 240 5% 96%;
-  --muted-foreground: 240 4% 46%;
-  --accent: 248 53% 96%;
-  --accent-foreground: 248 53% 34%;
-  --destructive: 0 72% 48%;
-  --destructive-foreground: 0 0% 100%;
-  --border: 240 6% 90%;
-  --input: 240 6% 90%;
-  --ring: 248 53% 50%;
-  --success: 162 70% 33%;
+  --primary-soft: 248 70% 96%;
+  --primary-soft-2: 248 65% 92%;
+  --primary-ring: 248 53% 50%;
+  --success: 162 70% 30%;
   --success-foreground: 0 0% 100%;
-  --warning: 33 90% 45%;
-  --warning-foreground: 240 10% 12%;
-  --danger: 0 72% 48%;
+  --success-soft: 162 55% 94%;
+  --danger: 0 68% 47%;
   --danger-foreground: 0 0% 100%;
-  --info: 212 80% 45%;
+  --danger-soft: 0 75% 96%;
+  --warning: 33 88% 42%;
+  --warning-foreground: 240 10% 12%;
+  --warning-soft: 38 90% 94%;
+  --info: 212 78% 44%;
   --info-foreground: 0 0% 100%;
+  --info-soft: 212 80% 95%;
+  --shadow-card: 0 1px 2px hsl(240 10% 12% / 0.04);
+  --shadow-pop: 0 8px 28px hsl(240 10% 12% / 0.12);
+
+  --soft: var(--primary-soft);
+  --soft-2: var(--primary-soft-2);
+  --secondary: var(--muted);
+  --secondary-foreground: var(--foreground);
+  --accent: var(--primary-soft);
+  --accent-foreground: var(--primary);
+  --destructive: var(--danger);
+  --destructive-foreground: var(--danger-foreground);
+  --input: var(--border);
+  --ring: var(--primary-ring);
 
   --radius-xs: 0.125rem;
   --radius-sm: 0.25rem;
@@ -59,22 +71,31 @@
   --color-secondary: hsl(var(--secondary));
   --color-secondary-foreground: hsl(var(--secondary-foreground));
   --color-muted: hsl(var(--muted));
+  --color-muted-2: hsl(var(--muted-2));
   --color-muted-foreground: hsl(var(--muted-foreground));
   --color-accent: hsl(var(--accent));
   --color-accent-foreground: hsl(var(--accent-foreground));
   --color-destructive: hsl(var(--destructive));
   --color-destructive-foreground: hsl(var(--destructive-foreground));
   --color-border: hsl(var(--border));
+  --color-border-strong: hsl(var(--border-strong));
   --color-input: hsl(var(--input));
   --color-ring: hsl(var(--ring));
+  --color-primary-soft: hsl(var(--primary-soft));
+  --color-primary-soft-2: hsl(var(--primary-soft-2));
+  --color-primary-ring: hsl(var(--primary-ring));
   --color-success: hsl(var(--success));
   --color-success-foreground: hsl(var(--success-foreground));
+  --color-success-soft: hsl(var(--success-soft));
   --color-warning: hsl(var(--warning));
   --color-warning-foreground: hsl(var(--warning-foreground));
+  --color-warning-soft: hsl(var(--warning-soft));
   --color-danger: hsl(var(--danger));
   --color-danger-foreground: hsl(var(--danger-foreground));
+  --color-danger-soft: hsl(var(--danger-soft));
   --color-info: hsl(var(--info));
   --color-info-foreground: hsl(var(--info-foreground));
+  --color-info-soft: hsl(var(--info-soft));
 
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
@@ -94,37 +115,59 @@
   color-scheme: dark;
 
   --background: 240 6% 8%;
-  --foreground: 0 0% 96%;
+  --foreground: 0 0% 95%;
   --card: 240 5% 11%;
-  --card-foreground: 0 0% 96%;
+  --card-foreground: 0 0% 95%;
+  --muted: 240 4% 15%;
+  --muted-2: 240 4% 18%;
+  --muted-foreground: 240 5% 64%;
+  --border: 240 4% 19%;
+  --border-strong: 240 4% 26%;
   --popover: 240 5% 11%;
-  --popover-foreground: 0 0% 96%;
-  --primary: 248 60% 68%;
-  --primary-foreground: 240 10% 12%;
-  --secondary: 240 4% 16%;
-  --secondary-foreground: 0 0% 96%;
-  --muted: 240 4% 16%;
-  --muted-foreground: 240 5% 65%;
-  --accent: 248 36% 18%;
-  --accent-foreground: 248 60% 82%;
-  --destructive: 0 70% 62%;
-  --destructive-foreground: 240 10% 12%;
-  --border: 240 4% 20%;
-  --input: 240 4% 20%;
-  --ring: 248 60% 68%;
-  --success: 162 55% 52%;
-  --success-foreground: 240 10% 12%;
-  --warning: 38 90% 60%;
-  --warning-foreground: 240 10% 12%;
-  --danger: 0 70% 62%;
-  --danger-foreground: 240 10% 12%;
-  --info: 212 75% 62%;
-  --info-foreground: 240 10% 12%;
+  --popover-foreground: 0 0% 95%;
+  --primary: 248 65% 70%;
+  --primary-foreground: 248 60% 10%;
+  --primary-soft: 248 40% 18%;
+  --primary-soft-2: 248 38% 23%;
+  --primary-ring: 248 65% 70%;
+  --success: 162 52% 52%;
+  --success-foreground: 248 60% 10%;
+  --success-soft: 162 30% 18%;
+  --danger: 0 68% 64%;
+  --danger-foreground: 248 60% 10%;
+  --danger-soft: 0 35% 20%;
+  --warning: 38 88% 60%;
+  --warning-foreground: 248 60% 10%;
+  --warning-soft: 38 40% 18%;
+  --info: 212 72% 64%;
+  --info-foreground: 248 60% 10%;
+  --info-soft: 212 40% 19%;
+  --shadow-card: 0 1px 2px hsl(0 0% 0% / 0.3);
+  --shadow-pop: 0 8px 28px hsl(0 0% 0% / 0.5);
+
+  --soft: var(--primary-soft);
+  --soft-2: var(--primary-soft-2);
+  --secondary: var(--muted);
+  --secondary-foreground: var(--foreground);
+  --accent: var(--primary-soft);
+  --accent-foreground: var(--primary);
+  --destructive: var(--danger);
+  --destructive-foreground: var(--danger-foreground);
+  --input: var(--border);
+  --ring: var(--primary-ring);
 }
 
 /* Financial values: aligned digits, no layout shift when numbers change. */
 @utility tabular-nums {
   font-variant-numeric: tabular-nums;
+}
+
+@utility shadow-card {
+  box-shadow: var(--shadow-card);
+}
+
+@utility shadow-pop {
+  box-shadow: var(--shadow-pop);
 }
 
 body {
@@ -136,8 +179,10 @@ body {
   line-height: 1.6;
 }
 
-* {
-  border-color: hsl(var(--border));
+@layer base {
+  * {
+    border-color: hsl(var(--border));
+  }
 }
 
 ::selection {

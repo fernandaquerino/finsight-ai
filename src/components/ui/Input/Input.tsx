@@ -62,7 +62,7 @@ function Input({
           data-slot="input"
           aria-describedby={descriptionId}
           className={cn(
-            "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/25 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20",
+            "flex h-[38px] w-full rounded-md border border-border bg-card px-3 py-0 text-[13.5px] text-foreground transition-[border-color,box-shadow] duration-[140ms] outline-none file:border-0 file:bg-transparent file:text-[13.5px] file:font-medium placeholder:text-muted-foreground focus-visible:border-primary focus-visible:shadow-[0_0_0_3px_hsl(var(--primary)_/_0.12)] disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:focus-visible:shadow-[0_0_0_3px_hsl(var(--destructive)_/_0.12)]",
             prefix && "pl-10",
             className,
           )}
