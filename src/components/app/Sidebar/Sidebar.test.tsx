@@ -4,8 +4,8 @@ import { describe, expect, it, vi } from "vitest";
 import { Sidebar } from "./Sidebar";
 import { appRoutes } from "@/routes/app-routes";
 
-describe("Sidebar", () => {
-  it("renders the expanded navigation groups and routes", () => {
+describe("Sidebar — expanded (default)", () => {
+  it("renders the navigation groups and routes", () => {
     render(<Sidebar pathname={appRoutes.dashboard} className="flex" />);
 
     expect(screen.getByRole("img", { name: "FinSight AI" })).toBeVisible();
@@ -55,5 +55,33 @@ describe("Sidebar", () => {
     fireEvent.click(link);
 
     expect(onNavigate).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("Sidebar — collapsed", () => {
+  it("hides group labels and route text, keeps icon-accessible navigation", () => {
+    render(
+      <Sidebar pathname={appRoutes.dashboard} className="flex" isCollapsed />,
+    );
+
+    expect(screen.getByRole("img", { name: "FinSight AI" })).toBeVisible();
+    expect(screen.queryByText("VISÃO GERAL")).not.toBeInTheDocument();
+    expect(screen.queryByText("Dashboard")).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Dashboard" })).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
+    expect(screen.getByRole("link", { name: "Configurações" })).toBeVisible();
+  });
+
+  it("renders the Insights indicator in compact position", () => {
+    render(
+      <Sidebar pathname={appRoutes.dashboard} className="flex" isCollapsed />,
+    );
+
+    expect(screen.getByTestId("sidebar-route-indicator")).toHaveAttribute(
+      "aria-hidden",
+      "true",
+    );
   });
 });

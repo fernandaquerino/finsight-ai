@@ -6,7 +6,6 @@ import { usePathname } from "next/navigation";
 
 import { MobileSidebar } from "@/components/app/MobileSidebar";
 import { Sidebar } from "@/components/app/Sidebar";
-import { SidebarCollapsed } from "@/components/app/SidebarCollapsed";
 import { Topbar } from "@/components/app/Topbar";
 import { getRouteTitle } from "@/routes/app-routes";
 
@@ -31,11 +30,7 @@ function AppShell({ children }: AppShellProps) {
 
   return (
     <div className="flex h-dvh overflow-hidden bg-background text-foreground">
-      {isCollapsed ? (
-        <SidebarCollapsed pathname={pathname} />
-      ) : (
-        <Sidebar pathname={pathname} />
-      )}
+      <Sidebar pathname={pathname} isCollapsed={isCollapsed} />
 
       <MobileSidebar
         open={isMobileOpen}
