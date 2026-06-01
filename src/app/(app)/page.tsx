@@ -15,6 +15,10 @@ import { MetricCard } from "@/components/app/MetricCard";
 import { MonthYearPicker } from "@/components/app/MonthYearPicker";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { BarChartCard } from "@/features/dashboard/components/BarChartCard";
+import { DonutChartCard } from "@/features/dashboard/components/DonutChartCard";
+import { LineChartCard } from "@/features/dashboard/components/LineChartCard";
+import { TransactionList } from "@/features/dashboard/components/TransactionList";
 import { getMonthName, getToday } from "@/lib/date";
 
 export default function DashboardPage() {
@@ -144,6 +148,18 @@ export default function DashboardPage() {
           </div>
         </div>
       </Card>
+
+      {/* Charts row 1: balance + donut */}
+      <div className="grid grid-cols-[1.4fr_1fr] items-stretch gap-4">
+        <LineChartCard />
+        <DonutChartCard />
+      </div>
+
+      {/* Charts row 2: bar + transactions */}
+      <div className="grid grid-cols-2 gap-4">
+        <BarChartCard />
+        <TransactionList />
+      </div>
     </main>
   );
 }
