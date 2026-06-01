@@ -1,6 +1,13 @@
 "use client";
 
-import { BellIcon, ChevronDownIcon, InfoIcon } from "lucide-react";
+import {
+  BellIcon,
+  ChevronDownIcon,
+  DatabaseIcon,
+  InfoIcon,
+  SparklesIcon,
+  WalletIcon,
+} from "lucide-react";
 import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
@@ -53,6 +60,15 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/Button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardEyebrow,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/Card";
 
 export function PrimitiveShowcase() {
   return (
@@ -155,6 +171,82 @@ export function PrimitiveShowcase() {
               <Checkbox defaultChecked />
               Recorrente
             </label>
+          </div>
+        </div>
+
+        <div className="space-y-4 lg:col-span-2">
+          <div>
+            <h3 className="text-md font-semibold">Cards</h3>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Contêiner base, métrica e card de IA (tweakável no app).
+            </p>
+          </div>
+          <div className="grid gap-4 md:grid-cols-3">
+            <Card interactive className="min-h-[132px]">
+              <CardContent>
+                <CardTitle>Card base</CardTitle>
+                <CardDescription>
+                  Superfície com borda sutil e sombra leve. Aceita hover e
+                  clique.
+                </CardDescription>
+              </CardContent>
+            </Card>
+
+            <Card variant="metric" className="min-h-[132px]">
+              <CardHeader>
+                <CardEyebrow>Saldo total</CardEyebrow>
+                <span className="rounded-md bg-muted p-2 text-muted-foreground">
+                  <WalletIcon className="size-3.5" aria-hidden="true" />
+                </span>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <p className="text-metric leading-none font-semibold tabular-nums">
+                  R$ 14.821
+                </p>
+                <div className="flex items-end justify-between gap-4">
+                  <p className="text-xs font-medium text-success">↗ +4,2%</p>
+                  <svg
+                    className="h-7 w-20 text-success"
+                    viewBox="0 0 80 28"
+                    fill="none"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M2 16L18 20L28 25L42 8L54 14L68 6L78 3"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card variant="ai" className="min-h-[132px]">
+              <CardHeader>
+                <div className="flex items-center gap-2">
+                  <span className="rounded-md bg-primary p-1.5 text-primary-foreground shadow-card">
+                    <SparklesIcon className="size-3" aria-hidden="true" />
+                  </span>
+                  <CardEyebrow className="text-primary">
+                    Análise da IA
+                  </CardEyebrow>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <p className="text-[13px] leading-5 text-card-foreground">
+                  Bloco de IA com acento roxo e fonte sempre citada.
+                </p>
+              </CardContent>
+              <CardFooter className="text-xs text-muted-foreground">
+                <DatabaseIcon
+                  className="size-3.5 text-primary"
+                  aria-hidden="true"
+                />
+                Baseado em 28 transações
+              </CardFooter>
+            </Card>
           </div>
         </div>
 
