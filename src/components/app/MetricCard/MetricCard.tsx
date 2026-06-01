@@ -46,7 +46,7 @@ function MetricCard({
       </CardHeader>
 
       <CardContent className="space-y-1">
-        <p className="text-2xl font-bold tracking-tight text-card-foreground">
+        <p className="font-mono text-2xl font-bold tracking-tight text-card-foreground tabular-nums">
           {value}
         </p>
         <div

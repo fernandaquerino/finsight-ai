@@ -16,6 +16,8 @@ type LineChartCardProps = {
   isLoading?: boolean;
   isEmpty?: boolean;
   className?: string;
+  // Formats the X-axis day label in the tooltip. Defaults to "DD/MM" for May.
+  labelFormatter?: (day: string) => string;
 };
 
 function LineChartCard({
@@ -26,6 +28,7 @@ function LineChartCard({
   isLoading = false,
   isEmpty = false,
   className,
+  labelFormatter = (day) => `${day}/05`,
 }: LineChartCardProps) {
   return (
     <ChartCard
@@ -49,6 +52,7 @@ function LineChartCard({
       <LineChart
         data={data}
         height={240}
+        labelFormatter={labelFormatter}
         aria-label="Gráfico de saldo ao longo do mês"
       />
     </ChartCard>
