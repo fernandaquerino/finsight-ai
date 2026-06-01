@@ -1,13 +1,15 @@
 "use client";
 
+import { useState } from "react";
+import { Download } from "lucide-react";
+
+import { MonthYearPicker } from "@/components/app/MonthYearPicker";
 import { Button } from "@/components/ui/Button";
-import { getMonthAndYear, getMonthName, getToday } from "@/utils/date";
-import { Calendar, ChevronDown, Download } from "lucide-react";
+import { getMonthName, getToday } from "@/utils/date";
 
 export default function DashboardPage() {
-  const today = getToday();
-  const currentMonth = getMonthName(today);
-  const currentMonthAndYear = getMonthAndYear(today);
+  const [selectedDate, setSelectedDate] = useState(getToday);
+  const currentMonth = getMonthName(selectedDate);
 
   return (
     <main className="mx-auto w-full max-w-7xl p-7">
@@ -22,11 +24,7 @@ export default function DashboardPage() {
         </div>
         {/* Botões de ação */}
         <div className="flex gap-2">
-          <Button variant="secondary" size="sm">
-            <Calendar />
-            {currentMonthAndYear}
-            <ChevronDown />
-          </Button>
+          <MonthYearPicker value={selectedDate} onChange={setSelectedDate} />
           <Button variant="secondary" size="sm">
             <Download />
             Exportar
