@@ -1,6 +1,6 @@
 "use client";
 
-import { BellIcon, MenuIcon, SparklesIcon } from "lucide-react";
+import { MenuIcon, SparklesIcon } from "lucide-react";
 import Link from "next/link";
 
 import { ThemeToggle } from "@/components/app/ThemeToggle";
@@ -9,6 +9,7 @@ import { IconButton } from "@/components/ui/IconButton";
 import { SearchInput } from "@/components/ui/SearchInput";
 import { appRoutes } from "@/routes/app-routes";
 import { UserMenu } from "../UserMenu";
+import { NotificationsPanel } from "../NotificationsPanel";
 
 type TopbarProps = Readonly<{
   title: string;
@@ -48,9 +49,7 @@ function Topbar({ title, onMenuClick }: TopbarProps) {
         <ThemeToggle variant="icon" />
       </div>
 
-      <IconButton aria-label="Notificações" variant="secondary">
-        <BellIcon />
-      </IconButton>
+      <NotificationsPanel />
 
       <UserMenu />
     </header>

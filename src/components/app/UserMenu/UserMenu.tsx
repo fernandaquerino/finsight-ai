@@ -24,7 +24,7 @@ function UserMenu() {
           <Avatar name="Marina Rocha" size="md" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-56 p-3" align="end">
+      <PopoverContent className="w-64 p-3" align="end">
         <div className="flex gap-3 pb-3">
           <Avatar name="Marina Rocha" size="md" />
           <div>
