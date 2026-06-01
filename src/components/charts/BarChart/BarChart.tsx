@@ -14,14 +14,22 @@ import {
 import type { BarDataPoint } from "@/features/dashboard/types/dashboard.types";
 import { CHART_COLORS } from "@/lib/chart-colors";
 
+const MONO = "var(--font-geist-mono), ui-monospace, monospace";
+
+// Since we use custom shape (not fill prop), entry.color isn't set by Recharts.
+// Map dataKey → color explicitly for the tooltip dots.
+const SERIES_COLORS: Record<string, string> = {
+  receitas: CHART_COLORS.success,
+  despesas: CHART_COLORS.danger,
+};
+
 type BarChartProps = {
   data: BarDataPoint[];
   height?: number;
+  labelFormatter?: (month: string) => string;
   "aria-label": string;
 };
 
-// BarShapeProps subset — contravariant with Recharts' BarShapeProps so the
-// function is assignable to ActiveShape<BarShapeProps, SVGPathElement>.
 type BarRect = {
   x?: number;
   y?: number;
@@ -48,7 +56,12 @@ function makeBarShape(fill: string, activeIndex: number | undefined) {
   };
 }
 
-function BarChart({ data, height = 240, "aria-label": ariaLabel }: BarChartProps) {
+function BarChart({
+  data,
+  height = 240,
+  labelFormatter,
+  "aria-label": ariaLabel,
+}: BarChartProps) {
   const [activeIndex, setActiveIndex] = useState<number | undefined>(undefined);
 
   return (
@@ -77,7 +90,7 @@ function BarChart({ data, height = 240, "aria-label": ariaLabel }: BarChartProps
             axisLine={false}
           />
           <YAxis
-            tick={{ fontSize: 11, fill: CHART_COLORS.axisLabel }}
+            tick={{ fontSize: 11, fill: CHART_COLORS.axisLabel, fontFamily: MONO }}
             tickLine={false}
             axisLine={false}
             tickFormatter={(v: number) =>
@@ -85,18 +98,42 @@ function BarChart({ data, height = 240, "aria-label": ariaLabel }: BarChartProps
             }
           />
           <Tooltip
-            contentStyle={{
-              borderRadius: "0.5rem",
-              border: `1px solid ${CHART_COLORS.grid}`,
-              fontSize: 12,
-            }}
             cursor={{ fill: "transparent" }}
-            formatter={(value, name) => {
-              const n = typeof value === "number" ? value : 0;
-              return [
-                `R$ ${n.toLocaleString("pt-BR")}`,
-                name === "receitas" ? "Receitas" : "Despesas",
-              ];
+            content={(props) => {
+              if (!props.active || !props.payload?.length) return null;
+              const month = String(props.label ?? "");
+              const header = labelFormatter ? labelFormatter(month) : month;
+
+              return (
+                <div
+                  className="rounded-lg px-3 py-2.5 text-xs shadow-pop"
+                  style={{ background: "hsl(240, 10%, 12%)", color: "#fff" }}
+                >
+                  <p className="mb-2 font-semibold">{header}</p>
+                  <div className="space-y-1.5">
+                    {props.payload.map((entry) => {
+                      const key = String(entry.name ?? "");
+                      const color = SERIES_COLORS[key] ?? "#fff";
+                      const value = typeof entry.value === "number" ? entry.value : 0;
+
+                      return (
+                        <div key={key} className="flex items-center gap-2">
+                          <span
+                            className="size-2 shrink-0 rounded-full"
+                            style={{ background: color }}
+                          />
+                          <span
+                            className="tabular-nums"
+                            style={{ fontFamily: MONO }}
+                          >
+                            R$ {value.toLocaleString("pt-BR")}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
             }}
           />
           <Bar

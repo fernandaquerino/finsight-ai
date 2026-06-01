@@ -30,6 +30,7 @@ function BarChartCard({
       <BarChart
         data={data}
         height={220}
+        labelFormatter={(month) => `${month} · 2026`}
         aria-label="Gráfico de barras de receitas e despesas dos últimos 6 meses"
       />
       <div className="mt-3 flex items-center justify-center gap-6">
