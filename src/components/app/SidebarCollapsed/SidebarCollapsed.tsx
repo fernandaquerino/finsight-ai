@@ -1,6 +1,6 @@
 "use client";
 
-import { LogoMark } from "@/components/app/Logo";
+import { LogoMark } from "@/components/app/Icons";
 import { SidebarNavItem } from "@/components/app/SidebarNavItem";
 import {
   isActiveRoute,

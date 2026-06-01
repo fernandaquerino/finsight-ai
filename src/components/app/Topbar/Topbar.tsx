@@ -3,7 +3,7 @@
 import { BellIcon, MenuIcon, SparklesIcon } from "lucide-react";
 import Link from "next/link";
 
-import { ThemeToggle } from "@/components/app/theme-toggle";
+import { ThemeToggle } from "@/components/app/ThemeToggle";
 import { Avatar } from "@/components/ui/Avatar";
 import { Button } from "@/components/ui/Button";
 import { IconButton } from "@/components/ui/IconButton";

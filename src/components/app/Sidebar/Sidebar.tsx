@@ -1,6 +1,6 @@
 "use client";
 
-import { Logo } from "@/components/app/Logo";
+import { Logo } from "@/components/app/Icons";
 import { SidebarNavItem } from "@/components/app/SidebarNavItem";
 import { cn } from "@/lib/utils";
 import {
