@@ -43,4 +43,18 @@ describe("Topbar", () => {
 
     expect(onMenuClick).toHaveBeenCalledTimes(1);
   });
+
+  it("opens command search from the search input", async () => {
+    const user = userEvent.setup();
+
+    render(<Topbar title="Dashboard" onMenuClick={vi.fn()} />);
+
+    await user.click(
+      screen.getByRole("searchbox", { name: "Buscar transações..." }),
+    );
+
+    expect(
+      screen.getByRole("dialog", { name: "Busca de comandos" }),
+    ).toBeInTheDocument();
+  });
 });
