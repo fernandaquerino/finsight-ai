@@ -1,0 +1,1 @@
+export { SidebarCollapsed } from "./SidebarCollapsed";
