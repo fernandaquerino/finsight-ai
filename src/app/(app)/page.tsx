@@ -4,7 +4,9 @@ import { useState } from "react";
 import {
   ArrowDownRight,
   ArrowUpRight,
+  Database,
   Download,
+  MessageCircle,
   Sparkles,
   Wallet,
 } from "lucide-react";
@@ -12,6 +14,7 @@ import {
 import { MetricCard } from "@/components/app/MetricCard";
 import { MonthYearPicker } from "@/components/app/MonthYearPicker";
 import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
 import { getMonthName, getToday } from "@/utils/date";
 
 export default function DashboardPage() {
@@ -73,6 +76,74 @@ export default function DashboardPage() {
           variant="ai"
         />
       </div>
+
+      {/* AI Insight Banner */}
+      <Card variant="ai" className="flex items-start gap-3">
+        <div
+          className="grid shrink-0 place-items-center rounded-[10.24px] text-white"
+          style={{
+            width: 32,
+            height: 32,
+            background:
+              "linear-gradient(135deg, color-mix(in srgb, var(--ai-accent) 80%, #fff), var(--ai-accent))",
+            boxShadow:
+              "0 2px 8px color-mix(in srgb, var(--ai-accent) 40%, transparent)",
+          }}
+          aria-hidden="true"
+        >
+          <Sparkles className="size-4" />
+        </div>
+
+        <div>
+          <p className="mb-2 text-[11px] font-semibold tracking-[0.08em] text-primary uppercase">
+            Análise da IA
+          </p>
+
+          <p className="mb-2 text-sm font-semibold text-foreground">
+            Você economizou R$ 268 a menos do que poderia em alimentação
+          </p>
+          <p className="text-sm text-muted-foreground">
+            Seu mês está saudável: as despesas caíram{" "}
+            <strong className="font-semibold text-foreground">3,4%</strong> e o
+            saldo subiu. O ponto de atenção é alimentação,{" "}
+            <strong className="font-semibold text-foreground">17% acima</strong>{" "}
+            da sua média. Há também{" "}
+            <strong className="font-semibold text-foreground">
+              3 assinaturas
+            </strong>{" "}
+            que você pode revisar para liberar até{" "}
+            <strong className="font-semibold text-foreground">
+              R$ 112/mês
+            </strong>
+            .
+          </p>
+
+          <div className="mt-3 flex items-center gap-1.5 text-xs text-muted-foreground">
+            <Database
+              className="size-3.5 shrink-0 text-primary"
+              aria-hidden="true"
+            />
+            <span className="text-muted-foreground">
+              Baseado em 28 transações de maio e na sua média de 6 meses
+            </span>
+          </div>
+
+          <div className="mt-4 flex gap-2">
+            <Button size="sm" className="text-xs">
+              <Sparkles />
+              Ver insights
+            </Button>
+            <Button
+              variant="link"
+              size="sm"
+              className="text-xs text-muted-foreground hover:text-foreground"
+            >
+              <MessageCircle />
+              Perguntar à IA
+            </Button>
+          </div>
+        </div>
+      </Card>
     </main>
   );
 }
