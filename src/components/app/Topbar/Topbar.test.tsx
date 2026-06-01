@@ -28,7 +28,7 @@ describe("Topbar", () => {
       screen.getByRole("button", { name: "Alternar tema" }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("button", { name: "Notificações" }),
+      screen.getByRole("button", { name: /Notificações/ }),
     ).toBeInTheDocument();
     expect(screen.getByRole("img", { name: "Marina Rocha" })).toBeVisible();
   });
