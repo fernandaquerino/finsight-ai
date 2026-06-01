@@ -103,13 +103,30 @@ export function PrimitiveShowcase() {
           </div>
         </div>
 
-        <div className="space-y-4 rounded-lg border bg-background p-4">
+        <div className="space-y-4 rounded-lg border bg-background p-4 lg:col-span-2">
           <h3 className="text-sm font-medium">Form controls</h3>
-          <div className="grid gap-3 sm:grid-cols-2">
-            <label className="grid gap-1.5 text-sm">
-              Conta
-              <Input placeholder="Conta principal" />
-            </label>
+          <div className="grid gap-5 md:grid-cols-3">
+            <Input
+              placeholder="Digite algo..."
+              label="Input padrão"
+              helperText="Texto de apoio opcional."
+            />
+            <Input
+              placeholder="Campo obrigatório"
+              label="Obrigatório"
+              required
+            />
+            <Input
+              defaultValue="abc"
+              label="Com erro"
+              error="Informe um valor válido."
+            />
+            <Input
+              placeholder="0,00"
+              label="Valor monetário"
+              prefix="R$"
+              inputMode="decimal"
+            />
             <label className="grid gap-1.5 text-sm">
               Categoria
               <Select defaultValue="moradia">
@@ -123,15 +140,20 @@ export function PrimitiveShowcase() {
                 </SelectContent>
               </Select>
             </label>
+            <div className="grid content-start gap-2">
+              <span className="text-xs font-medium text-foreground">
+                Switch / toggle
+              </span>
+              <label className="flex items-center gap-3 text-sm text-muted-foreground">
+                <Switch defaultChecked />
+                Ativado
+              </label>
+            </div>
           </div>
           <div className="flex flex-wrap items-center gap-5">
             <label className="flex items-center gap-2 text-sm">
               <Checkbox defaultChecked />
               Recorrente
-            </label>
-            <label className="flex items-center gap-2 text-sm">
-              <Switch defaultChecked />
-              Alertas
             </label>
           </div>
         </div>
