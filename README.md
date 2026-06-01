@@ -108,7 +108,6 @@ npm run drizzle-check   # Validate Drizzle migration state
 - [Design system](./docs/design-system.md)
 - [Roadmap](./docs/roadmap.md)
 - [Backlog](./docs/backlog.md)
-- [AI collaboration guide](./docs/ai-collaboration.md)
 
 ## Roadmap Summary
 
