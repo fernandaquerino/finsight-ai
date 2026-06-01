@@ -15,6 +15,28 @@ describe("Input", () => {
     expect(input).toHaveAttribute("data-slot", "input");
   });
 
+  it("supports aria-label when a visible label is not rendered", () => {
+    render(<Input aria-label="Pesquisar transações" />);
+
+    expect(
+      screen.getByRole("textbox", { name: "Pesquisar transações" }),
+    ).toBeInTheDocument();
+  });
+
+  it("supports aria-labelledby when the label is external", () => {
+    render(
+      <>
+        <span id="external-label">Categoria</span>
+        <Input aria-labelledby="external-label" />
+      </>,
+    );
+
+    expect(screen.getByRole("textbox", { name: "Categoria" })).toHaveAttribute(
+      "aria-labelledby",
+      "external-label",
+    );
+  });
+
   it("supports helper text through aria-describedby", () => {
     render(
       <Input

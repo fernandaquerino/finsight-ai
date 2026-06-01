@@ -39,12 +39,23 @@ describe("Button", () => {
   it.each([
     ["sm", "h-9"],
     ["lg", "h-11"],
-    ["icon", "size-10"],
   ] as const)("renders %s size classes", (size, expectedClass) => {
     render(<Button size={size}>Button</Button>);
 
     expect(screen.getByRole("button", { name: /button/i })).toHaveClass(
       expectedClass,
+    );
+  });
+
+  it("requires an accessible name for icon buttons", () => {
+    render(
+      <Button size="icon" aria-label="Notificações">
+        <span aria-hidden="true">!</span>
+      </Button>,
+    );
+
+    expect(screen.getByRole("button", { name: /notificações/i })).toHaveClass(
+      "size-10",
     );
   });
 

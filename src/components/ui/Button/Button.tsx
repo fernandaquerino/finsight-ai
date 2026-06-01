@@ -32,13 +32,31 @@ const buttonVariants = cva(
   },
 );
 
-interface ButtonProps
+type ButtonVariantProps = VariantProps<typeof buttonVariants>;
+type ButtonSize = NonNullable<ButtonVariantProps["size"]>;
+
+interface BaseButtonProps
   extends
-    React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
+    Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "aria-label">,
+    Omit<ButtonVariantProps, "size"> {
+  size?: ButtonSize;
   asChild?: boolean;
   loading?: boolean;
 }
+
+type ButtonA11yProps =
+  | {
+      size: "icon";
+      "aria-label": string;
+      "aria-labelledby"?: string;
+    }
+  | {
+      size?: Exclude<ButtonSize, "icon">;
+      "aria-label"?: string;
+      "aria-labelledby"?: string;
+    };
+
+type ButtonProps = BaseButtonProps & ButtonA11yProps;
 
 function Spinner() {
   return (
@@ -79,6 +97,17 @@ function Button({
 }: ButtonProps) {
   const Comp = asChild ? Slot : "button";
   const isDisabled = disabled || loading;
+  const accessibleName = props["aria-label"] ?? props["aria-labelledby"];
+
+  if (
+    process.env.NODE_ENV !== "production" &&
+    size === "icon" &&
+    !accessibleName
+  ) {
+    console.warn(
+      'Button with size="icon" must include aria-label or aria-labelledby.',
+    );
+  }
 
   function handleClick(event: React.MouseEvent<HTMLButtonElement>) {
     if (isDisabled) {

@@ -3,15 +3,33 @@ import { CircleAlertIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
-interface InputProps extends Omit<
+interface BaseInputProps extends Omit<
   React.InputHTMLAttributes<HTMLInputElement>,
-  "prefix"
+  "aria-label" | "aria-labelledby" | "prefix"
 > {
-  label?: string;
   helperText?: string;
   error?: string;
   prefix?: string;
 }
+
+type InputA11yProps =
+  | {
+      label: string;
+      "aria-label"?: string;
+      "aria-labelledby"?: string;
+    }
+  | {
+      label?: never;
+      "aria-label": string;
+      "aria-labelledby"?: string;
+    }
+  | {
+      label?: never;
+      "aria-label"?: string;
+      "aria-labelledby": string;
+    };
+
+type InputProps = BaseInputProps & InputA11yProps;
 
 function Input({
   className,
@@ -27,11 +45,17 @@ function Input({
   const generatedId = React.useId();
   const inputId = id ?? generatedId;
   const hasError = Boolean(error);
+  const accessibleName =
+    label ?? props["aria-label"] ?? props["aria-labelledby"];
   const descriptionId = hasError
     ? `${inputId}-error`
     : helperText
       ? `${inputId}-helper`
       : undefined;
+
+  if (process.env.NODE_ENV !== "production" && !accessibleName) {
+    console.warn("Input must include label, aria-label, or aria-labelledby.");
+  }
 
   return (
     <div className="grid w-full gap-2">
