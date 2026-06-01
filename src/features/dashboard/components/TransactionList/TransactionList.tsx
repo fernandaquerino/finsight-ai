@@ -30,7 +30,7 @@ function TransactionList({
         <Button
           variant="ghost"
           size="sm"
-          className="group h-auto gap-0.5 p-0 text-xs text-muted-foreground hover:bg-transparent hover:text-foreground"
+          className="group gap-0.5 text-xs text-muted-foreground"
         >
           Ver todas
           <ChevronRight
@@ -41,7 +41,11 @@ function TransactionList({
       </div>
 
       {isLoading ? (
-        <ul className="space-y-3" aria-busy="true" aria-label="Carregando transações">
+        <ul
+          className="space-y-3"
+          aria-busy="true"
+          aria-label="Carregando transações"
+        >
           {Array.from({ length: 5 }).map((_, i) => (
             <li key={i} className="flex items-center gap-3 py-1">
               <Skeleton className="size-9 shrink-0 rounded-full" />
@@ -58,10 +62,7 @@ function TransactionList({
           Nenhuma transação no período
         </div>
       ) : (
-        <ul
-          className="divide-y divide-border"
-          aria-label="Transações recentes"
-        >
+        <ul className="divide-y divide-border" aria-label="Transações recentes">
           {transactions.map((t) => (
             <TransactionListItem key={t.id} transaction={t} />
           ))}

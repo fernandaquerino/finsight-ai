@@ -38,7 +38,7 @@ function DonutChartCard({
         <Button
           variant="ghost"
           size="sm"
-          className="group h-auto gap-0.5 p-0 text-xs text-muted-foreground hover:bg-transparent hover:text-foreground"
+          className="group gap-0.5 text-xs text-muted-foreground"
         >
           Detalhes
           <ChevronRight
