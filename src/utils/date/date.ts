@@ -9,3 +9,11 @@ export function getMonthName(date: Date = new Date()): string {
 export function getToday(): Date {
   return new Date();
 }
+
+export function getYear(date: Date = getToday()): number {
+  return date.getFullYear();
+}
+
+export function getMonthAndYear(date: Date = getToday()): string {
+  return `${getMonthName(date)} de ${getYear(date)}`;
+}
