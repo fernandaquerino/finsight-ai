@@ -43,10 +43,10 @@ function CategoryLegend({
             <span className="min-w-0 flex-1 truncate text-xs text-muted-foreground">
               {item.name}
             </span>
-            <span className="shrink-0 text-xs font-medium tabular-nums text-foreground">
+            <span className="shrink-0 font-mono text-xs font-medium text-foreground tabular-nums">
               R$ {item.value.toLocaleString("pt-BR")}
             </span>
-            <span className="w-7 shrink-0 text-right text-xs tabular-nums text-muted-foreground">
+            <span className="w-7 shrink-0 text-right text-xs text-muted-foreground tabular-nums">
               {item.percentage}%
             </span>
           </li>

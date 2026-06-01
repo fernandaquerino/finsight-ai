@@ -26,7 +26,6 @@ function DonutChartCard({
   className,
 }: DonutChartCardProps) {
   const [activeIndex, setActiveIndex] = useState<number | undefined>(undefined);
-  const activeItem = activeIndex !== undefined ? data[activeIndex] : undefined;
 
   return (
     <ChartCard
@@ -54,7 +53,7 @@ function DonutChartCard({
           <DonutChart
             data={data}
             height={200}
-            activeItem={activeItem}
+            activeIndex={activeIndex}
             aria-label="Gráfico de rosca de despesas por categoria"
           />
         </div>

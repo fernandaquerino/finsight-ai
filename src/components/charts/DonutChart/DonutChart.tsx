@@ -8,25 +8,36 @@ import { CHART_COLORS } from "@/lib/chart-colors";
 type DonutChartProps = {
   data: CategoryData[];
   height?: number;
-  // Controlled from outside — no Recharts event APIs needed
-  activeItem?: CategoryData;
+  activeIndex?: number;
   "aria-label": string;
 };
 
 function DonutChart({
   data,
   height = 200,
-  activeItem,
+  activeIndex,
   "aria-label": ariaLabel,
 }: DonutChartProps) {
+  const activeItem = activeIndex !== undefined ? data[activeIndex] : undefined;
   const total = data.reduce((sum, d) => sum + d.value, 0);
   const totalFormatted = `R$ ${total.toLocaleString("pt-BR")}`;
 
-  // Recharts v3: colors via fill on each data item (Cell is deprecated)
-  const chartData = data.map((d) => ({ ...d, fill: d.color }));
+  // Recharts v3: colors + per-slice opacity via data items.
+  // When a slice is active, all others fade to 0.15 opacity.
+  const chartData = data.map((d, i) => ({
+    ...d,
+    fill: d.color,
+    fillOpacity: activeIndex === undefined ? 1 : i === activeIndex ? 1 : 0.15,
+  }));
 
   return (
-    <div role="img" aria-label={ariaLabel}>
+    // Tailwind arbitrary variant adds CSS transition on every recharts-sector
+    // so fill-opacity animates smoothly between full and faded states.
+    <div
+      role="img"
+      aria-label={ariaLabel}
+      className="[&_.recharts-sector]:transition-[fill-opacity] [&_.recharts-sector]:duration-150"
+    >
       <ResponsiveContainer width="100%" height={height}>
         <PieChart>
           <Pie
@@ -38,6 +49,7 @@ function DonutChart({
             dataKey="value"
             stroke="none"
             paddingAngle={2}
+            isAnimationActive={false}
           >
             <Label
               content={({ viewBox }) => {
