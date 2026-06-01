@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest";
-import { getMonthName } from "./date";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { getMonthName, getToday } from "./date";
 
 describe("getMonthName", () => {
   it("should return the month name in Portuguese with the first letter capitalized", () => {
@@ -19,5 +19,26 @@ describe("getMonthName", () => {
 
     expect(typeof result).toBe("string");
     expect(result.length).toBeGreaterThan(0);
+  });
+});
+
+describe("getToday", () => {
+  const mockedDate = new Date("2026-05-01T12:00:00");
+
+  beforeEach(() => {
+    vi.useFakeTimers();
+    vi.setSystemTime(mockedDate);
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it("return the current system date", () => {
+    expect(getToday()).toEqual(mockedDate);
+  });
+
+  it("return an instance of Date", () => {
+    expect(getToday()).toBeInstanceOf(Date);
   });
 });

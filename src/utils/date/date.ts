@@ -5,3 +5,7 @@ export function getMonthName(date: Date = new Date()): string {
 
   return monthName.charAt(0).toUpperCase() + monthName.slice(1);
 }
+
+export function getToday(): Date {
+  return new Date();
+}
