@@ -5,12 +5,14 @@ import {
   ChevronDownIcon,
   DatabaseIcon,
   InfoIcon,
+  MoonIcon,
   SparklesIcon,
   WalletIcon,
 } from "lucide-react";
 import { toast } from "sonner";
 
-import { Badge } from "@/components/ui/badge";
+import { Avatar } from "@/components/ui/Avatar";
+import { Badge } from "@/components/ui/Badge";
 import { Checkbox } from "@/components/ui/Checkbox";
 import {
   Dialog,
@@ -20,7 +22,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from "@/components/ui/Dialog";
+import { Divider } from "@/components/ui/Divider";
 import {
   Drawer,
   DrawerContent,
@@ -29,7 +32,7 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "@/components/ui/drawer";
+} from "@/components/ui/Drawer";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -37,28 +40,24 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/ui/DropdownMenu";
+import { IconButton } from "@/components/ui/IconButton";
 import { Input } from "@/components/ui/Input";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Switch } from "@/components/ui/switch";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+} from "@/components/ui/Popover";
+import { SearchInput } from "@/components/ui/SearchInput";
+import { SelectField } from "@/components/ui/SelectField";
+import { Skeleton } from "@/components/ui/Skeleton";
+import { Switch } from "@/components/ui/Switch";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@/components/ui/Tooltip";
 import { Button } from "@/components/ui/Button";
 import {
   Card,
@@ -95,12 +94,17 @@ export function PrimitiveShowcase() {
             <Button variant="secondary">Secondary</Button>
             <Button variant="soft">Soft</Button>
             <Button variant="ghost">Ghost</Button>
+            <Button variant="outline">Outline</Button>
+            <Button variant="ai">
+              <SparklesIcon />
+              Perguntar à IA
+            </Button>
             <Button loading>Loading</Button>
             <Button variant="destructive">Destructive</Button>
-            <Button
-              variant="secondary"
-              size="icon"
-              aria-label="Notifications"
+          </div>
+          <div className="flex items-center gap-2">
+            <IconButton
+              aria-label="Notificações"
               onClick={() =>
                 toast("Insight salvo", {
                   description: "O toast usa os tokens do tema FinSight.",
@@ -108,19 +112,35 @@ export function PrimitiveShowcase() {
               }
             >
               <BellIcon />
-            </Button>
+            </IconButton>
+            <IconButton aria-label="Alternar tema">
+              <MoonIcon />
+            </IconButton>
+            <IconButton
+              variant="secondary"
+              aria-label="Configurações"
+              size="sm"
+            >
+              <InfoIcon />
+            </IconButton>
           </div>
           <div className="flex flex-wrap gap-2">
             <Badge>IA</Badge>
             <Badge variant="success">Receita</Badge>
             <Badge variant="warning">Atenção</Badge>
             <Badge variant="destructive">Risco</Badge>
+            <Badge variant="info">Info</Badge>
             <Badge variant="outline">Manual</Badge>
+            <Badge variant="ai">
+              <SparklesIcon />
+              AI
+            </Badge>
           </div>
         </div>
 
         <div className="space-y-4 rounded-lg border bg-background p-4 lg:col-span-2">
           <h3 className="text-sm font-medium">Form controls</h3>
+          <SearchInput />
           <div className="grid gap-5 md:grid-cols-3">
             <Input
               placeholder="Digite algo..."
@@ -143,19 +163,25 @@ export function PrimitiveShowcase() {
               prefix="R$"
               inputMode="decimal"
             />
-            <label className="grid gap-1.5 text-sm">
-              Categoria
-              <Select defaultValue="moradia">
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="alimentacao">Alimentação</SelectItem>
-                  <SelectItem value="moradia">Moradia</SelectItem>
-                  <SelectItem value="transporte">Transporte</SelectItem>
-                </SelectContent>
-              </Select>
-            </label>
+            <SelectField
+              label="Categoria"
+              placeholder="Selecione"
+              defaultValue="moradia"
+              options={[
+                { value: "alimentacao", label: "Alimentação" },
+                { value: "moradia", label: "Moradia" },
+                { value: "transporte", label: "Transporte" },
+              ]}
+            />
+            <SelectField
+              label="Categoria (erro)"
+              placeholder="Selecione"
+              error="Selecione uma categoria."
+              options={[
+                { value: "alimentacao", label: "Alimentação" },
+                { value: "moradia", label: "Moradia" },
+              ]}
+            />
             <div className="grid content-start gap-2">
               <span className="text-xs font-medium text-foreground">
                 Switch / toggle
@@ -166,11 +192,31 @@ export function PrimitiveShowcase() {
               </label>
             </div>
           </div>
-          <div className="flex flex-wrap items-center gap-5">
-            <label className="flex items-center gap-2 text-sm">
-              <Checkbox defaultChecked />
-              Recorrente
-            </label>
+          <div className="flex flex-wrap items-center gap-6">
+            <Checkbox label="Recorrente" defaultChecked />
+            <Checkbox label="Aceitar termos" error="Campo obrigatório." />
+            <Checkbox label="Com helper" helperText="Repete todo mês." />
+            <Checkbox label="Desabilitado" disabled />
+          </div>
+        </div>
+
+        <div className="space-y-4 rounded-lg border bg-background p-4">
+          <h3 className="text-sm font-medium">Avatar & Divider</h3>
+          <div className="flex flex-wrap items-center gap-3">
+            <Avatar name="Marina Rocha" size="lg" />
+            <Avatar name="Marina Rocha" size="md" />
+            <Avatar name="Marina Rocha" size="sm" />
+            <Avatar name="João Silva" size="md" />
+            <Avatar name="Ana P" size="md" />
+            <Avatar name="" size="md" />
+          </div>
+          <div className="flex flex-col gap-3">
+            <Divider />
+            <div className="flex h-8 items-center gap-3">
+              <span className="text-xs text-muted-foreground">Horizontal</span>
+              <Divider orientation="vertical" />
+              <span className="text-xs text-muted-foreground">Vertical</span>
+            </div>
           </div>
         </div>
 

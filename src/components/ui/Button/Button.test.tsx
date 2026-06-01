@@ -28,6 +28,8 @@ describe("Button", () => {
     ["secondary", "border"],
     ["ghost", "hover:bg-muted"],
     ["link", "text-primary"],
+    ["outline", "border-primary"],
+    ["ai", "bg-primary"],
   ] as const)("renders %s variant classes", (variant, expectedClass) => {
     render(<Button variant={variant}>Button</Button>);
 

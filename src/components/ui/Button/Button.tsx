@@ -17,6 +17,9 @@ const buttonVariants = cva(
         soft: "bg-soft text-primary hover:bg-soft-2",
         ghost: "hover:bg-muted hover:text-foreground",
         link: "text-primary underline-offset-4 hover:underline",
+        outline:
+          "border border-primary bg-background text-primary hover:bg-primary-soft",
+        ai: "bg-primary text-primary-foreground hover:bg-primary/90 [&_svg]:size-3.5",
       },
       size: {
         default: "h-10 px-4 py-2",

@@ -5,7 +5,7 @@ import { describe, expect, it, vi } from "vitest";
 import { Checkbox } from "./Checkbox";
 
 describe("Checkbox", () => {
-  it("renders an accessible checkbox", () => {
+  it("renders an accessible checkbox with aria-label", () => {
     render(<Checkbox aria-label="Recorrente" />);
 
     const checkbox = screen.getByRole("checkbox", { name: "Recorrente" });
@@ -13,6 +13,17 @@ describe("Checkbox", () => {
     expect(checkbox).toBeInTheDocument();
     expect(checkbox).toHaveAttribute("data-slot", "checkbox");
     expect(checkbox).toHaveAttribute("aria-checked", "false");
+  });
+
+  it("renders with a visible label linked via htmlFor", () => {
+    render(<Checkbox label="Recorrente" />);
+
+    const checkbox = screen.getByRole("checkbox", { name: "Recorrente" });
+    const label = screen.getByText("Recorrente");
+
+    expect(checkbox).toBeInTheDocument();
+    expect(label.tagName).toBe("LABEL");
+    expect(label).toHaveAttribute("for", checkbox.id);
   });
 
   it("renders checked state", () => {
@@ -37,6 +48,17 @@ describe("Checkbox", () => {
     );
 
     await user.click(screen.getByRole("checkbox", { name: "Recorrente" }));
+
+    expect(onCheckedChange).toHaveBeenCalledWith(true);
+  });
+
+  it("can be clicked via the label", async () => {
+    const user = userEvent.setup();
+    const onCheckedChange = vi.fn();
+
+    render(<Checkbox label="Recorrente" onCheckedChange={onCheckedChange} />);
+
+    await user.click(screen.getByText("Recorrente"));
 
     expect(onCheckedChange).toHaveBeenCalledWith(true);
   });
@@ -74,6 +96,54 @@ describe("Checkbox", () => {
     await user.click(checkbox);
 
     expect(onCheckedChange).not.toHaveBeenCalled();
+  });
+
+  it("renders helper text linked via aria-describedby", () => {
+    render(
+      <Checkbox
+        id="recurring"
+        label="Recorrente"
+        helperText="Repete todo mês."
+      />,
+    );
+
+    const checkbox = screen.getByRole("checkbox", { name: "Recorrente" });
+    const helper = screen.getByText("Repete todo mês.");
+
+    expect(helper).toHaveAttribute("id", "recurring-helper");
+    expect(checkbox).toHaveAttribute("aria-describedby", "recurring-helper");
+  });
+
+  it("renders error state with aria-invalid and alert", () => {
+    render(
+      <Checkbox
+        id="terms"
+        label="Aceitar termos"
+        error="Você precisa aceitar os termos."
+      />,
+    );
+
+    const checkbox = screen.getByRole("checkbox", { name: "Aceitar termos" });
+    const error = screen.getByRole("alert");
+
+    expect(checkbox).toHaveAttribute("aria-invalid", "true");
+    expect(checkbox).toHaveAttribute("aria-describedby", "terms-error");
+    expect(error).toHaveAttribute("id", "terms-error");
+    expect(error).toHaveTextContent("Você precisa aceitar os termos.");
+  });
+
+  it("prioritizes error over helper text", () => {
+    render(
+      <Checkbox
+        id="terms"
+        label="Aceitar termos"
+        helperText="Leia os termos."
+        error="Campo obrigatório."
+      />,
+    );
+
+    expect(screen.queryByText("Leia os termos.")).not.toBeInTheDocument();
+    expect(screen.getByRole("alert")).toHaveTextContent("Campo obrigatório.");
   });
 
   it("supports custom className", () => {
