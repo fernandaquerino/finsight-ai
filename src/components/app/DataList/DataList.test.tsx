@@ -39,10 +39,7 @@ describe("DataList", () => {
       />,
     );
 
-    expect(screen.getByRole("list", { name: "Itens" })).toHaveAttribute(
-      "aria-busy",
-      "true",
-    );
+    expect(screen.getByLabelText("Itens")).toHaveAttribute("aria-busy", "true");
     expect(container.querySelectorAll("[data-slot='skeleton']")).toHaveLength(
       8,
     );
@@ -73,7 +70,9 @@ describe("DataList", () => {
       />,
     );
 
-    expect(screen.getByText("Não foi possível carregar")).toBeInTheDocument();
+    expect(
+      screen.getByText("Não foi possível carregar agora"),
+    ).toBeInTheDocument();
     expect(screen.getByText("Tente novamente.")).toBeInTheDocument();
   });
 });

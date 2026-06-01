@@ -1,8 +1,9 @@
 import { ChevronRight } from "lucide-react";
 
+import { EmptyState } from "@/components/app/EmptyState";
+import { TransactionListSkeleton } from "@/components/app/skeletons";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { Skeleton } from "@/components/ui/Skeleton";
 import { TransactionListItem } from "@/features/dashboard/components/TransactionListItem";
 import {
   MOCK_TRANSACTIONS,
@@ -41,26 +42,13 @@ function TransactionList({
       </div>
 
       {isLoading ? (
-        <ul
-          className="space-y-3"
-          aria-busy="true"
-          aria-label="Carregando transações"
-        >
-          {Array.from({ length: 5 }).map((_, i) => (
-            <li key={i} className="flex items-center gap-3 py-1">
-              <Skeleton className="size-9 shrink-0 rounded-full" />
-              <div className="flex-1 space-y-1.5">
-                <Skeleton className="h-3 w-3/4" />
-                <Skeleton className="h-2.5 w-1/2" />
-              </div>
-              <Skeleton className="h-3 w-16 shrink-0" />
-            </li>
-          ))}
-        </ul>
+        <TransactionListSkeleton />
       ) : transactions.length === 0 ? (
-        <div className="flex flex-1 items-center justify-center py-10 text-xs text-muted-foreground">
-          Nenhuma transação no período
-        </div>
+        <EmptyState
+          variant="transactions"
+          title="Nenhuma transação no período"
+          className="border-0 py-10"
+        />
       ) : (
         <ul className="divide-y divide-border" aria-label="Transações recentes">
           {transactions.map((t) => (

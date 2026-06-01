@@ -25,8 +25,12 @@ describe("TransactionList", () => {
   it("renders skeletons and hides items when isLoading", () => {
     render(<TransactionList isLoading />);
 
-    expect(screen.queryByRole("list", { name: "Transações recentes" })).not.toBeInTheDocument();
-    expect(screen.getByLabelText("Carregando transações")).toBeInTheDocument();
+    expect(
+      screen.queryByRole("list", { name: "Transações recentes" }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("list", { name: "Carregando transações" }),
+    ).toHaveAttribute("aria-busy", "true");
   });
 
   it("renders empty state when transactions array is empty", () => {
