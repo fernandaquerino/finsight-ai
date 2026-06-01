@@ -16,7 +16,7 @@ describe("CategoryLegend", () => {
   it("renders formatted values and percentages", () => {
     render(<CategoryLegend data={MOCK_CATEGORY_DATA} />);
 
-    expect(screen.getByText("R$ 3.120")).toBeInTheDocument();
+    expect(screen.getByText("R$ 3.120,00")).toBeInTheDocument();
     expect(screen.getByText("43%")).toBeInTheDocument();
   });
 
