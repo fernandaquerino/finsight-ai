@@ -1,11 +1,19 @@
 "use client";
 
-import { BellIcon, ChevronDownIcon, InfoIcon } from "lucide-react";
+import {
+  BellIcon,
+  ChevronDownIcon,
+  DatabaseIcon,
+  InfoIcon,
+  MoonIcon,
+  SparklesIcon,
+  WalletIcon,
+} from "lucide-react";
 import { toast } from "sonner";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Avatar } from "@/components/ui/Avatar";
+import { Badge } from "@/components/ui/Badge";
+import { Checkbox } from "@/components/ui/Checkbox";
 import {
   Dialog,
   DialogContent,
@@ -14,7 +22,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from "@/components/ui/Dialog";
+import { Divider } from "@/components/ui/Divider";
 import {
   Drawer,
   DrawerContent,
@@ -23,7 +32,7 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "@/components/ui/drawer";
+} from "@/components/ui/Drawer";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,28 +40,34 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
+} from "@/components/ui/DropdownMenu";
+import { IconButton } from "@/components/ui/IconButton";
+import { Input } from "@/components/ui/Input";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Switch } from "@/components/ui/switch";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+} from "@/components/ui/Popover";
+import { SearchInput } from "@/components/ui/SearchInput";
+import { SelectField } from "@/components/ui/Select";
+import { Skeleton } from "@/components/ui/Skeleton";
+import { Switch } from "@/components/ui/Switch";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@/components/ui/Tooltip";
+import { Button } from "@/components/ui/Button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardEyebrow,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/Card";
 
 export function PrimitiveShowcase() {
   return (
@@ -77,13 +92,19 @@ export function PrimitiveShowcase() {
           <div className="flex flex-wrap gap-2">
             <Button>Primary</Button>
             <Button variant="secondary">Secondary</Button>
-            <Button variant="outline">Outline</Button>
+            <Button variant="soft">Soft</Button>
             <Button variant="ghost">Ghost</Button>
+            <Button variant="outline">Outline</Button>
+            <Button variant="ai">
+              <SparklesIcon />
+              Perguntar à IA
+            </Button>
+            <Button loading>Loading</Button>
             <Button variant="destructive">Destructive</Button>
-            <Button
-              variant="outline"
-              size="icon"
-              aria-label="Notifications"
+          </div>
+          <div className="flex items-center gap-2">
+            <IconButton
+              aria-label="Notificações"
               onClick={() =>
                 toast("Insight salvo", {
                   description: "O toast usa os tokens do tema FinSight.",
@@ -91,47 +112,187 @@ export function PrimitiveShowcase() {
               }
             >
               <BellIcon />
-            </Button>
+            </IconButton>
+            <IconButton aria-label="Alternar tema">
+              <MoonIcon />
+            </IconButton>
+            <IconButton
+              variant="secondary"
+              aria-label="Configurações"
+              size="sm"
+            >
+              <InfoIcon />
+            </IconButton>
           </div>
           <div className="flex flex-wrap gap-2">
             <Badge>IA</Badge>
             <Badge variant="success">Receita</Badge>
             <Badge variant="warning">Atenção</Badge>
             <Badge variant="destructive">Risco</Badge>
+            <Badge variant="info">Info</Badge>
             <Badge variant="outline">Manual</Badge>
+            <Badge variant="ai">
+              <SparklesIcon />
+              AI
+            </Badge>
+          </div>
+        </div>
+
+        <div className="space-y-4 rounded-lg border bg-background p-4 lg:col-span-2">
+          <h3 className="text-sm font-medium">Form controls</h3>
+          <SearchInput />
+          <div className="grid gap-5 md:grid-cols-3">
+            <Input
+              placeholder="Digite algo..."
+              label="Input padrão"
+              helperText="Texto de apoio opcional."
+            />
+            <Input
+              placeholder="Campo obrigatório"
+              label="Obrigatório"
+              required
+            />
+            <Input
+              defaultValue="abc"
+              label="Com erro"
+              error="Informe um valor válido."
+            />
+            <Input
+              placeholder="0,00"
+              label="Valor monetário"
+              prefix="R$"
+              inputMode="decimal"
+            />
+            <SelectField
+              label="Categoria"
+              placeholder="Selecione"
+              defaultValue="moradia"
+              options={[
+                { value: "alimentacao", label: "Alimentação" },
+                { value: "moradia", label: "Moradia" },
+                { value: "transporte", label: "Transporte" },
+              ]}
+            />
+            <SelectField
+              label="Categoria (erro)"
+              placeholder="Selecione"
+              error="Selecione uma categoria."
+              options={[
+                { value: "alimentacao", label: "Alimentação" },
+                { value: "moradia", label: "Moradia" },
+              ]}
+            />
+            <div className="grid content-start gap-2">
+              <span className="text-xs font-medium text-foreground">
+                Switch / toggle
+              </span>
+              <label className="flex items-center gap-3 text-sm text-muted-foreground">
+                <Switch defaultChecked />
+                Ativado
+              </label>
+            </div>
+          </div>
+          <div className="flex flex-wrap items-center gap-6">
+            <Checkbox label="Recorrente" defaultChecked />
+            <Checkbox label="Aceitar termos" error="Campo obrigatório." />
+            <Checkbox label="Com helper" helperText="Repete todo mês." />
+            <Checkbox label="Desabilitado" disabled />
           </div>
         </div>
 
         <div className="space-y-4 rounded-lg border bg-background p-4">
-          <h3 className="text-sm font-medium">Form controls</h3>
-          <div className="grid gap-3 sm:grid-cols-2">
-            <label className="grid gap-1.5 text-sm">
-              Conta
-              <Input placeholder="Conta principal" />
-            </label>
-            <label className="grid gap-1.5 text-sm">
-              Categoria
-              <Select defaultValue="moradia">
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="alimentacao">Alimentação</SelectItem>
-                  <SelectItem value="moradia">Moradia</SelectItem>
-                  <SelectItem value="transporte">Transporte</SelectItem>
-                </SelectContent>
-              </Select>
-            </label>
+          <h3 className="text-sm font-medium">Avatar & Divider</h3>
+          <div className="flex flex-wrap items-center gap-3">
+            <Avatar name="Marina Rocha" size="lg" />
+            <Avatar name="Marina Rocha" size="md" />
+            <Avatar name="Marina Rocha" size="sm" />
+            <Avatar name="João Silva" size="md" />
+            <Avatar name="Ana P" size="md" />
+            <Avatar name="" size="md" />
           </div>
-          <div className="flex flex-wrap items-center gap-5">
-            <label className="flex items-center gap-2 text-sm">
-              <Checkbox defaultChecked />
-              Recorrente
-            </label>
-            <label className="flex items-center gap-2 text-sm">
-              <Switch defaultChecked />
-              Alertas
-            </label>
+          <div className="flex flex-col gap-3">
+            <Divider />
+            <div className="flex h-8 items-center gap-3">
+              <span className="text-xs text-muted-foreground">Horizontal</span>
+              <Divider orientation="vertical" />
+              <span className="text-xs text-muted-foreground">Vertical</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-4 lg:col-span-2">
+          <div>
+            <h3 className="text-md font-semibold">Cards</h3>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Contêiner base, métrica e card de IA (tweakável no app).
+            </p>
+          </div>
+          <div className="grid gap-4 md:grid-cols-3">
+            <Card interactive className="min-h-[132px]">
+              <CardContent>
+                <CardTitle>Card base</CardTitle>
+                <CardDescription>
+                  Superfície com borda sutil e sombra leve. Aceita hover e
+                  clique.
+                </CardDescription>
+              </CardContent>
+            </Card>
+
+            <Card variant="metric" className="min-h-[132px]">
+              <CardHeader>
+                <CardEyebrow>Saldo total</CardEyebrow>
+                <span className="rounded-md bg-muted p-2 text-muted-foreground">
+                  <WalletIcon className="size-3.5" aria-hidden="true" />
+                </span>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <p className="text-metric leading-none font-semibold tabular-nums">
+                  R$ 14.821
+                </p>
+                <div className="flex items-end justify-between gap-4">
+                  <p className="text-xs font-medium text-success">↗ +4,2%</p>
+                  <svg
+                    className="h-7 w-20 text-success"
+                    viewBox="0 0 80 28"
+                    fill="none"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M2 16L18 20L28 25L42 8L54 14L68 6L78 3"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card variant="ai" className="min-h-[132px]">
+              <CardHeader>
+                <div className="flex items-center gap-2">
+                  <span className="rounded-md bg-primary p-1.5 text-primary-foreground shadow-card">
+                    <SparklesIcon className="size-3" aria-hidden="true" />
+                  </span>
+                  <CardEyebrow className="text-primary">
+                    Análise da IA
+                  </CardEyebrow>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <p className="text-[13px] leading-5 text-card-foreground">
+                  Bloco de IA com acento roxo e fonte sempre citada.
+                </p>
+              </CardContent>
+              <CardFooter className="text-xs text-muted-foreground">
+                <DatabaseIcon
+                  className="size-3.5 text-primary"
+                  aria-hidden="true"
+                />
+                Baseado em 28 transações
+              </CardFooter>
+            </Card>
           </div>
         </div>
 
@@ -140,7 +301,7 @@ export function PrimitiveShowcase() {
           <div className="flex flex-wrap gap-2">
             <Dialog>
               <DialogTrigger asChild>
-                <Button variant="outline">Dialog</Button>
+                <Button variant="secondary">Dialog</Button>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
@@ -159,7 +320,7 @@ export function PrimitiveShowcase() {
 
             <Drawer>
               <DrawerTrigger asChild>
-                <Button variant="outline">Drawer</Button>
+                <Button variant="secondary">Drawer</Button>
               </DrawerTrigger>
               <DrawerContent>
                 <DrawerHeader>
@@ -176,7 +337,7 @@ export function PrimitiveShowcase() {
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline">
+                <Button variant="secondary">
                   Menu
                   <ChevronDownIcon />
                 </Button>
@@ -194,7 +355,7 @@ export function PrimitiveShowcase() {
 
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="outline">Popover</Button>
+                <Button variant="secondary">Popover</Button>
               </PopoverTrigger>
               <PopoverContent>
                 <p className="text-sm font-medium">Insight contextual</p>
@@ -206,7 +367,7 @@ export function PrimitiveShowcase() {
 
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="outline" size="icon" aria-label="Ajuda">
+                <Button variant="secondary" size="icon" aria-label="Ajuda">
                   <InfoIcon />
                 </Button>
               </TooltipTrigger>
