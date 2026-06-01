@@ -31,7 +31,7 @@ function MetricCard({
   const TrendIcon = trendUp ? TrendingUp : TrendingDown;
 
   return (
-    <Card variant={variant} padding="sm">
+    <Card variant={variant} padding="sm" className="hover:shadow-pop">
       <CardHeader>
         <CardEyebrow>{label}</CardEyebrow>
         <div
