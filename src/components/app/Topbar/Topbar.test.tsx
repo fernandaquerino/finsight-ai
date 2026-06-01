@@ -28,7 +28,7 @@ describe("Topbar", () => {
       screen.getByRole("button", { name: "Alternar tema" }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("button", { name: "Notificações" }),
+      screen.getByRole("button", { name: /Notificações/ }),
     ).toBeInTheDocument();
     expect(screen.getByRole("img", { name: "Marina Rocha" })).toBeVisible();
   });
@@ -42,5 +42,19 @@ describe("Topbar", () => {
     await user.click(screen.getByRole("button", { name: "Alternar menu" }));
 
     expect(onMenuClick).toHaveBeenCalledTimes(1);
+  });
+
+  it("opens command search from the search input", async () => {
+    const user = userEvent.setup();
+
+    render(<Topbar title="Dashboard" onMenuClick={vi.fn()} />);
+
+    await user.click(
+      screen.getByRole("searchbox", { name: "Buscar transações..." }),
+    );
+
+    expect(
+      screen.getByRole("dialog", { name: "Busca de comandos" }),
+    ).toBeInTheDocument();
   });
 });
