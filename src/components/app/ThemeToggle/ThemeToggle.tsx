@@ -1,7 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { MoonIcon, SunIcon } from "lucide-react";
 import { useTheme } from "next-themes";
+
+import { IconButton } from "@/components/ui/IconButton";
 
 const themeOptions = [
   { label: "Light", value: "light" },
@@ -15,7 +18,11 @@ function isThemeOption(value: string | undefined): value is ThemeOption {
   return themeOptions.some((option) => option.value === value);
 }
 
-export function ThemeToggle() {
+type ThemeToggleProps = {
+  variant?: "segmented" | "icon";
+};
+
+export function ThemeToggle({ variant = "segmented" }: ThemeToggleProps) {
   const { theme, setTheme } = useTheme();
   const [isMounted, setIsMounted] = useState(false);
 
@@ -31,6 +38,22 @@ export function ThemeToggle() {
 
   const selectedTheme: ThemeOption | undefined =
     isMounted && isThemeOption(theme) ? theme : undefined;
+
+  if (variant === "icon") {
+    const nextTheme = selectedTheme === "dark" ? "light" : "dark";
+    const Icon = selectedTheme === "dark" ? SunIcon : MoonIcon;
+
+    return (
+      <IconButton
+        aria-label="Alternar tema"
+        variant="secondary"
+        suppressHydrationWarning
+        onClick={() => setTheme(nextTheme)}
+      >
+        <Icon />
+      </IconButton>
+    );
+  }
 
   return (
     <fieldset
