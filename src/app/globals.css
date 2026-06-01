@@ -102,11 +102,13 @@
   --font-mono: var(--font-geist-mono);
 
   --text-micro: 0.6875rem;
-  --text-xs: 0.75rem;
-  --text-sm: 0.875rem;
-  --text-md: 1rem;
-  --text-lg: 1.375rem;
-  --text-metric: 1.625rem;
+  --text-small: 0.75rem;
+  --text-dense: 0.8125rem;
+  --text-body: 0.875rem;
+  --text-h2: 1rem;
+  --text-lg: 1.125rem;
+  --text-h1: 1.25rem;
+  --text-metric: 1.5rem;
 
   --radius-xs: var(--radius-xs);
   --radius-sm: var(--radius-sm);

@@ -4,11 +4,11 @@ import { BellIcon, MenuIcon, SparklesIcon } from "lucide-react";
 import Link from "next/link";
 
 import { ThemeToggle } from "@/components/app/ThemeToggle";
-import { Avatar } from "@/components/ui/Avatar";
 import { Button } from "@/components/ui/Button";
 import { IconButton } from "@/components/ui/IconButton";
 import { SearchInput } from "@/components/ui/SearchInput";
 import { appRoutes } from "@/routes/app-routes";
+import { UserMenu } from "../UserMenu";
 
 type TopbarProps = Readonly<{
   title: string;
@@ -52,7 +52,7 @@ function Topbar({ title, onMenuClick }: TopbarProps) {
         <BellIcon />
       </IconButton>
 
-      <Avatar name="Marina Rocha" size="md" />
+      <UserMenu />
     </header>
   );
 }
