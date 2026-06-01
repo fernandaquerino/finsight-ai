@@ -4,6 +4,8 @@
   color-scheme: light;
 
   --background: 0 0% 99%;
+  --soft: 248 40% 18%;
+  --soft-2: 248 38% 23%;
   --foreground: 240 10% 12%;
   --card: 0 0% 100%;
   --card-foreground: 240 10% 12%;
@@ -45,6 +47,8 @@
 
 @theme inline {
   --color-background: hsl(var(--background));
+  --color-soft: hsl(var(--soft));
+  --color-soft-2: hsl(var(--soft-2));
   --color-foreground: hsl(var(--foreground));
   --color-card: hsl(var(--card));
   --color-card-foreground: hsl(var(--card-foreground));

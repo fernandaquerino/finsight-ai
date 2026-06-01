@@ -31,7 +31,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/ui/Input";
 import {
   Popover,
   PopoverContent,
@@ -77,12 +77,12 @@ export function PrimitiveShowcase() {
           <div className="flex flex-wrap gap-2">
             <Button>Primary</Button>
             <Button variant="secondary">Secondary</Button>
-            <Button variant="outline">Outline</Button>
+            <Button variant="soft">Soft</Button>
             <Button variant="ghost">Ghost</Button>
             <Button loading>Loading</Button>
             <Button variant="destructive">Destructive</Button>
             <Button
-              variant="outline"
+              variant="secondary"
               size="icon"
               aria-label="Notifications"
               onClick={() =>
@@ -141,7 +141,7 @@ export function PrimitiveShowcase() {
           <div className="flex flex-wrap gap-2">
             <Dialog>
               <DialogTrigger asChild>
-                <Button variant="outline">Dialog</Button>
+                <Button variant="secondary">Dialog</Button>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
@@ -160,7 +160,7 @@ export function PrimitiveShowcase() {
 
             <Drawer>
               <DrawerTrigger asChild>
-                <Button variant="outline">Drawer</Button>
+                <Button variant="secondary">Drawer</Button>
               </DrawerTrigger>
               <DrawerContent>
                 <DrawerHeader>
@@ -177,7 +177,7 @@ export function PrimitiveShowcase() {
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline">
+                <Button variant="secondary">
                   Menu
                   <ChevronDownIcon />
                 </Button>
@@ -195,7 +195,7 @@ export function PrimitiveShowcase() {
 
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="outline">Popover</Button>
+                <Button variant="secondary">Popover</Button>
               </PopoverTrigger>
               <PopoverContent>
                 <p className="text-sm font-medium">Insight contextual</p>
@@ -207,7 +207,7 @@ export function PrimitiveShowcase() {
 
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="outline" size="icon" aria-label="Ajuda">
+                <Button variant="secondary" size="icon" aria-label="Ajuda">
                   <InfoIcon />
                 </Button>
               </TooltipTrigger>

@@ -2,7 +2,18 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
-function Input({ className, type, ...props }: React.ComponentProps<"input">) {
+interface InputProps extends Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  "prefix"
+> {
+  label?: string;
+  helperText?: string;
+  error?: string;
+  prefix?: string;
+  icon?: React.ReactNode;
+}
+
+function Input({ className, type, ...props }: InputProps) {
   return (
     <input
       type={type}

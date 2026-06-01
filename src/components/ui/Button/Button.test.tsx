@@ -24,8 +24,8 @@ describe("Button", () => {
 
   it.each([
     ["destructive", "bg-destructive"],
-    ["outline", "border"],
-    ["secondary", "bg-secondary"],
+    ["soft", "bg-soft"],
+    ["secondary", "border"],
     ["ghost", "hover:bg-muted"],
     ["link", "text-primary"],
   ] as const)("renders %s variant classes", (variant, expectedClass) => {
