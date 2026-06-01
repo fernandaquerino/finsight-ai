@@ -10,7 +10,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/Select";
+} from "./Select";
 
 export interface SelectOption {
   value: string;

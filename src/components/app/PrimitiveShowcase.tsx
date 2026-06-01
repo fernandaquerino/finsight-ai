@@ -49,7 +49,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/Popover";
 import { SearchInput } from "@/components/ui/SearchInput";
-import { SelectField } from "@/components/ui/SelectField";
+import { SelectField } from "@/components/ui/Select";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { Switch } from "@/components/ui/Switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
