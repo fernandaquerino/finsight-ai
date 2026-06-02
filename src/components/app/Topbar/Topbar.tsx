@@ -1,6 +1,6 @@
 "use client";
 
-import { MenuIcon } from "lucide-react";
+import { MenuIcon, SearchIcon } from "lucide-react";
 import { useState } from "react";
 
 import { CommandSearch } from "@/components/app/CommandSearch";
@@ -41,6 +41,17 @@ function Topbar({ title, onMenuClick }: TopbarProps) {
             onClick={() => setIsCommandSearchOpen(true)}
             onFocus={() => setIsCommandSearchOpen(true)}
           />
+        </div>
+
+        <div className="lg:hidden">
+          <IconButton
+            aria-label="Busca de comandos"
+            variant="secondary"
+            onClick={() => setIsCommandSearchOpen(true)}
+            onFocus={() => setIsCommandSearchOpen(true)}
+          >
+            <SearchIcon />
+          </IconButton>
         </div>
 
         <AIButton href={appRoutes.aiChat} className="hidden sm:inline-flex" />

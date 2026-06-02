@@ -48,20 +48,25 @@ function DrawerOverlay({
 function DrawerContent({
   className,
   children,
+  showHandle = true,
   ...props
-}: React.ComponentProps<typeof DrawerPrimitive.Content>) {
+}: React.ComponentProps<typeof DrawerPrimitive.Content> & {
+  showHandle?: boolean;
+}) {
   return (
     <DrawerPortal>
       <DrawerOverlay />
       <DrawerPrimitive.Content
         data-slot="drawer-content"
         className={cn(
-          "fixed inset-x-0 bottom-0 z-50 mt-24 flex h-auto flex-col rounded-t-xl border bg-card text-card-foreground shadow-lg",
+          "fixed right-0 bottom-0 left-0 z-50 mt-24 flex h-auto flex-col rounded-t-xl border bg-card text-card-foreground shadow-lg",
           className,
         )}
         {...props}
       >
-        <div className="mx-auto mt-4 h-1.5 w-12 rounded-full bg-muted" />
+        {showHandle && (
+          <div className="mx-auto mt-4 h-1.5 w-12 rounded-full bg-muted" />
+        )}
         {children}
       </DrawerPrimitive.Content>
     </DrawerPortal>

@@ -65,7 +65,7 @@ function MonthYearPicker({ value, onChange }: MonthYearPickerProps) {
           {open ? <ChevronUp /> : <ChevronDown />}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-56 p-3" align="end">
+      <PopoverContent className="w-56 p-3" align="start">
         <div className="mb-3 flex items-center justify-between">
           <IconButton
             size="sm"

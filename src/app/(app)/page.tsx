@@ -28,7 +28,7 @@ export default function DashboardPage() {
   return (
     <main className="mx-auto flex w-full max-w-7xl flex-col gap-6 p-7">
       {/* Dashboard header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-lg font-medium text-foreground">Olá, Marina</p>
           <p className="text-sm text-muted-foreground">
@@ -150,13 +150,13 @@ export default function DashboardPage() {
       </Card>
 
       {/* Charts row 1: balance + donut */}
-      <div className="grid grid-cols-[1.4fr_1fr] items-stretch gap-4">
+      <div className="grid items-stretch gap-4 sm:grid-cols-1 lg:grid-cols-[1.4fr_1fr]">
         <LineChartCard />
         <DonutChartCard />
       </div>
 
       {/* Charts row 2: bar + transactions */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid gap-4 sm:grid-cols-1 lg:grid-cols-2">
         <BarChartCard />
         <TransactionList />
       </div>
