@@ -1,17 +1,21 @@
 import { redirect } from "next/navigation";
 
-import { auth } from "@/../auth";
 import { AppShell } from "@/components/app/AppShell";
+import { UnauthorizedError, requireUserId } from "@/server/auth/session";
 
 type AppLayoutProps = Readonly<{
   children: React.ReactNode;
 }>;
 
 export default async function AppLayout({ children }: AppLayoutProps) {
-  const session = await auth();
+  try {
+    await requireUserId();
+  } catch (error) {
+    if (error instanceof UnauthorizedError) {
+      redirect("/login");
+    }
 
-  if (!session?.user?.id) {
-    redirect("/api/auth/signin");
+    throw error;
   }
 
   return <AppShell>{children}</AppShell>;
