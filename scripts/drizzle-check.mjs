@@ -5,7 +5,8 @@ const hasDrizzleConfig =
   existsSync("drizzle.config.mts") ||
   existsSync("drizzle.config.js") ||
   existsSync("drizzle.config.mjs");
-const hasDrizzleDirectory = existsSync("drizzle");
+const hasDrizzleDirectory =
+  existsSync("db/migrations") || existsSync("drizzle");
 const hasPackage = existsSync("package.json");
 
 if (!hasPackage) {
