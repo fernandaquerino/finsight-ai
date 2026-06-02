@@ -73,14 +73,17 @@ function UserMenu() {
           </Button>
         </div>
         <Divider className="mb-1.5" />
-        <Button
-          variant="ghost"
-          className="w-full justify-start gap-2.5 text-dense font-normal text-danger hover:bg-danger-soft hover:text-danger"
-          size="sm"
-        >
-          <LogOut />
-          Sair da conta
-        </Button>
+        <form action="/logout" method="post">
+          <Button
+            type="submit"
+            variant="ghost"
+            className="w-full justify-start gap-2.5 text-dense font-normal text-danger hover:bg-danger-soft hover:text-danger"
+            size="sm"
+          >
+            <LogOut />
+            Sair da conta
+          </Button>
+        </form>
       </PopoverContent>
     </Popover>
   );
