@@ -13,6 +13,13 @@ const meta = {
   component: MetricCard,
   tags: ["autodocs"],
   parameters: { layout: "centered" },
+  args: {
+    label: "SALDO",
+    value: "R$ 0",
+    trend: "—",
+    trendUp: true,
+    icon: WalletIcon,
+  },
   argTypes: {
     variant: { control: "select", options: ["default", "ai"] },
     trendUp: { control: "boolean" },

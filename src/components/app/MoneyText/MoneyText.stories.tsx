@@ -7,6 +7,7 @@ const meta = {
   component: MoneyText,
   tags: ["autodocs"],
   parameters: { layout: "centered" },
+  args: { value: 0 },
   argTypes: {
     value: { control: "number" },
     tone: {

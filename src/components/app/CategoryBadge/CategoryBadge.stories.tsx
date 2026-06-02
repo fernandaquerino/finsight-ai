@@ -7,6 +7,7 @@ const meta = {
   component: CategoryBadge,
   tags: ["autodocs"],
   parameters: { layout: "centered" },
+  args: { category: "outros" },
   argTypes: {
     category: { control: "text" },
   },

@@ -7,6 +7,7 @@ const meta = {
   component: TrendIndicator,
   tags: ["autodocs"],
   parameters: { layout: "centered" },
+  args: { value: 0 },
   argTypes: {
     value: { control: "number" },
     suffix: { control: "text" },

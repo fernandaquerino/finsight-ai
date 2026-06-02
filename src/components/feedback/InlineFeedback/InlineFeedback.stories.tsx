@@ -7,6 +7,7 @@ const meta = {
   component: InlineFeedback,
   tags: ["autodocs"],
   parameters: { layout: "centered" },
+  args: { message: "Mensagem de feedback." },
   argTypes: {
     variant: {
       control: "select",

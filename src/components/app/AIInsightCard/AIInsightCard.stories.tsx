@@ -7,6 +7,11 @@ const meta = {
   component: AIInsightCard,
   tags: ["autodocs"],
   parameters: { layout: "padded" },
+  args: {
+    type: "info",
+    title: "Insight",
+    description: "Descrição do insight.",
+  },
   argTypes: {
     type: {
       control: "select",

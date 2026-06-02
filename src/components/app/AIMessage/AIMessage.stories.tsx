@@ -7,6 +7,10 @@ const meta = {
   component: AIMessage,
   tags: ["autodocs"],
   parameters: { layout: "padded" },
+  args: {
+    variant: "user",
+    children: "Exemplo de mensagem.",
+  },
   argTypes: {
     variant: {
       control: "select",

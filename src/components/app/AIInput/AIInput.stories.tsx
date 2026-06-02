@@ -10,6 +10,11 @@ const meta = {
   component: AIInput,
   tags: ["autodocs"],
   parameters: { layout: "padded" },
+  args: {
+    value: "",
+    onChange: () => {},
+    onSubmit: () => {},
+  },
   argTypes: {
     disabled: { control: "boolean" },
     loading: { control: "boolean" },

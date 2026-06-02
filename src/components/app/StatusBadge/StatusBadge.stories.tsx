@@ -7,6 +7,7 @@ const meta = {
   component: StatusBadge,
   tags: ["autodocs"],
   parameters: { layout: "centered" },
+  args: { children: "Badge" },
   argTypes: {
     variant: {
       control: "select",

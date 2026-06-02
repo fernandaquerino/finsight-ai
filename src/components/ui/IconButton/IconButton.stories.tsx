@@ -8,6 +8,10 @@ const meta = {
   component: IconButton,
   tags: ["autodocs"],
   parameters: { layout: "centered" },
+  args: {
+    "aria-label": "Ação",
+    children: <SettingsIcon />,
+  },
   argTypes: {
     variant: {
       control: "select",
