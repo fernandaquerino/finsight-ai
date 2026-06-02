@@ -5,7 +5,7 @@ import { describe, expect, it, vi } from "vitest";
 import { Topbar } from "./Topbar";
 import { appRoutes } from "@/lib/app-routes";
 
-vi.mock("next-themes", () => ({
+vi.mock("@/components/app/theme-provider", () => ({
   useTheme: () => ({
     theme: "light",
     setTheme: vi.fn(),

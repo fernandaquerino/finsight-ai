@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { MoonIcon, SunIcon } from "lucide-react";
-import { useTheme } from "next-themes";
 
 import { IconButton } from "@/components/ui/IconButton";
+import { useTheme } from "@/components/app/theme-provider";
 
 const themeOptions = [
   { label: "Light", value: "light" },
