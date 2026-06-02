@@ -190,7 +190,7 @@ function NotificationsPanel() {
 
       <PopoverContent
         className="w-[min(28rem,calc(100vw-2rem))] p-0"
-        align="end"
+        align="center"
       >
         <div className="flex items-center gap-3 px-6 py-5">
           <h2 className="text-lg font-semibold text-foreground">

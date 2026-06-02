@@ -48,8 +48,8 @@ function DonutChartCard({
         </Button>
       }
     >
-      <div className="flex items-center gap-4">
-        <div className="w-[200px] shrink-0">
+      <div className="flex flex-col items-center gap-4 lg:flex-row">
+        <div className="w-full max-w-48 shrink-0 lg:w-[200px]">
           <DonutChart
             data={data}
             height={200}
