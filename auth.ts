@@ -28,10 +28,15 @@ const authConfig = {
   },
   pages: {
     signIn: "/login",
+    error: "/auth/error",
   },
   providers: [
-    Google,
-    GitHub,
+    // allowDangerousEmailAccountLinking: vincula automaticamente contas OAuth
+    // que compartilham o mesmo e-mail. Seguro aqui porque Google e GitHub
+    // verificam o e-mail do usuário; não habilitar para provedores que não
+    // verifiquem e-mail (risco de account takeover).
+    Google({ allowDangerousEmailAccountLinking: true }),
+    GitHub({ allowDangerousEmailAccountLinking: true }),
     Credentials({
       credentials: {
         email: { label: "Email", type: "email" },
