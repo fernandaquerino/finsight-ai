@@ -8,6 +8,7 @@ import {
 
 import { Button } from "@/components/ui/Button";
 
+import { signInWithGitHub, signInWithGoogle } from "./actions";
 import { CredentialsLoginForm } from "./CredentialsLoginForm";
 
 type LoginPageProps = Readonly<{
@@ -143,15 +144,39 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
               <span className="h-px bg-border" />
             </div>
 
-            <Button
-              type="button"
-              variant="secondary"
-              disabled
-              className="h-9 w-full rounded-md border-border-strong bg-card px-3.5 text-sm font-medium text-foreground disabled:opacity-100"
-            >
-              <LandmarkIcon aria-hidden="true" />
-              Conectar com meu banco
-            </Button>
+            <div className="grid gap-2">
+              <form action={signInWithGoogle}>
+                <input type="hidden" name="callbackUrl" value={callbackUrl} />
+                <Button
+                  type="submit"
+                  variant="secondary"
+                  className="h-9 w-full rounded-md border-border-strong bg-card px-3.5 text-sm font-medium text-foreground"
+                >
+                  Entrar com Google
+                </Button>
+              </form>
+
+              <form action={signInWithGitHub}>
+                <input type="hidden" name="callbackUrl" value={callbackUrl} />
+                <Button
+                  type="submit"
+                  variant="secondary"
+                  className="h-9 w-full rounded-md border-border-strong bg-card px-3.5 text-sm font-medium text-foreground"
+                >
+                  Entrar com GitHub
+                </Button>
+              </form>
+
+              <Button
+                type="button"
+                variant="secondary"
+                disabled
+                className="h-9 w-full rounded-md border-border-strong bg-card px-3.5 text-sm font-medium text-foreground disabled:opacity-100"
+              >
+                <LandmarkIcon aria-hidden="true" />
+                Conectar com meu banco
+              </Button>
+            </div>
 
             <p className="mt-6 text-center text-xs leading-[1.5] text-muted-foreground">
               Ao continuar você concorda com os Termos de Uso e a Política de

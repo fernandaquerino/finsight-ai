@@ -15,6 +15,8 @@
 /test-results/
 /playwright-report/
 
+/prints
+
 # next.js
 /.next/
 /out/

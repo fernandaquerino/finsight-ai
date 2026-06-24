@@ -14,4 +14,14 @@ export const userRepository = {
   findByEmail(db: Database, email: string) {
     return db.query.users.findFirst({ where: eq(users.email, email) });
   },
+
+  async updateName(db: Database, id: string, name: string) {
+    const [user] = await db
+      .update(users)
+      .set({ name })
+      .where(eq(users.id, id))
+      .returning();
+
+    return user;
+  },
 };
