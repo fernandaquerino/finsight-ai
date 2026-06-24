@@ -21,6 +21,7 @@
     "verify-envs": "node scripts/verify-envs.mjs",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
+    "db:seed": "node db/seed/index.mjs",
     "db:studio": "drizzle-kit studio",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
