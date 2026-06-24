@@ -210,6 +210,9 @@ jobs:
         if: steps.node-modules-cache.outputs.cache-hit != 'true'
         run: npm ci
 
+      - name: Run migrations
+        run: npm run db:migrate
+
       - name: Run Vitest
         run: npm test
 
