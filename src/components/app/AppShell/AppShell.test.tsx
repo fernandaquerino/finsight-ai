@@ -18,6 +18,11 @@ vi.mock("@/components/app/theme-provider", () => ({
   }),
 }));
 
+const mockUser = {
+  name: "Marina Rocha",
+  email: "marina.rocha@email.com",
+};
+
 function mockDesktopViewport() {
   Object.defineProperty(window, "matchMedia", {
     writable: true,
@@ -59,7 +64,7 @@ describe("AppShell", () => {
 
   it("renders the expanded sidebar, topbar, and content", () => {
     render(
-      <AppShell>
+      <AppShell user={mockUser}>
         <section>Conteudo do dashboard</section>
       </AppShell>,
     );
@@ -76,7 +81,7 @@ describe("AppShell", () => {
 
   it("marks the current route as active", () => {
     render(
-      <AppShell>
+      <AppShell user={mockUser}>
         <section>Conteudo</section>
       </AppShell>,
     );
@@ -89,7 +94,7 @@ describe("AppShell", () => {
 
   it("renders the Insights visual indicator as decorative", () => {
     render(
-      <AppShell>
+      <AppShell user={mockUser}>
         <section>Conteudo</section>
       </AppShell>,
     );
@@ -104,7 +109,7 @@ describe("AppShell", () => {
     const user = userEvent.setup();
 
     render(
-      <AppShell>
+      <AppShell user={mockUser}>
         <section>Conteudo</section>
       </AppShell>,
     );
@@ -121,7 +126,7 @@ describe("AppShell", () => {
 
   it("renders accessible topbar actions", () => {
     render(
-      <AppShell>
+      <AppShell user={mockUser}>
         <section>Conteudo</section>
       </AppShell>,
     );

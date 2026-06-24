@@ -17,6 +17,18 @@ export const transactionRepository = {
       .orderBy(desc(transactions.occurredAt));
   },
 
+  async hasAny(db: Database, userId: string) {
+    const [transaction] = await db
+      .select({ id: transactions.id })
+      .from(transactions)
+      .where(
+        and(eq(transactions.userId, userId), isNull(transactions.deletedAt)),
+      )
+      .limit(1);
+
+    return Boolean(transaction);
+  },
+
   async findById(db: Database, userId: string, id: string) {
     const [transaction] = await db
       .select()

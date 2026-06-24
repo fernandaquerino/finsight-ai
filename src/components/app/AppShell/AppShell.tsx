@@ -7,13 +7,15 @@ import { usePathname } from "next/navigation";
 import { MobileSidebar } from "@/components/app/MobileSidebar";
 import { Sidebar } from "@/components/app/Sidebar";
 import { Topbar } from "@/components/app/Topbar";
+import type { UserMenuUser } from "@/components/app/UserMenu/UserMenuClient";
 import { getRouteTitle } from "@/lib/app-routes";
 
 type AppShellProps = Readonly<{
   children: ReactNode;
+  user?: UserMenuUser | null;
 }>;
 
-function AppShell({ children }: AppShellProps) {
+function AppShell({ children, user }: AppShellProps) {
   const pathname = usePathname();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -39,7 +41,7 @@ function AppShell({ children }: AppShellProps) {
       />
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <Topbar title={title} onMenuClick={handleMenuClick} />
+        <Topbar title={title} onMenuClick={handleMenuClick} user={user} />
         <div className="min-h-0 flex-1 overflow-y-auto">{children}</div>
       </div>
     </div>

@@ -12,9 +12,14 @@ vi.mock("@/components/app/theme-provider", () => ({
   }),
 }));
 
+const mockUser = {
+  name: "Marina Rocha",
+  email: "marina.rocha@email.com",
+};
+
 describe("Topbar", () => {
   it("renders title, search, actions, and avatar", () => {
-    render(<Topbar title="Dashboard" onMenuClick={vi.fn()} />);
+    render(<Topbar title="Dashboard" onMenuClick={vi.fn()} user={mockUser} />);
 
     expect(screen.getByRole("banner")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Dashboard" })).toBeVisible();
@@ -37,7 +42,9 @@ describe("Topbar", () => {
     const user = userEvent.setup();
     const onMenuClick = vi.fn();
 
-    render(<Topbar title="Dashboard" onMenuClick={onMenuClick} />);
+    render(
+      <Topbar title="Dashboard" onMenuClick={onMenuClick} user={mockUser} />,
+    );
 
     await user.click(screen.getByRole("button", { name: "Alternar menu" }));
 
@@ -47,7 +54,7 @@ describe("Topbar", () => {
   it("opens command search from the search input", async () => {
     const user = userEvent.setup();
 
-    render(<Topbar title="Dashboard" onMenuClick={vi.fn()} />);
+    render(<Topbar title="Dashboard" onMenuClick={vi.fn()} user={mockUser} />);
 
     await user.click(
       screen.getByRole("searchbox", { name: "Buscar transações..." }),

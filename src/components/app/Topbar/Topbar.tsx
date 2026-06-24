@@ -9,15 +9,16 @@ import { AIButton } from "@/components/app/AIButton";
 import { IconButton } from "@/components/ui/IconButton";
 import { SearchInput } from "@/components/ui/SearchInput";
 import { appRoutes } from "@/lib/app-routes";
-import { UserMenu } from "../UserMenu";
+import { UserMenuClient, type UserMenuUser } from "../UserMenu/UserMenuClient";
 import { NotificationsPanel } from "../NotificationsPanel";
 
 type TopbarProps = Readonly<{
   title: string;
   onMenuClick: () => void;
+  user?: UserMenuUser | null;
 }>;
 
-function Topbar({ title, onMenuClick }: TopbarProps) {
+function Topbar({ title, onMenuClick, user }: TopbarProps) {
   const [isCommandSearchOpen, setIsCommandSearchOpen] = useState(false);
 
   return (
@@ -62,7 +63,7 @@ function Topbar({ title, onMenuClick }: TopbarProps) {
 
         <NotificationsPanel />
 
-        <UserMenu />
+        <UserMenuClient user={user} />
       </header>
 
       <CommandSearch
