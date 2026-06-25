@@ -1,4 +1,4 @@
-import { and, desc, eq, isNull } from "drizzle-orm";
+import { and, desc, eq, gte, isNull, lt } from "drizzle-orm";
 
 import { transactions, type NewTransaction } from "@/../db/schema";
 
@@ -13,6 +13,28 @@ export const transactionRepository = {
       .from(transactions)
       .where(
         and(eq(transactions.userId, userId), isNull(transactions.deletedAt)),
+      )
+      .orderBy(desc(transactions.occurredAt));
+  },
+
+  // Transações de um período [from, toExclusive), isoladas por userId e sem
+  // soft-deleted. Mais recentes primeiro.
+  listByUserInPeriod(
+    db: Database,
+    userId: string,
+    from: Date,
+    toExclusive: Date,
+  ) {
+    return db
+      .select()
+      .from(transactions)
+      .where(
+        and(
+          eq(transactions.userId, userId),
+          isNull(transactions.deletedAt),
+          gte(transactions.occurredAt, from),
+          lt(transactions.occurredAt, toExclusive),
+        ),
       )
       .orderBy(desc(transactions.occurredAt));
   },
