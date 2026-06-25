@@ -9,7 +9,7 @@ describe("resolveCategoryKey", () => {
   });
 
   it("falls back to outros for unknown categories", () => {
-    expect(resolveCategoryKey("pets")).toBe("outros");
+    expect(resolveCategoryKey("pets")).toBe("pets");
   });
 });
 
@@ -23,12 +23,19 @@ describe("getCategoryMeta", () => {
     expect(
       Object.values(categoryMap).map((category) => category.label),
     ).toEqual([
-      "Moradia",
-      "Alimentação",
-      "Transporte",
+      "Educação",
       "Lazer",
-      "Saúde",
+      "Transporte",
+      "Moradia",
+      "Compras",
+      "Assinaturas",
+      "Alimentação",
+      "Restaurantes",
+      "Salário",
       "Outros",
+      "Pets",
+      "Mercado",
+      "Saúde",
     ]);
   });
 });

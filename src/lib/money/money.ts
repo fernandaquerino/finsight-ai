@@ -43,3 +43,10 @@ export function formatSignedMoney(value: number): string {
     ? `+${formattedAbsoluteValue}`
     : `-${formattedAbsoluteValue}`;
 }
+
+export function parseMoney(value: string): number {
+  const normalized = value.replace(/\./g, "").replace(",", ".");
+  const parsed = Number(normalized);
+
+  return Number.isFinite(parsed) ? parsed : 0;
+}

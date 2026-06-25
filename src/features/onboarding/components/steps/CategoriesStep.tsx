@@ -3,6 +3,7 @@ import { CheckIcon, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 import { SUGGESTED_CATEGORIES, type CategoryKey } from "../../data/catalog";
+import { getCategoryIcon } from "@/lib/categories/category-icons";
 
 type CategoriesStepProps = Readonly<{
   selected: CategoryKey[];
@@ -25,6 +26,7 @@ export function CategoriesStep({ selected, onToggle }: CategoriesStepProps) {
       <div className="flex flex-wrap gap-2">
         {SUGGESTED_CATEGORIES.map((category) => {
           const isSelected = selected.includes(category.key);
+          const Icon = getCategoryIcon(category.key);
 
           return (
             <button
@@ -40,9 +42,9 @@ export function CategoriesStep({ selected, onToggle }: CategoriesStepProps) {
                   : "border-border bg-card text-muted-foreground hover:text-foreground",
               )}
             >
-              <span
-                className="size-2.5 shrink-0 rounded-full"
-                style={{ backgroundColor: category.color }}
+              <Icon
+                className="size-3.5 shrink-0"
+                style={{ color: category.color }}
                 aria-hidden="true"
               />
               {category.name}

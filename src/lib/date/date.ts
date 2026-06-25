@@ -42,3 +42,11 @@ export function formatRelativeTime(date: Date, now = new Date()): string {
   const diffInDays = Math.floor(diffInHours / 24);
   return `há ${diffInDays} ${diffInDays === 1 ? "dia" : "dias"}`;
 }
+
+export function formatDateInput(date: Date): string {
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+
+  return `${day}/${month}/${year}`;
+}

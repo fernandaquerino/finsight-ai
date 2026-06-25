@@ -77,34 +77,38 @@ export function Logo({ className, title = "FinSight AI" }: LogoProps) {
         x="43"
         y="25"
         fontFamily="'SF Pro Display', 'DM Sans', 'Geist', system-ui, sans-serif"
-        fontSize="18"
-        fontWeight="300"
-        letterSpacing="-0.3"
+        fontSize="22"
         fill="currentColor"
       >
-        Fin
+        <tspan fontWeight="300" letterSpacing="-0.3">
+          Fin
+        </tspan>
+        <tspan
+          dx="0"
+          fontWeight="600"
+          letterSpacing="-0.5"
+          fill="hsl(var(--primary))"
+        >
+          Sight
+        </tspan>
       </text>
-      <text
-        x="68"
-        y="25"
-        fontFamily="'SF Pro Display', 'DM Sans', 'Geist', system-ui, sans-serif"
-        fontSize="18"
-        fontWeight="600"
-        letterSpacing="-0.5"
-        fill="hsl(var(--primary))"
-      >
-        Sight
-      </text>
-      <rect x="126" y="14" width="18" height="11" rx="3" fill="#EEEDFE" />
-      <text
+      <rect
         x="135"
-        y="22.5"
+        y="14"
+        width="20"
+        height="14"
+        rx="3"
+        fill="hsl(var(--primary-soft))"
+      />
+      <text
+        x="145"
+        y="24"
         textAnchor="middle"
         fontFamily="'SF Mono', 'Geist Mono', 'Fira Code', monospace"
-        fontSize="7.5"
+        fontSize="9"
         fontWeight="600"
         letterSpacing="0.5"
-        fill="#534AB7"
+        fill="hsl(var(--primary))"
       >
         AI
       </text>

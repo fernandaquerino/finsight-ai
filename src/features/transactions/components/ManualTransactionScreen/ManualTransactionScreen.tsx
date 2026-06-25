@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/static-components */
 "use client";
 
 import { useMemo, useState } from "react";
@@ -7,23 +8,32 @@ import {
   CheckIcon,
   ChevronDownIcon,
   LightbulbIcon,
-  UtensilsIcon,
 } from "lucide-react";
 
 import { MoneyText } from "@/components/app/MoneyText";
 import { Button } from "@/components/ui/Button";
+import { getCategoryIcon } from "@/lib/categories/category-icons";
+import {
+  categoryKeys,
+  categoryMap,
+  type CategoryKey,
+  type CategoryMeta,
+} from "@/lib/categories/categories";
+import { parseMoney } from "@/lib/money/money";
 import { cn } from "@/lib/utils";
 import type { TransactionKind } from "@/features/transactions/types";
 
-const categories = [
-  "Alimentação",
-  "Moradia",
-  "Transporte",
-  "Assinaturas",
-  "Saúde",
-  "Lazer",
-  "Outros",
-] as const;
+type ManualTransactionKind = Exclude<TransactionKind, "transfer">;
+
+type SelectOption<TValue extends string> = Readonly<{
+  value: TValue;
+  label: string;
+}>;
+
+const defaultCategoryByKind = {
+  expense: "alimentacao",
+  income: "salario",
+} as const satisfies Readonly<Record<ManualTransactionKind, CategoryKey>>;
 
 const accounts = [
   "Nubank · Conta",
@@ -32,19 +42,23 @@ const accounts = [
   "Carteira",
 ] as const;
 
+const accountOptions = accounts.map((account) => ({
+  value: account,
+  label: account,
+}));
+
+function getCategoryOptionsByKind(kind: ManualTransactionKind): CategoryMeta[] {
+  return categoryKeys
+    .map((key) => categoryMap[key])
+    .filter((category) => category.kind === kind);
+}
+
 function formatDateInput(date: Date): string {
   const day = String(date.getDate()).padStart(2, "0");
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const year = date.getFullYear();
 
   return `${day}/${month}/${year}`;
-}
-
-function parseMoney(value: string): number {
-  const normalized = value.replace(/\./g, "").replace(",", ".");
-  const parsed = Number(normalized);
-
-  return Number.isFinite(parsed) ? parsed : 0;
 }
 
 function Field({
@@ -67,28 +81,29 @@ function Field({
   );
 }
 
-function SelectLike({
+function SelectLike<TValue extends string>({
   value,
   onChange,
   options,
 }: Readonly<{
-  value: string;
-  onChange: (value: string) => void;
-  options: readonly string[];
+  value: TValue;
+  onChange: (value: TValue) => void;
+  options: readonly SelectOption<TValue>[];
 }>) {
   return (
     <div className="relative">
       <select
         value={value}
-        onChange={(event) => onChange(event.target.value)}
+        onChange={(event) => onChange(event.target.value as TValue)}
         className="h-[38px] w-full appearance-none rounded-md border border-border-strong bg-card px-3 pr-9 text-sm text-foreground transition-colors outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
       >
         {options.map((option) => (
-          <option key={option} value={option}>
-            {option}
+          <option key={option.value} value={option.value}>
+            {option.label}
           </option>
         ))}
       </select>
+
       <ChevronDownIcon
         className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground"
         aria-hidden="true"
@@ -101,8 +116,8 @@ function KindToggle({
   kind,
   onChange,
 }: Readonly<{
-  kind: Exclude<TransactionKind, "transfer">;
-  onChange: (kind: Exclude<TransactionKind, "transfer">) => void;
+  kind: ManualTransactionKind;
+  onChange: (kind: ManualTransactionKind) => void;
 }>) {
   return (
     <div className="mb-[18px] flex gap-2 rounded-md bg-muted p-1">
@@ -110,7 +125,7 @@ function KindToggle({
         type="button"
         onClick={() => onChange("expense")}
         className={cn(
-          "inline-flex h-10 flex-1 items-center justify-center gap-2 rounded-md text-sm font-medium transition-colors",
+          "inline-flex h-10 flex-1 cursor-pointer items-center justify-center gap-2 rounded-md text-sm font-medium transition-colors",
           kind === "expense"
             ? "bg-card text-foreground shadow-card"
             : "text-muted-foreground hover:text-foreground",
@@ -119,13 +134,14 @@ function KindToggle({
         <ArrowUpRightIcon className="size-4" aria-hidden="true" />
         Despesa
       </button>
+
       <button
         type="button"
         onClick={() => onChange("income")}
         className={cn(
-          "inline-flex h-10 flex-1 items-center justify-center gap-2 rounded-md text-sm font-medium transition-colors",
+          "inline-flex h-10 flex-1 cursor-pointer items-center justify-center gap-2 rounded-md text-sm font-medium transition-colors",
           kind === "income"
-            ? "bg-card text-foreground shadow-card"
+            ? "bg-card text-success shadow-card"
             : "text-muted-foreground hover:text-foreground",
         )}
       >
@@ -137,18 +153,34 @@ function KindToggle({
 }
 
 function ManualTransactionScreen() {
-  const [kind, setKind] =
-    useState<Exclude<TransactionKind, "transfer">>("expense");
+  const [kind, setKind] = useState<ManualTransactionKind>("expense");
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
-  const [category, setCategory] =
-    useState<(typeof categories)[number]>("Alimentação");
+  const [category, setCategory] = useState<CategoryKey>(
+    defaultCategoryByKind.expense,
+  );
   const [account, setAccount] =
     useState<(typeof accounts)[number]>("Nubank · Conta");
   const [date, setDate] = useState(() => formatDateInput(new Date()));
+
+  const categoryOptions = useMemo(() => {
+    return getCategoryOptionsByKind(kind);
+  }, [kind]);
+
+  const categorySelectOptions = useMemo(() => {
+    return categoryOptions.map((categoryOption) => ({
+      value: categoryOption.key,
+      label: categoryOption.label,
+    }));
+  }, [categoryOptions]);
+
+  const selectedCategoryMeta = categoryMap[category];
+  const SelectedCategoryIcon = getCategoryIcon(category);
+
   const parsedAmount = parseMoney(amount);
   const signedAmount =
-    kind === "expense" ? -Math.abs(parsedAmount) : parsedAmount;
+    kind === "expense" ? -Math.abs(parsedAmount) : Math.abs(parsedAmount);
+
   const previewDescription = description.trim() || "Descrição da trans...";
   const canSubmit = parsedAmount > 0 && description.trim().length > 0;
 
@@ -158,6 +190,29 @@ function ManualTransactionScreen() {
     [],
   );
 
+  function handleKindChange(nextKind: ManualTransactionKind) {
+    setKind(nextKind);
+
+    const nextCategoryOptions = getCategoryOptionsByKind(nextKind);
+    const currentCategoryExistsInNextKind = nextCategoryOptions.some(
+      (categoryOption) => categoryOption.key === category,
+    );
+
+    if (!currentCategoryExistsInNextKind) {
+      setCategory(
+        nextCategoryOptions[0]?.key ?? defaultCategoryByKind[nextKind],
+      );
+    }
+  }
+
+  function handleClear() {
+    setAmount("");
+    setDescription("");
+    setCategory(defaultCategoryByKind[kind]);
+    setAccount("Nubank · Conta");
+    setDate(formatDateInput(new Date()));
+  }
+
   return (
     <main className="mx-auto w-full max-w-[1240px] p-5 sm:p-6">
       <div className="mx-auto grid max-w-[760px] gap-[18px] lg:grid-cols-[1.4fr_1fr]">
@@ -166,7 +221,7 @@ function ManualTransactionScreen() {
             Nova transação
           </h1>
 
-          <KindToggle kind={kind} onChange={setKind} />
+          <KindToggle kind={kind} onChange={handleKindChange} />
 
           <form className="flex flex-col gap-4">
             <Field label="Valor" required>
@@ -174,6 +229,7 @@ function ManualTransactionScreen() {
                 <span className="absolute top-1/2 left-3 -translate-y-1/2 font-mono text-sm text-muted-foreground">
                   R$
                 </span>
+
                 <input
                   inputMode="decimal"
                   value={amount}
@@ -194,22 +250,25 @@ function ManualTransactionScreen() {
             </Field>
 
             <div className="grid gap-3 sm:grid-cols-2">
-              <Field label="Categoria">
+              <Field
+                label={
+                  kind === "income"
+                    ? "Categoria de receita"
+                    : "Categoria de despesa"
+                }
+              >
                 <SelectLike
                   value={category}
-                  onChange={(value) =>
-                    setCategory(value as (typeof categories)[number])
-                  }
-                  options={categories}
+                  onChange={setCategory}
+                  options={categorySelectOptions}
                 />
               </Field>
+
               <Field label="Conta">
                 <SelectLike
                   value={account}
-                  onChange={(value) =>
-                    setAccount(value as (typeof accounts)[number])
-                  }
-                  options={accounts}
+                  onChange={setAccount}
+                  options={accountOptions}
                 />
               </Field>
             </div>
@@ -231,17 +290,12 @@ function ManualTransactionScreen() {
                 <CheckIcon className="size-4" aria-hidden="true" />
                 Salvar transação
               </Button>
+
               <Button
                 type="button"
                 variant="ghost"
                 className="h-9"
-                onClick={() => {
-                  setAmount("");
-                  setDescription("");
-                  setCategory("Alimentação");
-                  setAccount("Nubank · Conta");
-                  setDate(formatDateInput(new Date()));
-                }}
+                onClick={handleClear}
               >
                 Limpar
               </Button>
@@ -254,19 +308,25 @@ function ManualTransactionScreen() {
             <p className="mb-2.5 text-[0.7rem] font-semibold tracking-[0.12em] text-muted-foreground uppercase">
               Pré-visualização
             </p>
+
             <div className="flex items-center gap-3">
               <span
-                className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-success-soft text-success"
+                className={cn(
+                  "flex size-11 shrink-0 items-center justify-center rounded-lg border",
+                  selectedCategoryMeta.badgeClassName,
+                )}
                 aria-hidden="true"
               >
-                <UtensilsIcon className="size-[18px]" />
+                <SelectedCategoryIcon className="size-[18px]" />
               </span>
+
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-medium text-foreground">
                   {previewDescription}
                 </p>
                 <p className="text-xs text-muted-foreground">{date} · Manual</p>
               </div>
+
               <MoneyText
                 value={signedAmount}
                 showSign
@@ -282,6 +342,7 @@ function ManualTransactionScreen() {
                 className="mt-0.5 size-4 shrink-0 text-primary"
                 aria-hidden="true"
               />
+
               <p className="text-sm leading-relaxed">{helperText}</p>
             </div>
           </section>
