@@ -19,10 +19,23 @@ import { BarChartCard } from "@/features/dashboard/components/BarChartCard";
 import { DonutChartCard } from "@/features/dashboard/components/DonutChartCard";
 import { LineChartCard } from "@/features/dashboard/components/LineChartCard";
 import { TransactionList } from "@/features/dashboard/components/TransactionList";
-import { getMonthName, getToday } from "@/lib/date";
+import { getMonthName } from "@/lib/date";
 
-export function DashboardView() {
-  const [selectedDate, setSelectedDate] = useState(getToday);
+// Recebe a data inicial (YYYY-MM-DD) como snapshot do servidor e a converte em
+// um Date local determinístico — evita hydration mismatch de new Date().
+function parseLocalDate(iso: string): Date {
+  const [year, month, day] = iso.split("-").map(Number);
+  return new Date(year ?? 1970, (month ?? 1) - 1, day ?? 1);
+}
+
+type DashboardViewProps = Readonly<{
+  initialDate: string;
+}>;
+
+export function DashboardView({ initialDate }: DashboardViewProps) {
+  const [selectedDate, setSelectedDate] = useState(() =>
+    parseLocalDate(initialDate),
+  );
   const currentMonth = getMonthName(selectedDate);
 
   return (

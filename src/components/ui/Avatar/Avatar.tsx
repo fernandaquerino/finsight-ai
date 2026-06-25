@@ -90,6 +90,9 @@ function Avatar({ name, src, alt, size, className, ...props }: AvatarProps) {
           alt=""
           aria-hidden="true"
           fill
+          // Avatar tem tamanho fixo (máx. 44px); evita o warning de "fill" sem
+          // "sizes" e impede o browser de buscar uma imagem maior que o preciso.
+          sizes="44px"
           className="object-cover"
           onError={() => setImgError(true)}
         />

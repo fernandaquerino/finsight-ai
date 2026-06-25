@@ -8,7 +8,9 @@ import {
   ReceiptTextIcon,
 } from "lucide-react";
 
-import { Button } from "@/components/ui/Button";
+import Link from "next/link";
+
+import { Button, buttonVariants } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 
 type EmptyStateVariant =
@@ -132,11 +134,18 @@ function EmptyStateButton({
   action: EmptyStateAction;
   variant?: "default" | "secondary";
 }) {
+  // Para navegação interna usamos next/link diretamente com as classes do
+  // botão, em vez de <Button asChild><a> + Radix Slot. O Slot mesclava props
+  // de botão (disabled, aria-busy, onClick…) no <a>, o que disparava hydration
+  // mismatch no anchor com Next 16. O link puro renderiza igual no server/client.
   if (action.href) {
     return (
-      <Button asChild size="sm" variant={variant}>
-        <a href={action.href}>{action.label}</a>
-      </Button>
+      <Link
+        href={action.href}
+        className={cn(buttonVariants({ variant, size: "sm" }))}
+      >
+        {action.label}
+      </Link>
     );
   }
 
