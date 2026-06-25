@@ -7,6 +7,9 @@ import type { ResolvedPeriod } from "./period";
 export type DashboardSummary = {
   period: { from: string; to: string };
   metrics: DashboardMetrics;
+  // Quantidade de transações no período — permite distinguir "sem dados" de
+  // "tudo zerado" na UI (empty state por período).
+  transactionCount: number;
 };
 
 // Orquestra a leitura: tenta o cache, senão lê do banco (isolado por userId),
@@ -32,7 +35,11 @@ export async function getDashboardSummary(
   const metrics = calculateMetrics(transactions);
 
   const [from = "", to = ""] = period.key.split("_");
-  const summary: DashboardSummary = { period: { from, to }, metrics };
+  const summary: DashboardSummary = {
+    period: { from, to },
+    metrics,
+    transactionCount: transactions.length,
+  };
 
   await setCached(key, summary);
   return summary;
