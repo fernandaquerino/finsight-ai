@@ -1,11 +1,9 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   ArrowDownRightIcon,
   ArrowUpRightIcon,
-  CirclePlusIcon,
   type LucideIcon,
   WalletIcon,
 } from "lucide-react";
@@ -13,8 +11,11 @@ import {
 import { MoneyText } from "@/components/app/MoneyText";
 import { EmptyState } from "@/components/feedback/EmptyState";
 import { ErrorState } from "@/components/feedback/ErrorState";
-import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
+import {
+  DataFilterBar,
+  type TransactionFilters,
+} from "@/features/transactions/components/DataFilterBar";
 import { TransactionList } from "@/features/transactions/components/TransactionList";
 import type {
   TransactionListItem,
@@ -32,9 +33,67 @@ type SummaryMetric = {
   value: number;
   icon: LucideIcon;
   className: string;
+  showSign?: boolean;
+  tone?: "positive" | "negative" | "neutral";
 };
 
 const TRANSACTIONS_LIMIT = 40;
+const filterKeys = [
+  "search",
+  "from",
+  "to",
+  "kind",
+  "categoryId",
+  "accountId",
+] as const satisfies readonly (keyof TransactionFilters)[];
+
+function readFiltersFromUrl(): TransactionFilters {
+  if (typeof window === "undefined") {
+    return {};
+  }
+
+  const params = new URLSearchParams(window.location.search);
+
+  return {
+    search: params.get("search") ?? undefined,
+    from: params.get("from") ?? undefined,
+    to: params.get("to") ?? undefined,
+    kind: (params.get("kind") as TransactionFilters["kind"]) ?? undefined,
+    categoryId: params.get("categoryId") ?? undefined,
+    accountId: params.get("accountId") ?? undefined,
+  };
+}
+
+function buildTransactionsQuery(filters: TransactionFilters): string {
+  const params = new URLSearchParams({
+    page: "1",
+    limit: String(TRANSACTIONS_LIMIT),
+  });
+
+  for (const key of filterKeys) {
+    const value = filters[key];
+    if (value) {
+      params.set(key, value);
+    }
+  }
+
+  return params.toString();
+}
+
+function syncFiltersToUrl(filters: TransactionFilters) {
+  const params = new URLSearchParams();
+
+  for (const key of filterKeys) {
+    const value = filters[key];
+    if (value) {
+      params.set(key, value);
+    }
+  }
+
+  const query = params.toString();
+  const nextUrl = query ? `/transacoes?${query}` : "/transacoes";
+  window.history.replaceState(null, "", nextUrl);
+}
 
 function getSignedAmount(transaction: TransactionListItem): number {
   const amount = Number(transaction.amount);
@@ -68,18 +127,22 @@ function buildSummary(items: TransactionListItem[]): SummaryMetric[] {
       value: income,
       icon: ArrowUpRightIcon,
       className: "bg-success-soft text-success",
+      tone: "neutral",
     },
     {
       label: "Saídas",
-      value: -expenses,
+      value: expenses,
       icon: ArrowDownRightIcon,
       className: "bg-danger-soft text-danger",
+      tone: "neutral",
     },
     {
       label: "Resultado",
       value: result,
       icon: WalletIcon,
       className: "bg-primary-soft text-primary",
+      showSign: true,
+      tone: result > 0 ? "positive" : "neutral",
     },
   ];
 }
@@ -87,9 +150,9 @@ function buildSummary(items: TransactionListItem[]): SummaryMetric[] {
 function TransactionsLoading() {
   return (
     <div className="space-y-5" aria-busy="true" aria-label="Carregando tela">
-      <div className="grid gap-3 sm:grid-cols-3">
+      <div className="grid gap-3 sm:grid-cols-3 lg:w-[684px]">
         {Array.from({ length: 3 }).map((_, index) => (
-          <Skeleton key={index} className="h-24 rounded-lg" />
+          <Skeleton key={index} className="h-[88px] rounded-lg" />
         ))}
       </div>
       <Skeleton className="h-[420px] rounded-lg" />
@@ -103,7 +166,7 @@ function SummaryCards({ items }: { items: TransactionListItem[] }) {
   return (
     <section
       aria-label="Resumo financeiro das transações"
-      className="grid gap-3 sm:grid-cols-3"
+      className="grid w-full gap-3 sm:grid-cols-3 lg:w-auto lg:grid-cols-[repeat(3,220px)]"
     >
       {metrics.map((metric) => {
         const Icon = metric.icon;
@@ -111,16 +174,16 @@ function SummaryCards({ items }: { items: TransactionListItem[] }) {
         return (
           <div
             key={metric.label}
-            className="flex items-center gap-3 rounded-lg border border-border bg-card p-4"
+            className="flex h-[88px] items-center gap-3 rounded-lg border border-border bg-card px-4 shadow-card"
           >
             <div
               className={cn(
-                "flex size-10 items-center justify-center rounded-lg",
+                "flex size-11 items-center justify-center rounded-lg",
                 metric.className,
               )}
               aria-hidden="true"
             >
-              <Icon className="size-4" />
+              <Icon className="size-[18px]" />
             </div>
             <div>
               <p className="text-xs font-semibold tracking-[0.08em] text-muted-foreground uppercase">
@@ -128,9 +191,9 @@ function SummaryCards({ items }: { items: TransactionListItem[] }) {
               </p>
               <MoneyText
                 value={metric.value}
-                showSign={metric.label === "Resultado"}
-                tone={metric.value > 0 ? "positive" : "neutral"}
-                className="text-xl font-bold"
+                showSign={metric.showSign}
+                tone={metric.tone}
+                className="text-[1.35rem] leading-tight font-bold"
               />
             </div>
           </div>
@@ -142,14 +205,20 @@ function SummaryCards({ items }: { items: TransactionListItem[] }) {
 
 function TransactionsScreen() {
   const [data, setData] = useState<TransactionsResponse | null>(null);
+  const [filters, setFilters] = useState<TransactionFilters>(() =>
+    readFiltersFromUrl(),
+  );
   const [status, setStatus] = useState<"loading" | "error" | "success">(
     "loading",
   );
 
-  async function loadTransactions(signal?: AbortSignal) {
+  async function loadTransactions(
+    nextFilters: TransactionFilters,
+    signal?: AbortSignal,
+  ) {
     try {
       const response = await fetch(
-        `/api/transactions?limit=${TRANSACTIONS_LIMIT}`,
+        `/api/transactions?${buildTransactionsQuery(nextFilters)}`,
         {
           signal,
           headers: { Accept: "application/json" },
@@ -176,38 +245,60 @@ function TransactionsScreen() {
   useEffect(() => {
     const controller = new AbortController();
     queueMicrotask(() => {
-      void loadTransactions(controller.signal);
+      void loadTransactions(filters, controller.signal);
     });
 
     return () => controller.abort();
+  }, [filters]);
+
+  const handleFiltersChange = useCallback((nextFilters: TransactionFilters) => {
+    setFilters(nextFilters);
+    syncFiltersToUrl(nextFilters);
+    setStatus("loading");
   }, []);
 
-  const items = data?.items ?? [];
-  const titleDescription = useMemo(() => {
-    if (!data) {
-      return "Carregando suas movimentações.";
+  const items = useMemo(() => data?.items ?? [], [data]);
+  const hasActiveFilters = filterKeys.some((key) => Boolean(filters[key]));
+  const categoryOptions = useMemo(() => {
+    const options = new Map<
+      string,
+      { value: string; label: string; color: string | null }
+    >();
+
+    for (const item of items) {
+      if (item.category) {
+        options.set(item.category.id, {
+          value: item.category.id,
+          label: item.category.name,
+          color: item.category.color,
+        });
+      }
     }
 
-    return `Mostrando ${items.length} de ${data.total} transações.`;
+    return Array.from(options.values());
+  }, [items]);
+  const accountOptions = useMemo(() => {
+    const options = new Map<string, { value: string; label: string }>();
+
+    for (const item of items) {
+      options.set(item.account.id, {
+        value: item.account.id,
+        label: item.account.name ?? "Conta",
+      });
+    }
+
+    return Array.from(options.values());
+  }, [items]);
+  const resultDescription = useMemo(() => {
+    if (!data) {
+      return "Carregando";
+    }
+
+    return `Mostrando ${items.length} de ${data.total}`;
   }, [data, items.length]);
 
   return (
-    <main className="mx-auto flex w-full max-w-7xl flex-col gap-6 p-5 sm:p-7">
-      <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-xl font-semibold text-foreground">Transações</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {titleDescription}
-          </p>
-        </div>
-        <Button asChild size="sm">
-          <Link href={appRoutes.manualEntry}>
-            <CirclePlusIcon />
-            Nova transação
-          </Link>
-        </Button>
-      </header>
-
+    <main className="mx-auto flex w-full max-w-[1240px] flex-col gap-5 p-5 sm:p-6">
       {status === "loading" ? (
         <TransactionsLoading />
       ) : status === "error" ? (
@@ -216,23 +307,48 @@ function TransactionsScreen() {
           description="Tente novamente em instantes."
           onRetry={() => {
             setStatus("loading");
-            void loadTransactions();
-          }}
-        />
-      ) : items.length === 0 ? (
-        <EmptyState
-          variant="transactions"
-          title="Nenhuma transação cadastrada"
-          description="Adicione sua primeira movimentação manualmente ou importe um extrato."
-          primaryAction={{
-            label: "Nova transação",
-            href: appRoutes.manualEntry,
+            void loadTransactions(filters);
           }}
         />
       ) : (
         <>
-          <SummaryCards items={items} />
-          <TransactionList transactions={items} />
+          <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
+            <SummaryCards items={items} />
+            <p className="font-mono text-sm tracking-[0.08em] text-muted-foreground xl:pt-8">
+              {resultDescription}
+            </p>
+          </div>
+          <DataFilterBar
+            filters={filters}
+            categoryOptions={categoryOptions}
+            accountOptions={accountOptions}
+            onFiltersChange={handleFiltersChange}
+          />
+          {items.length === 0 ? (
+            <EmptyState
+              variant="transactions"
+              title={
+                hasActiveFilters
+                  ? "Nenhum resultado encontrado"
+                  : "Nenhuma transação cadastrada"
+              }
+              description={
+                hasActiveFilters
+                  ? "Remova filtros ou tente uma busca diferente."
+                  : "Adicione sua primeira movimentação manualmente ou importe um extrato."
+              }
+              primaryAction={
+                hasActiveFilters
+                  ? undefined
+                  : {
+                      label: "Lançamento manual",
+                      href: appRoutes.manualEntry,
+                    }
+              }
+            />
+          ) : (
+            <TransactionList transactions={items} />
+          )}
         </>
       )}
     </main>

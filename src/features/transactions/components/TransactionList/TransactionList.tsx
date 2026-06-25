@@ -20,6 +20,12 @@ function toDateKey(date: Date): string {
   return `${year}-${month}-${day}`;
 }
 
+function startOfDay(date: Date): Date {
+  const copy = new Date(date);
+  copy.setHours(0, 0, 0, 0);
+  return copy;
+}
+
 function formatGroupLabel(date: Date, now: Date): string {
   const dateKey = toDateKey(date);
 
@@ -32,6 +38,15 @@ function formatGroupLabel(date: Date, now: Date): string {
 
   if (dateKey === toDateKey(yesterday)) {
     return "Ontem";
+  }
+
+  const dayInMs = 24 * 60 * 60 * 1000;
+  const diffInDays = Math.round(
+    (startOfDay(now).getTime() - startOfDay(date).getTime()) / dayInMs,
+  );
+
+  if (diffInDays > 1 && diffInDays <= 7) {
+    return "Semana passada";
   }
 
   return date.toLocaleDateString("pt-BR", {
@@ -53,7 +68,8 @@ export function groupTransactionsByDate(
 
   for (const transaction of sorted) {
     const date = new Date(transaction.occurredAt);
-    const key = toDateKey(date);
+    const label = formatGroupLabel(date, now);
+    const key = label === "Semana passada" ? "last-week" : toDateKey(date);
     const group = groups.get(key);
 
     if (group) {
@@ -63,7 +79,7 @@ export function groupTransactionsByDate(
 
     groups.set(key, {
       key,
-      label: formatGroupLabel(date, now),
+      label,
       transactions: [transaction],
     });
   }
@@ -75,7 +91,7 @@ function TransactionList({ transactions, now }: TransactionListProps) {
   const groups = groupTransactionsByDate(transactions, now);
 
   return (
-    <div className="overflow-hidden rounded-lg border border-border bg-card">
+    <div className="overflow-hidden rounded-lg border border-border bg-card shadow-card">
       {groups.map((group) => (
         <TransactionGroupByDate
           key={group.key}

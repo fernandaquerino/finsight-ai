@@ -1,4 +1,5 @@
 import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { appRoutes } from "@/lib/app-routes";
@@ -6,6 +7,8 @@ import { TransactionsScreen } from "./TransactionsScreen";
 
 afterEach(() => {
   vi.unstubAllGlobals();
+  vi.useRealTimers();
+  window.history.replaceState(null, "", "/");
 });
 
 describe("TransactionsScreen", () => {
@@ -54,10 +57,11 @@ describe("TransactionsScreen", () => {
     );
 
     expect(await screen.findByText("Padaria Sao Jorge")).toBeInTheDocument();
-    expect(screen.getByText("Mostrando 1 de 1 transações.")).toBeVisible();
-    expect(
-      screen.getByRole("link", { name: /Nova transação/ }),
-    ).toHaveAttribute("href", appRoutes.manualEntry);
+    expect(screen.getByText("Mostrando 1 de 1")).toBeVisible();
+    expect(screen.getByRole("link", { name: "Manual" })).toHaveAttribute(
+      "href",
+      appRoutes.manualEntry,
+    );
   });
 
   it("renders an empty state when the API has no items", async () => {
@@ -93,5 +97,38 @@ describe("TransactionsScreen", () => {
         screen.getByText("Não foi possível carregar as transações"),
       ).toBeInTheDocument();
     });
+  });
+
+  it("syncs filters with the URL and API query", async () => {
+    const user = userEvent.setup();
+    const fetchMock = vi.fn().mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          data: { items: [], total: 0, page: 1, hasNext: false },
+        }),
+        { status: 200 },
+      ),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+    window.history.replaceState(null, "", "/transacoes?kind=expense");
+
+    render(<TransactionsScreen />);
+
+    await screen.findByText("Nenhum resultado encontrado");
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/api/transactions?page=1&limit=40&kind=expense",
+      expect.any(Object),
+    );
+
+    await user.click(screen.getByRole("button", { name: "Receitas" }));
+
+    await waitFor(() => {
+      expect(window.location.search).toContain("kind=income");
+    });
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/api/transactions?page=1&limit=40&kind=income",
+      expect.any(Object),
+    );
   });
 });

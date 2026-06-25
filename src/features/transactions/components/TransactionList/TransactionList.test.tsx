@@ -67,7 +67,7 @@ describe("TransactionList", () => {
     expect(screen.getByText("Hoje")).toBeInTheDocument();
     expect(screen.getByText("Padaria Sao Jorge")).toBeInTheDocument();
     expect(screen.getByText("Alimentacao")).toBeInTheDocument();
-    expect(screen.getAllByText("Nubank")).toHaveLength(2);
+    expect(screen.getByText("Manual")).toBeInTheDocument();
     expect(screen.getAllByText(/-R\$ 28,50/).length).toBeGreaterThan(0);
     expect(screen.getAllByText(/\+R\$ 8.400,00/).length).toBeGreaterThan(0);
   });
