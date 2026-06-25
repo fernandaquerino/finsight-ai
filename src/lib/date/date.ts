@@ -10,6 +10,13 @@ export function getToday(): Date {
   return new Date();
 }
 
+// Data curta "DD/MM" — usada em listas densas (ex.: transações recentes).
+export function formatShortDate(date: Date): string {
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  return `${day}/${month}`;
+}
+
 export function getYear(date: Date = getToday()): number {
   return date.getFullYear();
 }

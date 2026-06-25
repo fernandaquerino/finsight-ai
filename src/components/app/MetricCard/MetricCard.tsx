@@ -12,8 +12,10 @@ import { cn } from "@/lib/utils";
 type MetricCardProps = {
   label: string;
   value: string;
-  trend: string;
-  trendUp: boolean;
+  // trend/trendUp são opcionais: nem toda métrica tem comparação de período.
+  // Quando ausentes, a linha de tendência não é renderizada.
+  trend?: string;
+  trendUp?: boolean;
   icon: ElementType;
   iconClassName?: string;
   variant?: "default" | "ai";
@@ -23,7 +25,7 @@ function MetricCard({
   label,
   value,
   trend,
-  trendUp,
+  trendUp = false,
   icon: Icon,
   iconClassName,
   variant = "default",
@@ -49,15 +51,17 @@ function MetricCard({
         <p className="font-mono text-2xl font-bold tracking-tight text-card-foreground tabular-nums">
           {value}
         </p>
-        <div
-          className={cn(
-            "flex items-center gap-1 text-xs font-medium",
-            trendUp ? "text-success" : "text-warning",
-          )}
-        >
-          <TrendIcon className="size-3.5 shrink-0" aria-hidden="true" />
-          <span>{trend}</span>
-        </div>
+        {trend && (
+          <div
+            className={cn(
+              "flex items-center gap-1 text-xs font-medium",
+              trendUp ? "text-success" : "text-warning",
+            )}
+          >
+            <TrendIcon className="size-3.5 shrink-0" aria-hidden="true" />
+            <span>{trend}</span>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
