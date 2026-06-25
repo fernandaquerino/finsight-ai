@@ -27,7 +27,7 @@ export type AppRouteGroup = Readonly<{
 
 export const appRoutes = {
   dashboard: "/",
-  transactions: "/transactions",
+  transactions: "/transacoes",
   reports: "/reports",
   aiChat: "/ai-chat",
   insights: "/insights",
@@ -35,7 +35,7 @@ export const appRoutes = {
   debts: "/debts",
   categories: "/categories",
   imports: "/imports",
-  manualEntry: "/transactions/new",
+  manualEntry: "/transacoes/nova",
   settings: "/settings",
 } as const;
 
