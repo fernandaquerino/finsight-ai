@@ -3,11 +3,15 @@ import { Suspense } from "react";
 import {
   ChartCardSkeleton,
   MetricCardSkeleton,
+  TransactionListSkeleton,
 } from "@/components/app/skeletons";
+import { Card } from "@/components/ui/Card";
+import { CategoryDonut } from "@/features/dashboard/components/CategoryDonut";
 import { DashboardEmptyState } from "@/features/dashboard/components/DashboardEmptyState";
 import { DashboardHeader } from "@/features/dashboard/components/DashboardHeader";
 import { DashboardHistory } from "@/features/dashboard/components/DashboardHistory";
 import { DashboardMetrics } from "@/features/dashboard/components/DashboardMetrics";
+import { RecentTransactions } from "@/features/dashboard/components/RecentTransactions";
 import {
   monthParamLabel,
   monthParamToString,
@@ -70,6 +74,22 @@ export default async function DashboardPage({
       <Suspense fallback={<ChartCardSkeleton />}>
         <DashboardHistory userId={userId} />
       </Suspense>
+
+      <div className="grid gap-4 lg:grid-cols-2">
+        <Suspense key={`donut-${monthKey}`} fallback={<ChartCardSkeleton />}>
+          <CategoryDonut userId={userId} month={month} />
+        </Suspense>
+
+        <Suspense
+          fallback={
+            <Card>
+              <TransactionListSkeleton />
+            </Card>
+          }
+        >
+          <RecentTransactions userId={userId} />
+        </Suspense>
+      </div>
     </main>
   );
 }
