@@ -17,6 +17,7 @@ export type TransactionListItem = {
   kind: "income" | "expense" | "transfer";
   occurredAt: Date;
   origin: "manual" | "import" | "recurring" | "integration";
+  isRecurring: boolean;
   category: {
     id: string;
     name: string;
@@ -80,6 +81,7 @@ function toListItem(row: TransactionListRow): TransactionListItem {
     kind: row.kind,
     occurredAt: row.occurredAt,
     origin: row.origin,
+    isRecurring: row.isRecurring,
     category:
       row.categoryId && row.categoryName && row.categoryColor
         ? {
@@ -92,6 +94,41 @@ function toListItem(row: TransactionListRow): TransactionListItem {
       id: row.accountId,
       name: row.accountName,
     },
+  };
+}
+
+// Leitura de uma transação para preencher o formulário de edição. Isolada por
+// userId no repositório. Retorna os campos brutos necessários ao form.
+export type TransactionEditData = {
+  id: string;
+  accountId: string;
+  categoryId: string | null;
+  amount: string;
+  kind: "income" | "expense" | "transfer";
+  description: string | null;
+  occurredAt: Date;
+  isRecurring: boolean;
+};
+
+export async function getTransaction(
+  db: Database,
+  userId: string,
+  id: string,
+): Promise<TransactionEditData | undefined> {
+  const transaction = await transactionRepository.findById(db, userId, id);
+  if (!transaction) {
+    return undefined;
+  }
+
+  return {
+    id: transaction.id,
+    accountId: transaction.accountId,
+    categoryId: transaction.categoryId,
+    amount: transaction.amount,
+    kind: transaction.kind,
+    description: transaction.description,
+    occurredAt: transaction.occurredAt,
+    isRecurring: transaction.isRecurring,
   };
 }
 

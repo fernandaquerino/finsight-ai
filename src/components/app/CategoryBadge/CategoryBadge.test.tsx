@@ -11,7 +11,7 @@ describe("CategoryBadge", () => {
   });
 
   it("falls back to Outros for unknown categories", () => {
-    render(<CategoryBadge category="pets" />);
+    render(<CategoryBadge category="viagem" />);
 
     expect(screen.getByText("Outros")).toBeInTheDocument();
   });

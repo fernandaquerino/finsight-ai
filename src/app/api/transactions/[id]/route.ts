@@ -1,6 +1,7 @@
 import { getDb } from "@/lib/db";
 import { jsonError, jsonOk } from "@/server/api/responses";
 import { UnauthorizedError, requireUserId } from "@/server/auth/session";
+import { getTransaction } from "@/server/services/transactions/list";
 import {
   DuplicateTransactionError,
   TransactionOwnershipError,
@@ -32,6 +33,37 @@ async function resolveUserId(): Promise<
 
 const UUID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+// GET /api/transactions/:id — leitura de uma transação (preenche o form de
+// edição). Isolada por userId.
+export async function GET(
+  _request: Request,
+  context: RouteContext,
+): Promise<Response> {
+  const auth = await resolveUserId();
+  if ("response" in auth) {
+    return auth.response;
+  }
+
+  const { id } = await context.params;
+  if (!UUID_PATTERN.test(id)) {
+    return jsonError("INVALID_ID", "Identificador inválido.", 400);
+  }
+
+  try {
+    const transaction = await getTransaction(getDb(), auth.userId, id);
+    if (!transaction) {
+      return jsonError("NOT_FOUND", "Transação não encontrada.", 404);
+    }
+    return jsonOk(transaction);
+  } catch {
+    return jsonError(
+      "INTERNAL_ERROR",
+      "Não foi possível carregar a transação.",
+      500,
+    );
+  }
+}
 
 // PATCH /api/transactions/:id — recategoriza ou edita campos da transação.
 export async function PATCH(

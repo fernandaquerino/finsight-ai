@@ -48,8 +48,12 @@ describe("AppShell routes", () => {
   });
 
   it("matches nested paths for non-root routes", () => {
+    expect(
+      isActiveRoute(`${appRoutes.transactions}/123`, appRoutes.transactions),
+    ).toBe(true);
+    // Rotas irmãs de topo não devem ativar uma à outra.
     expect(isActiveRoute(appRoutes.manualEntry, appRoutes.transactions)).toBe(
-      true,
+      false,
     );
   });
 

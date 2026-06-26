@@ -5,6 +5,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ManualTransactionScreen, parseMoney } from "./ManualTransactionScreen";
 
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ push: vi.fn(), replace: vi.fn(), back: vi.fn() }),
+}));
+
 const accounts = [
   {
     id: "11111111-1111-4111-8111-111111111111",

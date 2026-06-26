@@ -8,6 +8,7 @@ export type TransactionListItem = {
   kind: TransactionKind;
   occurredAt: string;
   origin: "manual" | "import" | "recurring" | "integration";
+  isRecurring: boolean;
   category: {
     id: string;
     name: string;

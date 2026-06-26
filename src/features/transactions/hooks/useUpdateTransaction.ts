@@ -11,6 +11,7 @@ export type UpdateTransactionPayload = {
   kind?: "income" | "expense" | "transfer";
   accountId?: string;
   occurredAt?: string; // YYYY-MM-DD
+  isRecurring?: boolean;
 };
 
 type ApiErrorBody = { error: { code: string; message: string } };

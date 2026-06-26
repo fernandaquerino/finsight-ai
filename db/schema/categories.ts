@@ -4,6 +4,7 @@ import {
   pgEnum,
   pgTable,
   text,
+  uniqueIndex,
   uuid,
   varchar,
 } from "drizzle-orm/pg-core";
@@ -28,6 +29,13 @@ export const categories = pgTable(
   (table) => [
     index("categories_user_id_idx").on(table.userId),
     index("categories_parent_id_idx").on(table.parentId),
+    // Evita categorias duplicadas por usuário (mesmo nome + tipo). userId nulo
+    // (categorias globais) é tratado como distinto pelo Postgres, sem conflito.
+    uniqueIndex("categories_user_id_name_kind_unique_idx").on(
+      table.userId,
+      table.name,
+      table.kind,
+    ),
   ],
 );
 

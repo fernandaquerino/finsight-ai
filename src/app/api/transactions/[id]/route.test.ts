@@ -6,6 +6,7 @@ const mocks = vi.hoisted(() => ({
   requireUserId: vi.fn(),
   updateTransaction: vi.fn(),
   deleteTransaction: vi.fn(),
+  getTransaction: vi.fn(),
   TransactionOwnershipError: class TransactionOwnershipError extends Error {
     readonly code = "INVALID_REFERENCE";
   },
@@ -32,6 +33,10 @@ vi.mock("@/server/services/transactions/mutate", () => ({
   DuplicateTransactionError: mocks.DuplicateTransactionError,
 }));
 
+vi.mock("@/server/services/transactions/list", () => ({
+  getTransaction: mocks.getTransaction,
+}));
+
 const ID = "33333333-3333-4333-8333-333333333333";
 
 function context(id: string) {
@@ -45,6 +50,44 @@ function patchRequest(body: unknown): Request {
     body: JSON.stringify(body),
   });
 }
+
+describe("GET /api/transactions/:id", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mocks.requireUserId.mockResolvedValue("user-1");
+  });
+
+  it("returns the transaction for the current user", async () => {
+    mocks.getTransaction.mockResolvedValue({ id: ID, accountId: "a" });
+    const { GET } = await import("./route");
+
+    const response = await GET(new Request("http://localhost"), context(ID));
+
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({
+      data: { id: ID, accountId: "a" },
+    });
+    expect(mocks.getTransaction).toHaveBeenCalledWith(mocks.db, "user-1", ID);
+  });
+
+  it("returns 404 when not found", async () => {
+    mocks.getTransaction.mockResolvedValue(undefined);
+    const { GET } = await import("./route");
+
+    const response = await GET(new Request("http://localhost"), context(ID));
+
+    expect(response.status).toBe(404);
+  });
+
+  it("rejects an invalid id with 400", async () => {
+    const { GET } = await import("./route");
+
+    const response = await GET(new Request("http://localhost"), context("nope"));
+
+    expect(response.status).toBe(400);
+    expect(mocks.getTransaction).not.toHaveBeenCalled();
+  });
+});
 
 describe("PATCH /api/transactions/:id", () => {
   beforeEach(() => {

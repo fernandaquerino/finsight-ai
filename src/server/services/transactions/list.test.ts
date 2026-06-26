@@ -59,6 +59,7 @@ describe("listTransactions", () => {
           kind: "income",
           occurredAt,
           origin: "manual",
+          isRecurring: false,
           categoryId: "category-1",
           categoryName: "Receita",
           categoryColor: "#16a34a",
@@ -80,6 +81,7 @@ describe("listTransactions", () => {
           kind: "income",
           occurredAt,
           origin: "manual",
+          isRecurring: false,
           category: {
             id: "category-1",
             name: "Receita",

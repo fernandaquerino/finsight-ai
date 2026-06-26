@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -20,6 +21,9 @@ import {
   useCategories,
 } from "@/features/transactions/hooks/useReferenceData";
 import { useCreateTransaction } from "@/features/transactions/hooks/useCreateTransaction";
+import { useTransaction } from "@/features/transactions/hooks/useTransaction";
+import { useUpdateTransaction } from "@/features/transactions/hooks/useUpdateTransaction";
+import { appRoutes } from "@/lib/app-routes";
 import { resolveCategoryKey } from "@/lib/categories";
 import { CategoryIcon } from "@/lib/categories/category-icons";
 import { parseMoney } from "@/lib/money/money";
@@ -55,6 +59,18 @@ function brDateToIso(value: string): string | null {
     date.getDate() === Number(day);
 
   return isValid ? `${year}-${month}-${day}` : null;
+}
+
+// Converte o valor armazenado ("28.50") para o formato do input BR ("28,50").
+function amountToInput(amount: string): string {
+  const value = Number(amount);
+  if (!Number.isFinite(value)) {
+    return "";
+  }
+  return value.toLocaleString("pt-BR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
 }
 
 const manualFormSchema = z.object({
@@ -197,10 +213,17 @@ function KindToggle({
 const helperText =
   "Conforme você digita a descrição, eu sugiro a categoria mais provável com base nos seus lançamentos anteriores. Você sempre tem a palavra final.";
 
-function ManualTransactionScreen() {
+function ManualTransactionScreen({
+  transactionId,
+}: Readonly<{ transactionId?: string }> = {}) {
+  const router = useRouter();
+  const isEditing = Boolean(transactionId);
   const accountsQuery = useAccounts();
   const categoriesQuery = useCategories();
+  const editQuery = useTransaction(transactionId);
   const createTransaction = useCreateTransaction();
+  const updateTransaction = useUpdateTransaction();
+  const prefilledRef = useRef(false);
 
   const {
     control,
@@ -248,13 +271,31 @@ function ManualTransactionScreen() {
     });
   }, [categoriesQuery.data, kind]);
 
+  // Em modo edição, preenche o formulário uma vez quando a transação carrega.
+  useEffect(() => {
+    const data = editQuery.data;
+    if (!data || prefilledRef.current) {
+      return;
+    }
+    prefilledRef.current = true;
+    reset({
+      kind: data.kind === "income" ? "income" : "expense",
+      amount: amountToInput(data.amount),
+      description: data.description ?? "",
+      categoryId: data.categoryId ?? "",
+      accountId: data.accountId,
+      date: formatDateInput(new Date(data.occurredAt)),
+    });
+  }, [editQuery.data, reset]);
+
   // Seleciona a primeira conta quando as contas carregam e nenhuma está escolhida.
+  // Em edição, o prefill já define a conta, então isto não sobrescreve.
   useEffect(() => {
     const firstAccount = accounts[0];
-    if (!accountId && firstAccount) {
+    if (!accountId && firstAccount && !isEditing) {
       setValue("accountId", firstAccount.id, { shouldValidate: true });
     }
-  }, [accounts, accountId, setValue]);
+  }, [accounts, accountId, setValue, isEditing]);
 
   // Mantém uma categoria válida para o tipo atual. Se a selecionada não
   // pertence ao tipo, cai para a primeira disponível (ou vazio).
@@ -293,11 +334,42 @@ function ManualTransactionScreen() {
   const previewDescription = description.trim() || "Descrição da trans...";
 
   const hasAccounts = accounts.length > 0;
-  const isSubmitting = createTransaction.isPending;
+  const isSubmitting =
+    createTransaction.isPending || updateTransaction.isPending;
 
   function onSubmit(values: ManualFormValues) {
     const occurredAt = brDateToIso(values.date);
     if (!occurredAt) {
+      return;
+    }
+
+    if (isEditing && transactionId) {
+      updateTransaction.mutate(
+        {
+          id: transactionId,
+          payload: {
+            accountId: values.accountId,
+            categoryId: values.categoryId ? values.categoryId : null,
+            amount: parseMoney(values.amount),
+            kind: values.kind,
+            description: values.description.trim(),
+            occurredAt,
+          },
+        },
+        {
+          onSuccess: () => {
+            showToast.success({ title: "Transação atualizada" });
+            router.push(appRoutes.transactions);
+          },
+          onError: (error) => {
+            showToast.error({
+              title: "Não foi possível salvar",
+              description:
+                error instanceof Error ? error.message : "Tente novamente.",
+            });
+          },
+        },
+      );
       return;
     }
 
@@ -349,7 +421,7 @@ function ManualTransactionScreen() {
       <div className="mx-auto grid max-w-[760px] gap-[18px] lg:grid-cols-[1.4fr_1fr]">
         <section className="rounded-lg border border-border bg-card p-[22px] shadow-card">
           <h1 className="mb-[18px] text-base font-medium text-foreground">
-            Nova transação
+            {isEditing ? "Editar transação" : "Nova transação"}
           </h1>
 
           {!accountsQuery.isLoading && !hasAccounts ? (
@@ -481,7 +553,11 @@ function ManualTransactionScreen() {
                 className="h-9 flex-1"
               >
                 <CheckIcon className="size-4" aria-hidden="true" />
-                {isSubmitting ? "Salvando..." : "Salvar transação"}
+                {isSubmitting
+                  ? "Salvando..."
+                  : isEditing
+                    ? "Salvar alterações"
+                    : "Salvar transação"}
               </Button>
 
               <Button

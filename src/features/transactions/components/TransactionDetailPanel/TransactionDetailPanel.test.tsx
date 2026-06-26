@@ -7,6 +7,10 @@ import type { TransactionListItem } from "@/features/transactions/types";
 
 import { TransactionDetailPanel } from "./TransactionDetailPanel";
 
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ push: vi.fn(), replace: vi.fn(), back: vi.fn() }),
+}));
+
 const transaction: TransactionListItem = {
   id: "33333333-3333-4333-8333-333333333333",
   description: "Padaria São Jorge",
@@ -15,6 +19,7 @@ const transaction: TransactionListItem = {
   kind: "expense",
   occurredAt: new Date("2026-05-31T12:00:00.000Z").toISOString(),
   origin: "manual",
+  isRecurring: false,
   category: {
     id: "22222222-2222-4222-8222-222222222222",
     name: "Alimentação",

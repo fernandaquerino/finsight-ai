@@ -167,6 +167,7 @@ export async function updateTransaction(
       description,
       occurredAt,
       dedupeHash,
+      isRecurring: input.isRecurring ?? current.isRecurring,
     });
   } catch (error) {
     if (isUniqueViolation(error)) {

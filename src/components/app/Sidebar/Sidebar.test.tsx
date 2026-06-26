@@ -26,16 +26,16 @@ describe("Sidebar — expanded (default)", () => {
     );
   });
 
-  it("marks nested transaction routes as active", () => {
+  it("marks the manual entry route as active on its own item", () => {
     render(<Sidebar pathname={appRoutes.manualEntry} className="flex" />);
 
-    expect(screen.getByRole("link", { name: "Transações" })).toHaveAttribute(
-      "aria-current",
-      "page",
-    );
     expect(
       screen.getByRole("link", { name: "Lançamento manual" }),
     ).toHaveAttribute("aria-current", "page");
+    // "Lançamento manual" é uma rota de topo própria — não ativa "Transações".
+    expect(
+      screen.getByRole("link", { name: "Transações" }),
+    ).not.toHaveAttribute("aria-current", "page");
   });
 
   it("calls onNavigate when a route is clicked", () => {

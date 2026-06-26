@@ -183,6 +183,7 @@ export const transactionRepository = {
         kind: transactions.kind,
         occurredAt: transactions.occurredAt,
         origin: transactions.origin,
+        isRecurring: transactions.isRecurring,
         categoryId: transactions.categoryId,
         categoryName: categories.name,
         categoryColor: categories.color,
@@ -265,6 +266,7 @@ export const transactionRepository = {
         | "description"
         | "occurredAt"
         | "dedupeHash"
+        | "isRecurring"
       >
     >,
   ) {

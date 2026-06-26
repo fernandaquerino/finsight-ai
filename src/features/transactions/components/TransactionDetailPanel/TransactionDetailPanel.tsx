@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   PencilIcon,
   Repeat2Icon,
@@ -20,6 +21,7 @@ import { useCategories } from "@/features/transactions/hooks/useReferenceData";
 import { useDeleteTransaction } from "@/features/transactions/hooks/useDeleteTransaction";
 import { useUpdateTransaction } from "@/features/transactions/hooks/useUpdateTransaction";
 import type { TransactionListItem } from "@/features/transactions/types";
+import { appRoutes } from "@/lib/app-routes";
 import { resolveCategoryKey } from "@/lib/categories";
 import { CategoryIcon } from "@/lib/categories/category-icons";
 import { showToast } from "@/lib/toast/toast";
@@ -94,6 +96,7 @@ function TransactionDetailPanel({
   onClose,
   onChanged,
 }: TransactionDetailPanelProps) {
+  const router = useRouter();
   const categoriesQuery = useCategories();
   const updateTransaction = useUpdateTransaction();
   const deleteTransaction = useDeleteTransaction();
@@ -142,6 +145,32 @@ function TransactionDetailPanel({
         onError: (error) =>
           showToast.error({
             title: "Não foi possível recategorizar",
+            description: error instanceof Error ? error.message : undefined,
+          }),
+      },
+    );
+  }
+
+  function handleToggleRecurring() {
+    if (!transaction) {
+      return;
+    }
+
+    const next = !transaction.isRecurring;
+    updateTransaction.mutate(
+      { id: transaction.id, payload: { isRecurring: next } },
+      {
+        onSuccess: () => {
+          showToast.success({
+            title: next
+              ? "Marcada como recorrente"
+              : "Recorrência removida",
+          });
+          onChanged();
+        },
+        onError: (error) =>
+          showToast.error({
+            title: "Não foi possível atualizar",
             description: error instanceof Error ? error.message : undefined,
           }),
       },
@@ -302,20 +331,27 @@ function TransactionDetailPanel({
               <Button
                 variant="secondary"
                 className="h-9"
-                disabled
-                title="Em breve"
+                onClick={() =>
+                  router.push(`${appRoutes.manualEntry}?id=${transaction.id}`)
+                }
+                disabled={isMutating || transaction.kind === "transfer"}
+                title={
+                  transaction.kind === "transfer"
+                    ? "Edição de transferências em breve"
+                    : undefined
+                }
               >
                 <PencilIcon className="size-4" aria-hidden="true" />
                 Editar
               </Button>
               <Button
-                variant="secondary"
+                variant={transaction.isRecurring ? "default" : "secondary"}
                 className="h-9"
-                disabled
-                title="Em breve"
+                onClick={handleToggleRecurring}
+                disabled={isMutating}
               >
                 <Repeat2Icon className="size-4" aria-hidden="true" />
-                Marcar recorrente
+                {transaction.isRecurring ? "Recorrente" : "Marcar recorrente"}
               </Button>
               <Button
                 variant="destructive"

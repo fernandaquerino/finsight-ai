@@ -93,6 +93,7 @@ export const updateTransactionSchema = z
     kind: kindSchema,
     description: descriptionSchema,
     occurredAt: dateSchema,
+    isRecurring: z.boolean(),
   })
   .partial()
   .refine((value) => Object.keys(value).length > 0, {

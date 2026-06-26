@@ -166,6 +166,15 @@ function TransactionRow({
                 Manual
               </Badge>
             ) : null}
+            {transaction.isRecurring ? (
+              <Badge
+                variant="secondary"
+                className="h-5 gap-1 px-1.5 text-[11px]"
+              >
+                <Repeat2Icon className="size-3" aria-hidden="true" />
+                Recorrente
+              </Badge>
+            ) : null}
           </div>
         </div>
       </div>

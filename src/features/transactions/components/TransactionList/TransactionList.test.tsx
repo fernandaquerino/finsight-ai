@@ -14,6 +14,7 @@ const transactions: TransactionListItem[] = [
     kind: "expense",
     occurredAt: "2026-06-24T12:00:00.000Z",
     origin: "import",
+    isRecurring: false,
     category: {
       id: "cat-1",
       name: "Alimentacao",
@@ -32,6 +33,7 @@ const transactions: TransactionListItem[] = [
     kind: "income",
     occurredAt: "2026-06-23T12:00:00.000Z",
     origin: "manual",
+    isRecurring: true,
     category: {
       id: "cat-2",
       name: "Receita",
