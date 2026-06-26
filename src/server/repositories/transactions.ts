@@ -246,6 +246,38 @@ export const transactionRepository = {
     return transaction;
   },
 
+  async update(
+    db: Database,
+    userId: string,
+    id: string,
+    data: Partial<
+      Pick<
+        NewTransaction,
+        | "accountId"
+        | "categoryId"
+        | "amount"
+        | "kind"
+        | "description"
+        | "occurredAt"
+        | "dedupeHash"
+      >
+    >,
+  ) {
+    const [transaction] = await db
+      .update(transactions)
+      .set(data)
+      .where(
+        and(
+          eq(transactions.id, id),
+          eq(transactions.userId, userId),
+          isNull(transactions.deletedAt),
+        ),
+      )
+      .returning();
+
+    return transaction;
+  },
+
   async softDelete(db: Database, userId: string, id: string) {
     const [transaction] = await db
       .update(transactions)

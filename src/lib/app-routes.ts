@@ -35,7 +35,7 @@ export const appRoutes = {
   debts: "/debts",
   categories: "/categories",
   imports: "/imports",
-  manualEntry: "/transacoes/nova",
+  manualEntry: "/lancamento-manual",
   settings: "/settings",
 } as const;
 

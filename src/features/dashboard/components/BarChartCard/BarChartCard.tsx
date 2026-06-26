@@ -1,3 +1,5 @@
+"use client";
+
 import { ChartCard } from "@/components/app/ChartCard";
 import { BarChart } from "@/components/charts/BarChart";
 import {

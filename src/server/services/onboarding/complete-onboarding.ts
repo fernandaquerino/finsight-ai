@@ -1,4 +1,7 @@
-import { SUGGESTED_CATEGORIES } from "@/features/onboarding/data/catalog";
+import {
+  DEFAULT_INCOME_CATEGORIES,
+  SUGGESTED_CATEGORIES,
+} from "@/features/onboarding/data/catalog";
 import { accountRepository } from "@/server/repositories/accounts";
 import { categoryRepository } from "@/server/repositories/categories";
 import type { Database } from "@/server/repositories/types";
@@ -38,6 +41,15 @@ export async function completeOnboarding(
         continue;
       }
 
+      await categoryRepository.create(tx, {
+        userId,
+        name: category.name,
+        color: category.color,
+        kind: category.kind,
+      });
+    }
+
+    for (const category of DEFAULT_INCOME_CATEGORIES) {
       await categoryRepository.create(tx, {
         userId,
         name: category.name,

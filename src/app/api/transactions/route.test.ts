@@ -5,6 +5,13 @@ const mocks = vi.hoisted(() => ({
   db: {},
   requireUserId: vi.fn(),
   listTransactions: vi.fn(),
+  createTransaction: vi.fn(),
+  TransactionOwnershipError: class TransactionOwnershipError extends Error {
+    readonly code = "INVALID_REFERENCE";
+  },
+  DuplicateTransactionError: class DuplicateTransactionError extends Error {
+    readonly code = "DUPLICATE_TRANSACTION";
+  },
   UnauthorizedError: class UnauthorizedError extends Error {
     readonly statusCode = 401;
     readonly code = "UNAUTHORIZED";
@@ -25,6 +32,29 @@ vi.mock("@/server/auth/session", () => {
 vi.mock("@/server/services/transactions/list", () => ({
   listTransactions: mocks.listTransactions,
 }));
+
+vi.mock("@/server/services/transactions/mutate", () => ({
+  createTransaction: mocks.createTransaction,
+  TransactionOwnershipError: mocks.TransactionOwnershipError,
+  DuplicateTransactionError: mocks.DuplicateTransactionError,
+}));
+
+const validBody = {
+  accountId: "11111111-1111-4111-8111-111111111111",
+  categoryId: "22222222-2222-4222-8222-222222222222",
+  amount: 28.5,
+  kind: "expense",
+  description: "Padaria",
+  occurredAt: "2026-06-20",
+};
+
+function postRequest(body: unknown): Request {
+  return new Request("http://localhost/api/transactions", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+}
 
 describe("GET /api/transactions", () => {
   beforeEach(() => {
@@ -92,5 +122,79 @@ describe("GET /api/transactions", () => {
     await expect(response.json()).resolves.toMatchObject({
       error: { code: "UNAUTHORIZED" },
     });
+  });
+});
+
+describe("POST /api/transactions", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mocks.requireUserId.mockResolvedValue("user-1");
+    mocks.createTransaction.mockResolvedValue({ id: "t1", userId: "user-1" });
+  });
+
+  it("creates a transaction for the current user", async () => {
+    const { POST } = await import("./route");
+
+    const response = await POST(postRequest(validBody));
+
+    expect(response.status).toBe(201);
+    await expect(response.json()).resolves.toEqual({
+      data: { id: "t1", userId: "user-1" },
+    });
+    expect(mocks.createTransaction).toHaveBeenCalledWith(
+      mocks.db,
+      "user-1",
+      expect.objectContaining({ accountId: validBody.accountId, amount: 28.5 }),
+    );
+  });
+
+  it("rejects invalid body with 422", async () => {
+    const { POST } = await import("./route");
+
+    const response = await POST(postRequest({ amount: -5 }));
+
+    expect(response.status).toBe(422);
+    await expect(response.json()).resolves.toMatchObject({
+      error: { code: "INVALID_BODY" },
+    });
+    expect(mocks.createTransaction).not.toHaveBeenCalled();
+  });
+
+  it("maps ownership errors to 422", async () => {
+    mocks.createTransaction.mockRejectedValue(
+      new mocks.TransactionOwnershipError("Conta não encontrada."),
+    );
+    const { POST } = await import("./route");
+
+    const response = await POST(postRequest(validBody));
+
+    expect(response.status).toBe(422);
+    await expect(response.json()).resolves.toMatchObject({
+      error: { code: "INVALID_REFERENCE" },
+    });
+  });
+
+  it("maps duplicate errors to 409", async () => {
+    mocks.createTransaction.mockRejectedValue(
+      new mocks.DuplicateTransactionError(),
+    );
+    const { POST } = await import("./route");
+
+    const response = await POST(postRequest(validBody));
+
+    expect(response.status).toBe(409);
+    await expect(response.json()).resolves.toMatchObject({
+      error: { code: "DUPLICATE_TRANSACTION" },
+    });
+  });
+
+  it("requires authentication", async () => {
+    mocks.requireUserId.mockRejectedValue(new mocks.UnauthorizedError());
+    const { POST } = await import("./route");
+
+    const response = await POST(postRequest(validBody));
+
+    expect(response.status).toBe(401);
+    expect(mocks.createTransaction).not.toHaveBeenCalled();
   });
 });

@@ -1,57 +1,34 @@
-/* eslint-disable react-hooks/static-components */
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
+import { Controller, useForm, useWatch } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   ArrowDownLeftIcon,
   ArrowUpRightIcon,
   CheckIcon,
   ChevronDownIcon,
   LightbulbIcon,
+  ReceiptTextIcon,
 } from "lucide-react";
+import { z } from "zod";
 
 import { MoneyText } from "@/components/app/MoneyText";
 import { Button } from "@/components/ui/Button";
-import { getCategoryIcon } from "@/lib/categories/category-icons";
 import {
-  categoryKeys,
-  categoryMap,
-  type CategoryKey,
-  type CategoryMeta,
-} from "@/lib/categories/categories";
+  useAccounts,
+  useCategories,
+} from "@/features/transactions/hooks/useReferenceData";
+import { useCreateTransaction } from "@/features/transactions/hooks/useCreateTransaction";
+import { resolveCategoryKey } from "@/lib/categories";
+import { CategoryIcon } from "@/lib/categories/category-icons";
 import { parseMoney } from "@/lib/money/money";
+import { showToast } from "@/lib/toast/toast";
 import { cn } from "@/lib/utils";
-import type { TransactionKind } from "@/features/transactions/types";
 
-type ManualTransactionKind = Exclude<TransactionKind, "transfer">;
+type ManualKind = "expense" | "income";
 
-type SelectOption<TValue extends string> = Readonly<{
-  value: TValue;
-  label: string;
-}>;
-
-const defaultCategoryByKind = {
-  expense: "alimentacao",
-  income: "salario",
-} as const satisfies Readonly<Record<ManualTransactionKind, CategoryKey>>;
-
-const accounts = [
-  "Nubank · Conta",
-  "Itaú · Corrente",
-  "Inter · Conta",
-  "Carteira",
-] as const;
-
-const accountOptions = accounts.map((account) => ({
-  value: account,
-  label: account,
-}));
-
-function getCategoryOptionsByKind(kind: ManualTransactionKind): CategoryMeta[] {
-  return categoryKeys
-    .map((key) => categoryMap[key])
-    .filter((category) => category.kind === kind);
-}
+type SelectOption = Readonly<{ value: string; label: string }>;
 
 function formatDateInput(date: Date): string {
   const day = String(date.getDate()).padStart(2, "0");
@@ -61,13 +38,63 @@ function formatDateInput(date: Date): string {
   return `${day}/${month}/${year}`;
 }
 
+// Converte DD/MM/AAAA -> YYYY-MM-DD (formato esperado pela API). Retorna null
+// se a data não for válida (ex.: 31/02).
+function brDateToIso(value: string): string | null {
+  const match = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(value.trim());
+  if (!match) {
+    return null;
+  }
+
+  const [, day, month, year] = match;
+  const date = new Date(Number(year), Number(month) - 1, Number(day));
+
+  const isValid =
+    date.getFullYear() === Number(year) &&
+    date.getMonth() === Number(month) - 1 &&
+    date.getDate() === Number(day);
+
+  return isValid ? `${year}-${month}-${day}` : null;
+}
+
+const manualFormSchema = z.object({
+  kind: z.enum(["expense", "income"]),
+  amount: z
+    .string()
+    .refine(
+      (value) => parseMoney(value) > 0,
+      "Informe um valor maior que zero",
+    ),
+  description: z.string().trim().min(1, "Descrição é obrigatória"),
+  categoryId: z.string().optional(),
+  accountId: z.string().min(1, "Selecione uma conta"),
+  date: z
+    .string()
+    .refine(
+      (value) => brDateToIso(value) !== null,
+      "Data inválida (DD/MM/AAAA)",
+    ),
+});
+
+type ManualFormValues = z.infer<typeof manualFormSchema>;
+
+function normalizeCategoryName(name: string): string {
+  return name
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+}
+
 function Field({
   label,
   required = false,
+  error,
   children,
 }: Readonly<{
   label: string;
   required?: boolean;
+  error?: string;
   children: React.ReactNode;
 }>) {
   return (
@@ -77,26 +104,41 @@ function Field({
         {required ? <span className="text-danger">*</span> : null}
       </span>
       {children}
+      {error ? (
+        <span role="alert" className="mt-1 block text-xs text-danger">
+          {error}
+        </span>
+      ) : null}
     </label>
   );
 }
 
-function SelectLike<TValue extends string>({
+function SelectLike({
   value,
   onChange,
   options,
+  disabled,
+  placeholder,
 }: Readonly<{
-  value: TValue;
-  onChange: (value: TValue) => void;
-  options: readonly SelectOption<TValue>[];
+  value: string;
+  onChange: (value: string) => void;
+  options: readonly SelectOption[];
+  disabled?: boolean;
+  placeholder?: string;
 }>) {
   return (
     <div className="relative">
       <select
         value={value}
-        onChange={(event) => onChange(event.target.value as TValue)}
-        className="h-[38px] w-full appearance-none rounded-md border border-border-strong bg-card px-3 pr-9 text-sm text-foreground transition-colors outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+        disabled={disabled}
+        onChange={(event) => onChange(event.target.value)}
+        className="h-[38px] w-full appearance-none rounded-md border border-border-strong bg-card px-3 pr-9 text-sm text-foreground transition-colors outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:cursor-not-allowed disabled:opacity-60"
       >
+        {placeholder ? (
+          <option value="" disabled>
+            {placeholder}
+          </option>
+        ) : null}
         {options.map((option) => (
           <option key={option.value} value={option.value}>
             {option.label}
@@ -116,8 +158,8 @@ function KindToggle({
   kind,
   onChange,
 }: Readonly<{
-  kind: ManualTransactionKind;
-  onChange: (kind: ManualTransactionKind) => void;
+  kind: ManualKind;
+  onChange: (kind: ManualKind) => void;
 }>) {
   return (
     <div className="mb-[18px] flex gap-2 rounded-md bg-muted p-1">
@@ -152,65 +194,154 @@ function KindToggle({
   );
 }
 
+const helperText =
+  "Conforme você digita a descrição, eu sugiro a categoria mais provável com base nos seus lançamentos anteriores. Você sempre tem a palavra final.";
+
 function ManualTransactionScreen() {
-  const [kind, setKind] = useState<ManualTransactionKind>("expense");
-  const [amount, setAmount] = useState("");
-  const [description, setDescription] = useState("");
-  const [category, setCategory] = useState<CategoryKey>(
-    defaultCategoryByKind.expense,
+  const accountsQuery = useAccounts();
+  const categoriesQuery = useCategories();
+  const createTransaction = useCreateTransaction();
+
+  const {
+    control,
+    handleSubmit,
+    reset,
+    setValue,
+    formState: { errors, isValid },
+  } = useForm<ManualFormValues>({
+    resolver: zodResolver(manualFormSchema),
+    mode: "onChange",
+    defaultValues: {
+      kind: "expense",
+      amount: "",
+      description: "",
+      categoryId: "",
+      accountId: "",
+      date: formatDateInput(new Date()),
+    },
+  });
+
+  const [kind, amount, description, categoryId, accountId, date] = useWatch({
+    control,
+    name: ["kind", "amount", "description", "categoryId", "accountId", "date"],
+  });
+
+  const accounts = useMemo(
+    () => accountsQuery.data ?? [],
+    [accountsQuery.data],
   );
-  const [account, setAccount] =
-    useState<(typeof accounts)[number]>("Nubank · Conta");
-  const [date, setDate] = useState(() => formatDateInput(new Date()));
+  const categoriesForKind = useMemo(() => {
+    const seen = new Set<string>();
 
-  const categoryOptions = useMemo(() => {
-    return getCategoryOptionsByKind(kind);
-  }, [kind]);
+    return (categoriesQuery.data ?? []).filter((category) => {
+      if (category.kind !== kind) {
+        return false;
+      }
 
-  const categorySelectOptions = useMemo(() => {
-    return categoryOptions.map((categoryOption) => ({
-      value: categoryOption.key,
-      label: categoryOption.label,
-    }));
-  }, [categoryOptions]);
+      const key = `${category.kind}:${normalizeCategoryName(category.name)}`;
+      if (seen.has(key)) {
+        return false;
+      }
 
-  const selectedCategoryMeta = categoryMap[category];
-  const SelectedCategoryIcon = getCategoryIcon(category);
+      seen.add(key);
+      return true;
+    });
+  }, [categoriesQuery.data, kind]);
+
+  // Seleciona a primeira conta quando as contas carregam e nenhuma está escolhida.
+  useEffect(() => {
+    const firstAccount = accounts[0];
+    if (!accountId && firstAccount) {
+      setValue("accountId", firstAccount.id, { shouldValidate: true });
+    }
+  }, [accounts, accountId, setValue]);
+
+  // Mantém uma categoria válida para o tipo atual. Se a selecionada não
+  // pertence ao tipo, cai para a primeira disponível (ou vazio).
+  useEffect(() => {
+    const stillValid = categoriesForKind.some((c) => c.id === categoryId);
+    if (!stillValid) {
+      setValue("categoryId", categoriesForKind[0]?.id ?? "");
+    }
+  }, [categoriesForKind, categoryId, setValue]);
+
+  const accountOptions = useMemo<SelectOption[]>(
+    () =>
+      accounts.map((account) => ({ value: account.id, label: account.name })),
+    [accounts],
+  );
+  const categoryOptions = useMemo<SelectOption[]>(
+    () =>
+      categoriesForKind.map((category) => ({
+        value: category.id,
+        label: category.name,
+      })),
+    [categoriesForKind],
+  );
+
+  const selectedCategory = useMemo(
+    () => categoriesForKind.find((c) => c.id === categoryId) ?? null,
+    [categoriesForKind, categoryId],
+  );
+  const selectedCategoryKey = selectedCategory
+    ? resolveCategoryKey(selectedCategory.name)
+    : null;
 
   const parsedAmount = parseMoney(amount);
   const signedAmount =
     kind === "expense" ? -Math.abs(parsedAmount) : Math.abs(parsedAmount);
-
   const previewDescription = description.trim() || "Descrição da trans...";
-  const canSubmit = parsedAmount > 0 && description.trim().length > 0;
 
-  const helperText = useMemo(
-    () =>
-      "Conforme você digita a descrição, eu sugiro a categoria mais provável com base nos seus lançamentos anteriores. Você sempre tem a palavra final.",
-    [],
-  );
+  const hasAccounts = accounts.length > 0;
+  const isSubmitting = createTransaction.isPending;
 
-  function handleKindChange(nextKind: ManualTransactionKind) {
-    setKind(nextKind);
-
-    const nextCategoryOptions = getCategoryOptionsByKind(nextKind);
-    const currentCategoryExistsInNextKind = nextCategoryOptions.some(
-      (categoryOption) => categoryOption.key === category,
-    );
-
-    if (!currentCategoryExistsInNextKind) {
-      setCategory(
-        nextCategoryOptions[0]?.key ?? defaultCategoryByKind[nextKind],
-      );
+  function onSubmit(values: ManualFormValues) {
+    const occurredAt = brDateToIso(values.date);
+    if (!occurredAt) {
+      return;
     }
+
+    createTransaction.mutate(
+      {
+        accountId: values.accountId,
+        categoryId: values.categoryId ? values.categoryId : null,
+        amount: parseMoney(values.amount),
+        kind: values.kind,
+        description: values.description.trim(),
+        occurredAt,
+      },
+      {
+        onSuccess: () => {
+          showToast.success({ title: "Transação salva" });
+          reset({
+            kind: values.kind,
+            amount: "",
+            description: "",
+            categoryId: values.categoryId,
+            accountId: values.accountId,
+            date: formatDateInput(new Date()),
+          });
+        },
+        onError: (error) => {
+          showToast.error({
+            title: "Não foi possível salvar",
+            description:
+              error instanceof Error ? error.message : "Tente novamente.",
+          });
+        },
+      },
+    );
   }
 
   function handleClear() {
-    setAmount("");
-    setDescription("");
-    setCategory(defaultCategoryByKind[kind]);
-    setAccount("Nubank · Conta");
-    setDate(formatDateInput(new Date()));
+    reset({
+      kind,
+      amount: "",
+      description: "",
+      categoryId: categoriesForKind[0]?.id ?? "",
+      accountId: accounts[0]?.id ?? "",
+      date: formatDateInput(new Date()),
+    });
   }
 
   return (
@@ -221,31 +352,65 @@ function ManualTransactionScreen() {
             Nova transação
           </h1>
 
-          <KindToggle kind={kind} onChange={handleKindChange} />
+          {!accountsQuery.isLoading && !hasAccounts ? (
+            <p className="mb-4 rounded-md border border-border bg-muted/50 p-3 text-sm text-muted-foreground">
+              Você ainda não tem contas cadastradas. Crie uma conta no
+              onboarding para lançar transações.
+            </p>
+          ) : null}
 
-          <form className="flex flex-col gap-4">
-            <Field label="Valor" required>
-              <div className="relative">
-                <span className="absolute top-1/2 left-3 -translate-y-1/2 font-mono text-sm text-muted-foreground">
-                  R$
-                </span>
+          <Controller
+            control={control}
+            name="kind"
+            render={({ field }) => (
+              <KindToggle kind={field.value} onChange={field.onChange} />
+            )}
+          />
 
-                <input
-                  inputMode="decimal"
-                  value={amount}
-                  onChange={(event) => setAmount(event.target.value)}
-                  placeholder="0,00"
-                  className="h-[38px] w-full rounded-md border border-border-strong bg-card px-3 pl-10 font-mono text-base font-semibold text-foreground transition-colors outline-none placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20"
-                />
-              </div>
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="flex flex-col gap-4"
+          >
+            <Field label="Valor" required error={errors.amount?.message}>
+              <Controller
+                control={control}
+                name="amount"
+                render={({ field }) => (
+                  <div className="relative">
+                    <span className="absolute top-1/2 left-3 -translate-y-1/2 font-mono text-sm text-muted-foreground">
+                      R$
+                    </span>
+
+                    <input
+                      inputMode="decimal"
+                      value={field.value}
+                      onChange={field.onChange}
+                      onBlur={field.onBlur}
+                      placeholder="0,00"
+                      className="h-[38px] w-full rounded-md border border-border-strong bg-card px-3 pl-10 font-mono text-base font-semibold text-foreground transition-colors outline-none placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20"
+                    />
+                  </div>
+                )}
+              />
             </Field>
 
-            <Field label="Descrição" required>
-              <input
-                value={description}
-                onChange={(event) => setDescription(event.target.value)}
-                placeholder="Ex.: Almoço com a equipe"
-                className="h-[38px] w-full rounded-md border border-border-strong bg-card px-3 text-sm text-foreground transition-colors outline-none placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20"
+            <Field
+              label="Descrição"
+              required
+              error={errors.description?.message}
+            >
+              <Controller
+                control={control}
+                name="description"
+                render={({ field }) => (
+                  <input
+                    value={field.value}
+                    onChange={field.onChange}
+                    onBlur={field.onBlur}
+                    placeholder="Ex.: Almoço com a equipe"
+                    className="h-[38px] w-full rounded-md border border-border-strong bg-card px-3 text-sm text-foreground transition-colors outline-none placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20"
+                  />
+                )}
               />
             </Field>
 
@@ -257,38 +422,66 @@ function ManualTransactionScreen() {
                     : "Categoria de despesa"
                 }
               >
-                <SelectLike
-                  value={category}
-                  onChange={setCategory}
-                  options={categorySelectOptions}
+                <Controller
+                  control={control}
+                  name="categoryId"
+                  render={({ field }) => (
+                    <SelectLike
+                      value={field.value ?? ""}
+                      onChange={field.onChange}
+                      options={categoryOptions}
+                      disabled={categoryOptions.length === 0}
+                      placeholder={
+                        categoryOptions.length === 0
+                          ? "Sem categorias"
+                          : undefined
+                      }
+                    />
+                  )}
                 />
               </Field>
 
-              <Field label="Conta">
-                <SelectLike
-                  value={account}
-                  onChange={setAccount}
-                  options={accountOptions}
+              <Field label="Conta" required error={errors.accountId?.message}>
+                <Controller
+                  control={control}
+                  name="accountId"
+                  render={({ field }) => (
+                    <SelectLike
+                      value={field.value}
+                      onChange={field.onChange}
+                      options={accountOptions}
+                      disabled={!hasAccounts}
+                      placeholder={!hasAccounts ? "Sem contas" : undefined}
+                    />
+                  )}
                 />
               </Field>
             </div>
 
-            <Field label="Data">
-              <input
-                value={date}
-                onChange={(event) => setDate(event.target.value)}
-                className="h-[38px] w-full rounded-md border border-border-strong bg-card px-3 font-mono text-sm text-foreground transition-colors outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+            <Field label="Data" required error={errors.date?.message}>
+              <Controller
+                control={control}
+                name="date"
+                render={({ field }) => (
+                  <input
+                    value={field.value}
+                    onChange={field.onChange}
+                    onBlur={field.onBlur}
+                    placeholder="DD/MM/AAAA"
+                    className="h-[38px] w-full rounded-md border border-border-strong bg-card px-3 font-mono text-sm text-foreground transition-colors outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                  />
+                )}
               />
             </Field>
 
             <div className="mt-1 flex gap-2.5">
               <Button
-                type="button"
-                disabled={!canSubmit}
+                type="submit"
+                disabled={!isValid || !hasAccounts || isSubmitting}
                 className="h-9 flex-1"
               >
                 <CheckIcon className="size-4" aria-hidden="true" />
-                Salvar transação
+                {isSubmitting ? "Salvando..." : "Salvar transação"}
               </Button>
 
               <Button
@@ -296,6 +489,7 @@ function ManualTransactionScreen() {
                 variant="ghost"
                 className="h-9"
                 onClick={handleClear}
+                disabled={isSubmitting}
               >
                 Limpar
               </Button>
@@ -311,13 +505,23 @@ function ManualTransactionScreen() {
 
             <div className="flex items-center gap-3">
               <span
-                className={cn(
-                  "flex size-11 shrink-0 items-center justify-center rounded-lg border",
-                  selectedCategoryMeta.badgeClassName,
-                )}
+                className="flex size-11 shrink-0 items-center justify-center rounded-lg border border-border"
+                style={
+                  selectedCategory
+                    ? { backgroundColor: `${selectedCategory.color}1a` }
+                    : undefined
+                }
                 aria-hidden="true"
               >
-                <SelectedCategoryIcon className="size-[18px]" />
+                {selectedCategoryKey ? (
+                  <CategoryIcon
+                    categoryKey={selectedCategoryKey}
+                    className="size-[18px]"
+                    style={{ color: selectedCategory?.color }}
+                  />
+                ) : (
+                  <ReceiptTextIcon className="size-[18px] text-muted-foreground" />
+                )}
               </span>
 
               <div className="min-w-0 flex-1">
