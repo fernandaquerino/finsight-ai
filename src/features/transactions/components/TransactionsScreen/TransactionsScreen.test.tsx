@@ -1,9 +1,21 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { appRoutes } from "@/lib/app-routes";
 import { TransactionsScreen } from "./TransactionsScreen";
+
+function renderScreen() {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
+
+  return render(
+    <QueryClientProvider client={queryClient}>
+      <TransactionsScreen />
+    </QueryClientProvider>,
+  );
+}
 
 afterEach(() => {
   vi.unstubAllGlobals();
@@ -49,7 +61,7 @@ describe("TransactionsScreen", () => {
       ),
     );
 
-    render(<TransactionsScreen />);
+    renderScreen();
 
     expect(screen.getByLabelText("Carregando tela")).toHaveAttribute(
       "aria-busy",
@@ -58,10 +70,8 @@ describe("TransactionsScreen", () => {
 
     expect(await screen.findByText("Padaria Sao Jorge")).toBeInTheDocument();
     expect(screen.getByText("Mostrando 1 de 1")).toBeVisible();
-    expect(screen.getByRole("link", { name: "Manual" })).toHaveAttribute(
-      "href",
-      appRoutes.manualEntry,
-    );
+    // "Manual" e "Extrato" são chips de filtro por origem (não links).
+    expect(screen.getByRole("button", { name: "Manual" })).toBeVisible();
   });
 
   it("renders an empty state when the API has no items", async () => {
@@ -77,7 +87,7 @@ describe("TransactionsScreen", () => {
       ),
     );
 
-    render(<TransactionsScreen />);
+    renderScreen();
 
     expect(
       await screen.findByText("Nenhuma transação cadastrada"),
@@ -90,7 +100,7 @@ describe("TransactionsScreen", () => {
       vi.fn().mockResolvedValue(new Response(null, { status: 500 })),
     );
 
-    render(<TransactionsScreen />);
+    renderScreen();
 
     await waitFor(() => {
       expect(
@@ -112,7 +122,7 @@ describe("TransactionsScreen", () => {
     vi.stubGlobal("fetch", fetchMock);
     window.history.replaceState(null, "", "/transacoes?kind=expense");
 
-    render(<TransactionsScreen />);
+    renderScreen();
 
     await screen.findByText("Nenhum resultado encontrado");
 

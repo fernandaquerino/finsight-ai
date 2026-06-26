@@ -4,11 +4,15 @@ import type { TransactionListItem } from "@/features/transactions/types";
 type TransactionGroupByDateProps = Readonly<{
   label: string;
   transactions: TransactionListItem[];
+  onSelect?: (id: string) => void;
+  selectedId?: string;
 }>;
 
 function TransactionGroupByDate({
   label,
   transactions,
+  onSelect,
+  selectedId,
 }: TransactionGroupByDateProps) {
   return (
     <section aria-labelledby={`transactions-${label}`} className="bg-card">
@@ -22,7 +26,12 @@ function TransactionGroupByDate({
       </div>
       <ul aria-label={`Transações de ${label}`}>
         {transactions.map((transaction) => (
-          <TransactionRow key={transaction.id} transaction={transaction} />
+          <TransactionRow
+            key={transaction.id}
+            transaction={transaction}
+            onSelect={onSelect}
+            isSelected={transaction.id === selectedId}
+          />
         ))}
       </ul>
     </section>

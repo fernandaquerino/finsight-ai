@@ -10,6 +10,8 @@ type TransactionGroup = {
 type TransactionListProps = Readonly<{
   transactions: TransactionListItem[];
   now?: Date;
+  onSelect?: (id: string) => void;
+  selectedId?: string;
 }>;
 
 function toDateKey(date: Date): string {
@@ -87,7 +89,12 @@ export function groupTransactionsByDate(
   return Array.from(groups.values());
 }
 
-function TransactionList({ transactions, now }: TransactionListProps) {
+function TransactionList({
+  transactions,
+  now,
+  onSelect,
+  selectedId,
+}: TransactionListProps) {
   const groups = groupTransactionsByDate(transactions, now);
 
   return (
@@ -97,6 +104,8 @@ function TransactionList({ transactions, now }: TransactionListProps) {
           key={group.key}
           label={group.label}
           transactions={group.transactions}
+          onSelect={onSelect}
+          selectedId={selectedId}
         />
       ))}
     </div>

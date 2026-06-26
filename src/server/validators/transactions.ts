@@ -32,6 +32,9 @@ export const transactionsQuerySchema = z
     categoryId: optionalUuidSchema,
     accountId: optionalUuidSchema,
     kind: z.enum(["income", "expense", "transfer"]).optional(),
+    origin: z
+      .enum(["manual", "import", "recurring", "integration"])
+      .optional(),
     search: z.preprocess(
       (value) =>
         typeof value === "string" && value.trim() === "" ? undefined : value,

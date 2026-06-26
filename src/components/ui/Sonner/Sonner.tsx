@@ -2,10 +2,15 @@
 
 import { Toaster as Sonner, type ToasterProps } from "sonner";
 
+import { useThemeOptional } from "@/components/app/theme-provider";
+
 function Toaster({ ...props }: ToasterProps) {
+  const resolvedTheme = useThemeOptional()?.resolvedTheme;
+
   return (
     <Sonner
       data-slot="sonner"
+      theme={resolvedTheme}
       toastOptions={{
         classNames: {
           toast: "border border-border bg-card text-card-foreground shadow-lg",

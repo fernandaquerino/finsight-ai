@@ -26,6 +26,7 @@ export type TransactionListFilters = {
   categoryId?: string;
   accountId?: string;
   kind?: "income" | "expense" | "transfer";
+  origin?: "manual" | "import" | "recurring" | "integration";
   search?: string;
   page: number;
   limit: number;
@@ -58,6 +59,10 @@ function buildListConditions(
 
   if (filters.kind) {
     conditions.push(eq(transactions.kind, filters.kind));
+  }
+
+  if (filters.origin) {
+    conditions.push(eq(transactions.origin, filters.origin));
   }
 
   if (filters.search) {

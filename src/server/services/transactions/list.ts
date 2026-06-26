@@ -64,6 +64,7 @@ function toFilters(query: TransactionsQuery): TransactionListFilters {
     categoryId: query.categoryId,
     accountId: query.accountId,
     kind: query.kind,
+    origin: query.origin,
     search: query.search,
     page: query.page,
     limit: query.limit,

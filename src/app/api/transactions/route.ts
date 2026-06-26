@@ -35,6 +35,7 @@ export async function GET(request: Request): Promise<Response> {
     categoryId: searchParams.get("categoryId") ?? undefined,
     accountId: searchParams.get("accountId") ?? undefined,
     kind: searchParams.get("kind") ?? undefined,
+    origin: searchParams.get("origin") ?? undefined,
     search: searchParams.get("search") ?? undefined,
     page: searchParams.get("page") ?? undefined,
     limit: searchParams.get("limit") ?? undefined,

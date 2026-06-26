@@ -1,21 +1,21 @@
 "use client";
 
-import Link from "next/link";
-import {
-  CirclePlusIcon,
-  FileTextIcon,
-  LayersIcon,
-  type LucideIcon,
-} from "lucide-react";
+import { FileTextIcon, LayersIcon, PencilIcon, type LucideIcon } from "lucide-react";
 
-import { appRoutes } from "@/lib/app-routes";
 import { cn } from "@/lib/utils";
+
+export type TransactionOrigin =
+  | "manual"
+  | "import"
+  | "recurring"
+  | "integration";
 
 export type TransactionFilters = {
   search?: string;
   from?: string;
   to?: string;
   kind?: "income" | "expense" | "transfer";
+  origin?: TransactionOrigin;
   categoryId?: string;
   accountId?: string;
 };
@@ -76,26 +76,6 @@ function FilterChip({
       ) : null}
       {children}
     </button>
-  );
-}
-
-function ActionLink({
-  href,
-  children,
-  icon: Icon,
-}: Readonly<{
-  href: string;
-  children: React.ReactNode;
-  icon: LucideIcon;
-}>) {
-  return (
-    <Link
-      href={href}
-      className="inline-flex h-9 shrink-0 items-center justify-center gap-2 rounded-full border border-border bg-card px-4 text-sm font-medium text-muted-foreground transition-colors hover:border-border-strong hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
-    >
-      <Icon className="size-4" aria-hidden="true" />
-      {children}
-    </Link>
   );
 }
 
@@ -161,12 +141,28 @@ function DataFilterBar({
       </div>
 
       <div className="flex items-center gap-2 overflow-x-auto pb-1 xl:justify-end">
-        <ActionLink href={appRoutes.imports} icon={FileTextIcon}>
+        <FilterChip
+          active={filters.origin === "import"}
+          icon={FileTextIcon}
+          onClick={() =>
+            patch({
+              origin: filters.origin === "import" ? undefined : "import",
+            })
+          }
+        >
           Extrato
-        </ActionLink>
-        <ActionLink href={appRoutes.manualEntry} icon={CirclePlusIcon}>
+        </FilterChip>
+        <FilterChip
+          active={filters.origin === "manual"}
+          icon={PencilIcon}
+          onClick={() =>
+            patch({
+              origin: filters.origin === "manual" ? undefined : "manual",
+            })
+          }
+        >
           Manual
-        </ActionLink>
+        </FilterChip>
       </div>
     </section>
   );

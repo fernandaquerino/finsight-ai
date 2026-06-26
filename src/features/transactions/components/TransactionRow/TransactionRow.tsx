@@ -19,6 +19,8 @@ import type {
 
 type TransactionRowProps = Readonly<{
   transaction: TransactionListItem;
+  onSelect?: (id: string) => void;
+  isSelected?: boolean;
 }>;
 
 const kindIconClass = {
@@ -102,7 +104,11 @@ function formatTransactionDate(date: Date): string {
   return `${date.getDate()} ${monthLabels[date.getMonth()]}`;
 }
 
-function TransactionRow({ transaction }: TransactionRowProps) {
+function TransactionRow({
+  transaction,
+  onSelect,
+  isSelected = false,
+}: TransactionRowProps) {
   const signedAmount = getSignedAmount(transaction.kind, transaction.amount);
   const occurredAt = new Date(transaction.occurredAt);
   const categoryName = transaction.category?.name ?? "Sem categoria";
@@ -117,8 +123,18 @@ function TransactionRow({ transaction }: TransactionRowProps) {
     : undefined;
 
   return (
-    <li className="grid min-h-[72px] grid-cols-[minmax(0,1fr)_auto] items-center gap-4 border-t border-border px-4 py-3 first:border-t-0 sm:px-6">
-      <div className="flex min-w-0 items-center gap-3">
+    <li>
+      <button
+        type="button"
+        onClick={() => onSelect?.(transaction.id)}
+        aria-current={isSelected ? "true" : undefined}
+        className={cn(
+          "grid w-full min-h-[72px] grid-cols-[minmax(0,1fr)_auto] items-center gap-4 border-t border-border px-4 py-3 text-left transition-colors first:border-t-0 sm:px-6",
+          "hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none focus-visible:-ring-inset",
+          isSelected && "bg-primary-soft/40",
+        )}
+      >
+        <div className="flex min-w-0 items-center gap-3">
         <div
           className={cn(
             "flex size-11 shrink-0 items-center justify-center rounded-lg",
@@ -164,7 +180,8 @@ function TransactionRow({ transaction }: TransactionRowProps) {
         <p className="mt-0.5 text-xs text-muted-foreground">
           {formatTransactionDate(occurredAt)}
         </p>
-      </div>
+        </div>
+      </button>
     </li>
   );
 }

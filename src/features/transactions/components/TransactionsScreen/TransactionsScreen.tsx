@@ -16,6 +16,7 @@ import {
   DataFilterBar,
   type TransactionFilters,
 } from "@/features/transactions/components/DataFilterBar";
+import { TransactionDetailPanel } from "@/features/transactions/components/TransactionDetailPanel";
 import { TransactionList } from "@/features/transactions/components/TransactionList";
 import type {
   TransactionListItem,
@@ -43,6 +44,7 @@ const filterKeys = [
   "from",
   "to",
   "kind",
+  "origin",
   "categoryId",
   "accountId",
 ] as const satisfies readonly (keyof TransactionFilters)[];
@@ -59,6 +61,8 @@ function readFiltersFromUrl(): TransactionFilters {
     from: params.get("from") ?? undefined,
     to: params.get("to") ?? undefined,
     kind: (params.get("kind") as TransactionFilters["kind"]) ?? undefined,
+    origin:
+      (params.get("origin") as TransactionFilters["origin"]) ?? undefined,
     categoryId: params.get("categoryId") ?? undefined,
     accountId: params.get("accountId") ?? undefined,
   };
@@ -211,6 +215,7 @@ function TransactionsScreen() {
   const [status, setStatus] = useState<"loading" | "error" | "success">(
     "loading",
   );
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   async function loadTransactions(
     nextFilters: TransactionFilters,
@@ -258,6 +263,10 @@ function TransactionsScreen() {
   }, []);
 
   const items = useMemo(() => data?.items ?? [], [data]);
+  const selectedTransaction = useMemo(
+    () => items.find((item) => item.id === selectedId) ?? null,
+    [items, selectedId],
+  );
   const hasActiveFilters = filterKeys.some((key) => Boolean(filters[key]));
   const categoryOptions = useMemo(() => {
     const options = new Map<
@@ -347,10 +356,25 @@ function TransactionsScreen() {
               }
             />
           ) : (
-            <TransactionList transactions={items} />
+            <TransactionList
+              transactions={items}
+              onSelect={setSelectedId}
+              selectedId={selectedId ?? undefined}
+            />
           )}
         </>
       )}
+
+      {selectedTransaction ? (
+        <TransactionDetailPanel
+          transaction={selectedTransaction}
+          open
+          onClose={() => setSelectedId(null)}
+          onChanged={() => {
+            void loadTransactions(filters);
+          }}
+        />
+      ) : null}
     </main>
   );
 }

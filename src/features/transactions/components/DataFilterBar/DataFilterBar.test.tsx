@@ -2,7 +2,6 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
-import { appRoutes } from "@/lib/app-routes";
 import { DataFilterBar } from "./DataFilterBar";
 
 describe("DataFilterBar", () => {
@@ -58,16 +57,31 @@ describe("DataFilterBar", () => {
     expect(onFiltersChange).toHaveBeenCalledWith({});
   });
 
-  it("renders import and manual entry actions", () => {
-    render(<DataFilterBar filters={{}} onFiltersChange={vi.fn()} />);
+  it("filters by origin via the Extrato and Manual chips", async () => {
+    const user = userEvent.setup();
+    const onFiltersChange = vi.fn();
 
-    expect(screen.getByRole("link", { name: "Extrato" })).toHaveAttribute(
-      "href",
-      appRoutes.imports,
+    render(<DataFilterBar filters={{}} onFiltersChange={onFiltersChange} />);
+
+    await user.click(screen.getByRole("button", { name: "Extrato" }));
+    expect(onFiltersChange).toHaveBeenCalledWith({ origin: "import" });
+
+    await user.click(screen.getByRole("button", { name: "Manual" }));
+    expect(onFiltersChange).toHaveBeenCalledWith({ origin: "manual" });
+  });
+
+  it("toggles the origin chip off when already active", async () => {
+    const user = userEvent.setup();
+    const onFiltersChange = vi.fn();
+
+    render(
+      <DataFilterBar
+        filters={{ origin: "manual" }}
+        onFiltersChange={onFiltersChange}
+      />,
     );
-    expect(screen.getByRole("link", { name: "Manual" })).toHaveAttribute(
-      "href",
-      appRoutes.manualEntry,
-    );
+
+    await user.click(screen.getByRole("button", { name: "Manual" }));
+    expect(onFiltersChange).toHaveBeenCalledWith({});
   });
 });
