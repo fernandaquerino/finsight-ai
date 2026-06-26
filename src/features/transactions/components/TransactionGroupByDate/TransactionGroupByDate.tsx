@@ -16,10 +16,10 @@ function TransactionGroupByDate({
 }: TransactionGroupByDateProps) {
   return (
     <section aria-labelledby={`transactions-${label}`} className="bg-card">
-      <div className="border-t border-border bg-muted/45 px-4 py-3 first:border-t-0 sm:px-6">
+      <div className="border-t border-border bg-muted/50 px-[18px] py-[9px] first:border-t-0">
         <h2
           id={`transactions-${label}`}
-          className="text-[0.7rem] font-semibold tracking-[0.12em] text-muted-foreground uppercase"
+          className="text-[11px] font-semibold tracking-[0.12em] text-muted-foreground uppercase"
         >
           {label}
         </h2>

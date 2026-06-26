@@ -7,10 +7,6 @@ import type { TransactionListItem } from "@/features/transactions/types";
 
 import { TransactionDetailPanel } from "./TransactionDetailPanel";
 
-vi.mock("next/navigation", () => ({
-  useRouter: () => ({ push: vi.fn(), replace: vi.fn(), back: vi.fn() }),
-}));
-
 const transaction: TransactionListItem = {
   id: "33333333-3333-4333-8333-333333333333",
   description: "Padaria São Jorge",
@@ -43,25 +39,32 @@ const categories = [
   },
 ];
 
+const accounts = [
+  { id: "11111111-1111-4111-8111-111111111111", name: "Nubank", type: "checking" },
+];
+
 let fetchMock: ReturnType<typeof vi.fn>;
 
 function mockFetch() {
   return vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
     const url = typeof input === "string" ? input : input.toString();
     if (url.includes("/api/categories")) {
-      return new Response(JSON.stringify({ data: categories }), {
-        status: 200,
-      });
+      return new Response(JSON.stringify({ data: categories }), { status: 200 });
+    }
+    if (url.includes("/api/accounts")) {
+      return new Response(JSON.stringify({ data: accounts }), { status: 200 });
     }
     // PATCH / DELETE em /api/transactions/:id
-    return new Response(
-      JSON.stringify({ data: { id: transaction.id } }),
-      { status: 200, headers: { method: String(init?.method) } },
-    );
+    return new Response(JSON.stringify({ data: { id: transaction.id } }), {
+      status: 200,
+      headers: { method: String(init?.method) },
+    });
   });
 }
 
-function renderPanel(props?: Partial<React.ComponentProps<typeof TransactionDetailPanel>>) {
+function renderPanel(
+  props?: Partial<React.ComponentProps<typeof TransactionDetailPanel>>,
+) {
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false } },
   });
@@ -72,7 +75,6 @@ function renderPanel(props?: Partial<React.ComponentProps<typeof TransactionDeta
     <QueryClientProvider client={queryClient}>
       <TransactionDetailPanel
         transaction={transaction}
-        open
         onClose={onClose}
         onChanged={onChanged}
         {...props}
@@ -109,15 +111,40 @@ describe("TransactionDetailPanel", () => {
     const user = userEvent.setup();
     const { onChanged } = renderPanel();
 
-    await waitFor(() => {
-      expect(
-        screen.getByRole("option", { name: "Transporte" }),
-      ).toBeInTheDocument();
+    // O select inline só aparece após clicar em "Recategorizar", que fica
+    // habilitado quando as categorias terminam de carregar.
+    const recategorizeButton = screen.getByRole("button", {
+      name: "Recategorizar",
     });
+    await waitFor(() => expect(recategorizeButton).toBeEnabled());
+    await user.click(recategorizeButton);
 
     await user.selectOptions(
       screen.getByLabelText("Recategorizar transação"),
       "44444444-4444-4444-8444-444444444444",
+    );
+
+    await waitFor(() => {
+      expect(fetchMock).toHaveBeenCalledWith(
+        `/api/transactions/${transaction.id}`,
+        expect.objectContaining({ method: "PATCH" }),
+      );
+    });
+    await waitFor(() => expect(onChanged).toHaveBeenCalled());
+  });
+
+  it("edits inline and saves via PATCH", async () => {
+    const user = userEvent.setup();
+    const { onChanged } = renderPanel();
+
+    await user.click(screen.getByRole("button", { name: "Editar" }));
+
+    const description = await screen.findByDisplayValue("Padaria São Jorge");
+    await user.clear(description);
+    await user.type(description, "Padaria São Jorge II");
+
+    await user.click(
+      screen.getByRole("button", { name: "Salvar alterações" }),
     );
 
     await waitFor(() => {

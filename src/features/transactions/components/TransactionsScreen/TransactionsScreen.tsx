@@ -307,7 +307,13 @@ function TransactionsScreen() {
   }, [data, items.length]);
 
   return (
-    <main className="mx-auto flex w-full max-w-[1240px] flex-col gap-5 p-5 sm:p-6">
+    <main
+      className={cn(
+        "mx-auto flex w-full max-w-[1240px] flex-col gap-5 p-5 sm:p-6",
+        // Reserva a coluna do painel fixo (380px) à direita quando há seleção.
+        selectedTransaction && "lg:pr-[404px]",
+      )}
+    >
       {status === "loading" ? (
         <TransactionsLoading />
       ) : status === "error" ? (
@@ -367,8 +373,8 @@ function TransactionsScreen() {
 
       {selectedTransaction ? (
         <TransactionDetailPanel
+          key={selectedTransaction.id}
           transaction={selectedTransaction}
-          open
           onClose={() => setSelectedId(null)}
           onChanged={() => {
             void loadTransactions(filters);

@@ -129,15 +129,22 @@ function TransactionRow({
         onClick={() => onSelect?.(transaction.id)}
         aria-current={isSelected ? "true" : undefined}
         className={cn(
-          "grid w-full min-h-[72px] grid-cols-[minmax(0,1fr)_auto] items-center gap-4 border-t border-border px-4 py-3 text-left transition-colors first:border-t-0 sm:px-6",
-          "hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none focus-visible:-ring-inset",
-          isSelected && "bg-primary-soft/40",
+          "relative flex w-full items-center gap-3 border-t border-border px-[18px] py-[11px] text-left transition-colors first:border-t-0",
+          "hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset focus-visible:outline-none",
+          isSelected && "bg-primary-soft",
         )}
       >
-        <div className="flex min-w-0 items-center gap-3">
+        <span
+          aria-hidden="true"
+          className={cn(
+            "absolute inset-y-0 left-0 w-[3px] bg-primary transition-opacity",
+            isSelected ? "opacity-100" : "opacity-0",
+          )}
+        />
+
         <div
           className={cn(
-            "flex size-11 shrink-0 items-center justify-center rounded-lg",
+            "flex size-9 shrink-0 items-center justify-center rounded-[9px]",
             !iconStyle && kindIconClass[transaction.kind],
           )}
           style={iconStyle}
@@ -146,15 +153,15 @@ function TransactionRow({
           <CategoryIcon categoryName={categoryName} kind={transaction.kind} />
         </div>
 
-        <div className="min-w-0">
+        <div className="min-w-0 flex-1">
           <p className="truncate text-sm leading-tight font-medium text-foreground">
             {transaction.description ?? categoryName}
           </p>
-          <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm leading-tight text-muted-foreground">
-            <span className="inline-flex items-center gap-1">
+          <div className="mt-px flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] leading-tight text-muted-foreground">
+            <span className="inline-flex items-center gap-1.5">
               {transaction.category?.color ? (
                 <span
-                  className="size-2 rounded-full"
+                  className="size-2 rounded-[3px]"
                   style={{ backgroundColor: transaction.category.color }}
                   aria-hidden="true"
                 />
@@ -177,18 +184,17 @@ function TransactionRow({
             ) : null}
           </div>
         </div>
-      </div>
 
-      <div className="text-right">
-        <MoneyText
-          value={signedAmount}
-          showSign
-          tone={signedAmount > 0 ? "positive" : "neutral"}
-          className="text-sm font-semibold"
-        />
-        <p className="mt-0.5 text-xs text-muted-foreground">
-          {formatTransactionDate(occurredAt)}
-        </p>
+        <div className="text-right">
+          <MoneyText
+            value={signedAmount}
+            showSign
+            tone={signedAmount > 0 ? "positive" : "neutral"}
+            className="text-sm font-medium"
+          />
+          <p className="mt-px text-[11px] text-muted-foreground">
+            {formatTransactionDate(occurredAt)}
+          </p>
         </div>
       </button>
     </li>
