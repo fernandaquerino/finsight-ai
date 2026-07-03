@@ -81,13 +81,19 @@ const editFormSchema = z.object({
   kind: z.enum(["expense", "income"]),
   amount: z
     .string()
-    .refine((value) => parseMoney(value) > 0, "Informe um valor maior que zero"),
+    .refine(
+      (value) => parseMoney(value) > 0,
+      "Informe um valor maior que zero",
+    ),
   description: z.string().trim().min(1, "Descrição é obrigatória"),
   categoryId: z.string().optional(),
   accountId: z.string().min(1, "Selecione uma conta"),
   date: z
     .string()
-    .refine((value) => brDateToIso(value) !== null, "Data inválida (DD/MM/AAAA)"),
+    .refine(
+      (value) => brDateToIso(value) !== null,
+      "Data inválida (DD/MM/AAAA)",
+    ),
 });
 
 type EditFormValues = z.infer<typeof editFormSchema>;
@@ -205,9 +211,9 @@ function TransactionDetailPanel({
       aria-label="Detalhe da transação"
       className="fixed inset-0 z-40 flex flex-col overflow-y-auto bg-card lg:top-14 lg:left-auto lg:z-10 lg:w-[380px] lg:border-l lg:border-border"
     >
-      <div className="flex flex-col gap-5 p-6">
-        <div className="flex items-center justify-between">
-          <h2 className="text-base font-medium text-foreground">
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center justify-between border-b border-border px-4 py-3.5">
+          <h2 className="text-[13px] font-medium text-foreground">
             {mode === "edit" ? "Editar transação" : "Detalhe da transação"}
           </h2>
           <Button
@@ -328,9 +334,9 @@ function ViewContent({
 
   return (
     <>
-      <div className="flex flex-col items-center gap-2.5 pb-5 text-center">
+      <div className="flex flex-col items-center gap-2.5 text-center">
         <span
-          className="flex size-16 items-center justify-center rounded-2xl"
+          className="flex size-12 items-center justify-center rounded-2xl"
           style={
             transaction.category?.color
               ? {
@@ -341,17 +347,17 @@ function ViewContent({
           }
           aria-hidden="true"
         >
-          <CategoryIcon categoryKey={categoryKey} className="size-7" />
+          <CategoryIcon categoryKey={categoryKey} className="size-6" />
         </span>
 
-        <p className="text-[1.05rem] font-medium text-foreground">
+        <p className="text-base font-medium text-foreground">
           {transaction.description ?? categoryName}
         </p>
         <MoneyText
           value={signedAmount}
           showSign
           tone={signedAmount > 0 ? "positive" : "neutral"}
-          className="text-[2rem] leading-none font-bold"
+          className="text-2xl leading-none font-bold"
         />
 
         <span className="mt-1 inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-2.5 py-1 text-xs text-muted-foreground">
@@ -362,7 +368,7 @@ function ViewContent({
 
       <div className="border-t border-border" />
 
-      <div className="flex flex-col">
+      <div className="flex flex-col px-4.5">
         <DetailRow label="Data">
           {formatFullDate(transaction.occurredAt)}
         </DetailRow>
@@ -406,7 +412,9 @@ function ViewContent({
           )}
         </DetailRow>
 
-        <DetailRow label="Conta">{transaction.account.name ?? "Conta"}</DetailRow>
+        <DetailRow label="Conta">
+          {transaction.account.name ?? "Conta"}
+        </DetailRow>
 
         {transaction.description ? (
           <DetailRow label="Descrição">{transaction.description}</DetailRow>
@@ -414,7 +422,7 @@ function ViewContent({
       </div>
 
       {/* Placeholder para a Análise da IA (feature futura). */}
-      <section className="rounded-xl border border-primary/25 bg-primary-soft/30 p-4">
+      <section className="m-4.5 mt-0 mb-0 rounded-xl border border-primary/25 bg-primary-soft/30 p-4">
         <div className="flex items-start gap-2.5">
           <span className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-primary">
             <SparklesIcon className="size-4" aria-hidden="true" />
@@ -459,13 +467,15 @@ function ViewContent({
           </div>
         </div>
       ) : (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 p-4.5">
           <div className="grid grid-cols-2 gap-2">
             <Button
               variant="secondary"
               className="h-9"
               onClick={() => setRecategorizing(true)}
-              disabled={isMutating || isTransfer || categoryOptions.length === 0}
+              disabled={
+                isMutating || isTransfer || categoryOptions.length === 0
+              }
             >
               <TagIcon className="size-4" aria-hidden="true" />
               Recategorizar
@@ -587,7 +597,7 @@ function EditTransactionForm({
   }
 
   return (
-    <form onSubmit={handleSubmit(submit)} className="flex flex-col gap-4">
+    <form onSubmit={handleSubmit(submit)} className="flex flex-col gap-4 p-4.5">
       <Controller
         control={control}
         name="kind"
@@ -650,7 +660,9 @@ function EditTransactionForm({
       </EditField>
 
       <EditField
-        label={kind === "income" ? "Categoria de receita" : "Categoria de despesa"}
+        label={
+          kind === "income" ? "Categoria de receita" : "Categoria de despesa"
+        }
       >
         <Controller
           control={control}

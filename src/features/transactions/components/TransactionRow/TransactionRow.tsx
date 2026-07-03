@@ -129,8 +129,8 @@ function TransactionRow({
         onClick={() => onSelect?.(transaction.id)}
         aria-current={isSelected ? "true" : undefined}
         className={cn(
-          "relative flex w-full items-center gap-3 border-t border-border px-[18px] py-[11px] text-left transition-colors first:border-t-0",
-          "hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset focus-visible:outline-none",
+          "relative flex w-full cursor-pointer items-center gap-3 border-t border-border px-[18px] py-[11px] text-left transition-colors",
+          "hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none focus-visible:ring-inset",
           isSelected && "bg-primary-soft",
         )}
       >

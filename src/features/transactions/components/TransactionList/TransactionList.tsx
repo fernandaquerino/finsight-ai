@@ -98,7 +98,7 @@ function TransactionList({
   const groups = groupTransactionsByDate(transactions, now);
 
   return (
-    <div className="overflow-hidden rounded-lg border border-border bg-card shadow-card">
+    <div className="overflow-hidden rounded-lg border border-t-0 border-border bg-card shadow-card">
       {groups.map((group) => (
         <TransactionGroupByDate
           key={group.key}

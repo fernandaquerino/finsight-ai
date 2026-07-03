@@ -1,6 +1,11 @@
 "use client";
 
-import { FileTextIcon, LayersIcon, PencilIcon, type LucideIcon } from "lucide-react";
+import {
+  FileTextIcon,
+  LayersIcon,
+  PencilIcon,
+  type LucideIcon,
+} from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -59,7 +64,7 @@ function FilterChip({
       type="button"
       onClick={onClick}
       className={cn(
-        "inline-flex h-9 shrink-0 items-center justify-center gap-2 rounded-full border px-4 text-sm font-medium transition-colors",
+        "inline-flex h-9 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-full border px-3 text-[13px] font-medium transition-colors",
         "focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none",
         active
           ? "border-primary/55 bg-primary-soft text-primary"

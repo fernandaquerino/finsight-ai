@@ -61,8 +61,7 @@ function readFiltersFromUrl(): TransactionFilters {
     from: params.get("from") ?? undefined,
     to: params.get("to") ?? undefined,
     kind: (params.get("kind") as TransactionFilters["kind"]) ?? undefined,
-    origin:
-      (params.get("origin") as TransactionFilters["origin"]) ?? undefined,
+    origin: (params.get("origin") as TransactionFilters["origin"]) ?? undefined,
     categoryId: params.get("categoryId") ?? undefined,
     accountId: params.get("accountId") ?? undefined,
   };
@@ -129,14 +128,14 @@ function buildSummary(items: TransactionListItem[]): SummaryMetric[] {
     {
       label: "Entradas",
       value: income,
-      icon: ArrowUpRightIcon,
+      icon: ArrowDownRightIcon,
       className: "bg-success-soft text-success",
       tone: "neutral",
     },
     {
       label: "Saídas",
       value: expenses,
-      icon: ArrowDownRightIcon,
+      icon: ArrowUpRightIcon,
       className: "bg-danger-soft text-danger",
       tone: "neutral",
     },
@@ -144,7 +143,7 @@ function buildSummary(items: TransactionListItem[]): SummaryMetric[] {
       label: "Resultado",
       value: result,
       icon: WalletIcon,
-      className: "bg-primary-soft text-primary",
+      className: "bg-success-soft text-success",
       showSign: true,
       tone: result > 0 ? "positive" : "neutral",
     },
@@ -170,7 +169,8 @@ function SummaryCards({ items }: { items: TransactionListItem[] }) {
   return (
     <section
       aria-label="Resumo financeiro das transações"
-      className="grid w-full gap-3 sm:grid-cols-3 lg:w-auto lg:grid-cols-[repeat(3,220px)]"
+      // className="grid w-full gap-3 sm:grid-cols-3 lg:w-auto lg:grid-cols-[repeat(3,220px)]"
+      className="flex gap-3"
     >
       {metrics.map((metric) => {
         const Icon = metric.icon;
@@ -178,26 +178,26 @@ function SummaryCards({ items }: { items: TransactionListItem[] }) {
         return (
           <div
             key={metric.label}
-            className="flex h-[88px] items-center gap-3 rounded-lg border border-border bg-card px-4 shadow-card"
+            className="flex items-center gap-2.5 rounded-lg border border-border bg-card px-3 py-2 shadow-card"
           >
             <div
               className={cn(
-                "flex size-11 items-center justify-center rounded-lg",
+                "flex size-7.5 items-center justify-center rounded-md",
                 metric.className,
               )}
               aria-hidden="true"
             >
-              <Icon className="size-[18px]" />
+              <Icon className="size-[15px]" />
             </div>
             <div>
-              <p className="text-xs font-semibold tracking-[0.08em] text-muted-foreground uppercase">
+              <p className="text-[10px] font-medium tracking-[0.08em] text-muted-foreground uppercase">
                 {metric.label}
               </p>
               <MoneyText
                 value={metric.value}
                 showSign={metric.showSign}
                 tone={metric.tone}
-                className="text-[1.35rem] leading-tight font-bold"
+                className="text-base leading-tight font-semibold"
               />
             </div>
           </div>
@@ -327,9 +327,9 @@ function TransactionsScreen() {
         />
       ) : (
         <>
-          <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
+          <div className="flex flex-col items-center gap-4 xl:flex-row xl:justify-between">
             <SummaryCards items={items} />
-            <p className="font-mono text-sm tracking-[0.08em] text-muted-foreground xl:pt-8">
+            <p className="font-mono text-[13px] tracking-[0.08em] text-muted-foreground">
               {resultDescription}
             </p>
           </div>
