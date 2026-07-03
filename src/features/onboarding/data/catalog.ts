@@ -85,6 +85,13 @@ export const CATEGORY_KEYS = SUGGESTED_CATEGORIES.map((c) => c.key) as [
   ...CategoryKey[],
 ];
 
+// Categorias de receita criadas automaticamente no onboarding (não entram no
+// picker, que é só de despesas). Garante que lançar uma receita tenha opções.
+export const DEFAULT_INCOME_CATEGORIES = [
+  { name: "Salário", color: "#16A34A", kind: "income" },
+  { name: "Outros", color: "#94A3B8", kind: "income" },
+] as const;
+
 // --- Tipos de conta (passo 5) --------------------------------------------
 // Espelha o enum account_type do schema.
 export const ACCOUNT_TYPES = [

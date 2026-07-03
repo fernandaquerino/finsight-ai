@@ -29,4 +29,19 @@ export const categoryRepository = {
 
     return category;
   },
+
+  // Insere ignorando categorias que já existam (mesmo userId + name + kind).
+  // Torna o onboarding idempotente: rodar duas vezes não duplica.
+  async createManyIfAbsent(db: Database, rows: NewCategory[]) {
+    if (rows.length === 0) {
+      return;
+    }
+
+    await db
+      .insert(categories)
+      .values(rows)
+      .onConflictDoNothing({
+        target: [categories.userId, categories.name, categories.kind],
+      });
+  },
 };

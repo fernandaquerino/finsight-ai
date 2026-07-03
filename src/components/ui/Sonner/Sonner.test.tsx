@@ -3,6 +3,12 @@ import { describe, expect, it, vi } from "vitest";
 
 import { Toaster } from "./Sonner";
 
+// O Toaster lê o tema via useThemeOptional, que degrada sem ThemeProvider —
+// então renderizá-lo isolado (sem provider) é seguro.
+function renderToaster(ui: React.ReactElement) {
+  return render(ui);
+}
+
 vi.mock("sonner", () => ({
   Toaster: ({
     toastOptions,
@@ -37,13 +43,13 @@ vi.mock("sonner", () => ({
 
 describe("Toaster", () => {
   it("renders sonner toaster with data slot", () => {
-    render(<Toaster />);
+    renderToaster(<Toaster />);
 
     expect(screen.getByTestId("sonner")).toHaveAttribute("data-slot", "sonner");
   });
 
   it("forwards toaster props", () => {
-    render(<Toaster position="bottom-right" visibleToasts={3} />);
+    renderToaster(<Toaster position="bottom-right" visibleToasts={3} />);
 
     const toaster = screen.getByTestId("sonner");
 
@@ -52,7 +58,7 @@ describe("Toaster", () => {
   });
 
   it("sets FinSight toast class names", () => {
-    render(<Toaster />);
+    renderToaster(<Toaster />);
 
     expect(screen.getByTestId("toast-class")).toHaveTextContent(
       "border border-border bg-card text-card-foreground shadow-lg",

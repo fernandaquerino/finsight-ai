@@ -31,11 +31,11 @@ export function ReadyStep({
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col items-center gap-3 text-center">
-        <div className="flex size-14 items-center justify-center rounded-full bg-success-soft text-success">
+        <div className="flex size-14 h-16 w-16 items-center justify-center rounded-[18px] bg-success-soft text-success">
           <CheckCircle2 className="size-7" aria-hidden="true" />
         </div>
         <div className="flex flex-col gap-1">
-          <h1 className="text-2xl font-semibold text-foreground">
+          <h1 className="text-2xl font-medium text-foreground">
             {firstName
               ? `Tudo pronto para começar, ${firstName}`
               : "Tudo pronto para começar"}
@@ -128,7 +128,7 @@ function SummaryRow({
   return (
     <div className="flex items-center gap-3 rounded-xl border border-border bg-card p-4">
       <div
-        className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-muted text-foreground"
+        className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-muted bg-primary-soft text-foreground"
         aria-hidden="true"
       >
         <Icon className="size-4" />

@@ -43,6 +43,20 @@
       "when": 1782340254936,
       "tag": "0005_lively_doorman",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1782442339922,
+      "tag": "0006_happy_gressill",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1782442631474,
+      "tag": "0007_pink_thunderbolt",
+      "breakpoints": true
     }
   ]
 }

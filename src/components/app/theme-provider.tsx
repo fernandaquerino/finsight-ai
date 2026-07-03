@@ -125,3 +125,9 @@ export function useTheme(): ThemeContextValue {
 
   return context;
 }
+
+// Variante que não lança quando usada fora do ThemeProvider. Útil para
+// componentes globais (ex.: Toaster) que devem degradar graciosamente.
+export function useThemeOptional(): ThemeContextValue | null {
+  return useContext(ThemeContext);
+}

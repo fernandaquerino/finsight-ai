@@ -42,12 +42,18 @@ function mockDesktopViewport() {
 describe("AppShell routes", () => {
   it("matches only the root path for the dashboard route", () => {
     expect(isActiveRoute("/", appRoutes.dashboard)).toBe(true);
-    expect(isActiveRoute("/transactions", appRoutes.dashboard)).toBe(false);
+    expect(isActiveRoute(appRoutes.transactions, appRoutes.dashboard)).toBe(
+      false,
+    );
   });
 
   it("matches nested paths for non-root routes", () => {
-    expect(isActiveRoute("/transactions/new", appRoutes.transactions)).toBe(
-      true,
+    expect(
+      isActiveRoute(`${appRoutes.transactions}/123`, appRoutes.transactions),
+    ).toBe(true);
+    // Rotas irmãs de topo não devem ativar uma à outra.
+    expect(isActiveRoute(appRoutes.manualEntry, appRoutes.transactions)).toBe(
+      false,
     );
   });
 

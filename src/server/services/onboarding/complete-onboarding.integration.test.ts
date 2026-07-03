@@ -81,10 +81,12 @@ describeIntegration("completeOnboarding", () => {
     expect(profile?.onboardingCompletedAt).toBeInstanceOf(Date);
 
     const categories = await categoryRepository.listByUser(db, userId);
-    expect(categories).toHaveLength(3);
+    expect(categories).toHaveLength(5);
     expect(categories.map((c) => c.name).sort()).toEqual([
       "Alimentação",
       "Moradia",
+      "Outros",
+      "Salário",
       "Transporte",
     ]);
 

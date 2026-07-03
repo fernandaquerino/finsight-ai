@@ -2,6 +2,7 @@ import type { ElementType } from "react";
 import { FileUpIcon, LineChartIcon, SparklesIcon } from "lucide-react";
 
 import { EmptyState } from "@/components/feedback/EmptyState";
+import { appRoutes } from "@/lib/app-routes";
 
 type QuickStep = Readonly<{
   icon: ElementType;
@@ -40,7 +41,7 @@ export function DashboardEmptyState() {
         primaryAction={{ label: "Importar extrato", href: "/imports" }}
         secondaryAction={{
           label: "Lançar manualmente",
-          href: "/transactions/new",
+          href: appRoutes.manualEntry,
         }}
         className="bg-card"
       />

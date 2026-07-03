@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
+import { appRoutes } from "@/lib/app-routes";
 import { DashboardEmptyState } from "./DashboardEmptyState";
 
 describe("DashboardEmptyState", () => {
@@ -12,7 +13,7 @@ describe("DashboardEmptyState", () => {
     ).toHaveAttribute("href", "/imports");
     expect(
       screen.getByRole("link", { name: "Lançar manualmente" }),
-    ).toHaveAttribute("href", "/transactions/new");
+    ).toHaveAttribute("href", appRoutes.manualEntry);
   });
 
   it("renders the 3-step quick guide", () => {

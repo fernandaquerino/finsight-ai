@@ -43,3 +43,23 @@ export function formatSignedMoney(value: number): string {
     ? `+${formattedAbsoluteValue}`
     : `-${formattedAbsoluteValue}`;
 }
+
+export function parseMoney(value: string): number {
+  const normalized = value.replace(/\./g, "").replace(",", ".");
+  const parsed = Number(normalized);
+
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+// Converte o valor armazenado ("28.50") para o formato do input BR ("28,50").
+export function amountToInput(amount: string): string {
+  const value = Number(amount);
+  if (!Number.isFinite(value)) {
+    return "";
+  }
+
+  return value.toLocaleString("pt-BR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+}

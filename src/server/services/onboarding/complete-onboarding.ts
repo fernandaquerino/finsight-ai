@@ -1,4 +1,7 @@
-import { SUGGESTED_CATEGORIES } from "@/features/onboarding/data/catalog";
+import {
+  DEFAULT_INCOME_CATEGORIES,
+  SUGGESTED_CATEGORIES,
+} from "@/features/onboarding/data/catalog";
 import { accountRepository } from "@/server/repositories/accounts";
 import { categoryRepository } from "@/server/repositories/categories";
 import type { Database } from "@/server/repositories/types";
@@ -32,19 +35,29 @@ export async function completeOnboarding(
     });
 
     // Categorias: nome/cor/kind vêm do catálogo no servidor, nunca do cliente.
-    for (const key of input.categoryKeys) {
-      const category = categoryByKey.get(key);
-      if (!category) {
-        continue;
-      }
-
-      await categoryRepository.create(tx, {
+    // Inserção idempotente (ignora duplicatas) para que reonboarding não
+    // duplique categorias.
+    const expenseCategories = input.categoryKeys
+      .map((key) => categoryByKey.get(key))
+      .filter((category) => category !== undefined)
+      .map((category) => ({
         userId,
         name: category.name,
         color: category.color,
         kind: category.kind,
-      });
-    }
+      }));
+
+    const incomeCategories = DEFAULT_INCOME_CATEGORIES.map((category) => ({
+      userId,
+      name: category.name,
+      color: category.color,
+      kind: category.kind,
+    }));
+
+    await categoryRepository.createManyIfAbsent(tx, [
+      ...expenseCategories,
+      ...incomeCategories,
+    ]);
 
     for (const account of input.accounts) {
       await accountRepository.create(tx, {

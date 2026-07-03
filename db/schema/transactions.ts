@@ -1,6 +1,7 @@
 import type { InferInsertModel, InferSelectModel } from "drizzle-orm";
 import { sql } from "drizzle-orm";
 import {
+  boolean,
   index,
   numeric,
   pgEnum,
@@ -50,6 +51,10 @@ export const transactions = pgTable(
     description: text("description"),
     occurredAt: timestamp("occurred_at", { withTimezone: true }).notNull(),
     origin: transactionOrigin("origin").notNull(),
+    // Marca uma transação como recorrente (repete periodicamente). A geração
+    // automática de ocorrências futuras é um épico à parte (Future); por ora
+    // é um marcador editável pelo usuário.
+    isRecurring: boolean("is_recurring").default(false).notNull(),
     // dedupe_hash = sha256(date + amount + description + account_id).
     // Calculado na camada de service antes do insert.
     dedupeHash: text("dedupe_hash").notNull(),
