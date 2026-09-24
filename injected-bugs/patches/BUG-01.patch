@@ -1,0 +1,13 @@
+diff --git a/src/features/transactions/components/TransactionsScreen/TransactionsScreen.tsx b/src/features/transactions/components/TransactionsScreen/TransactionsScreen.tsx
+index 6ba7bf3..034d333 100644
+--- a/src/features/transactions/components/TransactionsScreen/TransactionsScreen.tsx
++++ b/src/features/transactions/components/TransactionsScreen/TransactionsScreen.tsx
+@@ -95,7 +95,7 @@ function syncFiltersToUrl(filters: TransactionFilters) {
+ 
+   const query = params.toString();
+   const nextUrl = query ? `/transacoes?${query}` : "/transacoes";
+-  window.history.replaceState(null, "", nextUrl);
++  window.history.pushState(null, "", nextUrl);
+ }
+ 
+ function getSignedAmount(transaction: TransactionListItem): number {

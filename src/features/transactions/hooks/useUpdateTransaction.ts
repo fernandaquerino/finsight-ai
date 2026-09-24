@@ -53,7 +53,7 @@ export function useUpdateTransaction() {
     }) => patchTransaction(id, payload),
     onSuccess: () => {
       void queryClient.invalidateQueries({
-        queryKey: transactionQueryKeys.all,
+        queryKey: transactionQueryKeys.list(),
       });
     },
   });

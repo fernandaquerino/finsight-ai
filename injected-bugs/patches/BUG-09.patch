@@ -1,0 +1,13 @@
+diff --git a/src/features/transactions/components/DataFilterBar/DataFilterBar.tsx b/src/features/transactions/components/DataFilterBar/DataFilterBar.tsx
+index 115377a..42dba26 100644
+--- a/src/features/transactions/components/DataFilterBar/DataFilterBar.tsx
++++ b/src/features/transactions/components/DataFilterBar/DataFilterBar.tsx
+@@ -98,7 +98,7 @@ function DataFilterBar({
+       aria-label="Filtros de transações"
+       className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between"
+     >
+-      <div className="flex min-w-0 items-center gap-2 overflow-x-auto pb-1">
++      <div className="flex min-w-0 items-center gap-2 pb-1">
+         <FilterChip
+           active={!filters.kind && !filters.categoryId}
+           icon={LayersIcon}

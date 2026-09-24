@@ -1,0 +1,12 @@
+diff --git a/src/components/app/NotificationsPanel/NotificationsPanel.tsx b/src/components/app/NotificationsPanel/NotificationsPanel.tsx
+index 27e66d8..a28a4b2 100644
+--- a/src/components/app/NotificationsPanel/NotificationsPanel.tsx
++++ b/src/components/app/NotificationsPanel/NotificationsPanel.tsx
+@@ -154,6 +154,7 @@ function NotificationsPanel() {
+   ).length;
+ 
+   function handleOpenChange(next: boolean) {
++    if (next) setNotifications(MOCKED_NOTIFICATIONS);
+     setOpen(next);
+   }
+ 

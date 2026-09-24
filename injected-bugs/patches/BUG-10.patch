@@ -1,0 +1,20 @@
+diff --git a/src/features/transactions/components/TransactionDetailPanel/TransactionDetailPanel.tsx b/src/features/transactions/components/TransactionDetailPanel/TransactionDetailPanel.tsx
+index 27c8cae..2e171e2 100644
+--- a/src/features/transactions/components/TransactionDetailPanel/TransactionDetailPanel.tsx
++++ b/src/features/transactions/components/TransactionDetailPanel/TransactionDetailPanel.tsx
+@@ -177,7 +177,6 @@ function TransactionDetailPanel({
+       {
+         onSuccess: () => {
+           showToast.success({ title: "Categoria atualizada" });
+-          onChanged();
+         },
+         onError: (error) =>
+           showToast.error({
+@@ -186,6 +185,7 @@ function TransactionDetailPanel({
+           }),
+       },
+     );
++    onChanged();
+   }
+ 
+   function handleDelete() {

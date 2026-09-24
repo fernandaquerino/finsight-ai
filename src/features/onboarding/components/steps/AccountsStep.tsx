@@ -44,6 +44,7 @@ export function AccountsStep({ accounts, onAdd, onRemove }: AccountsStepProps) {
   const [name, setName] = useState("");
   const [type, setType] = useState<AccountTypeValue>("checking");
   const [balance, setBalance] = useState("");
+  const [usedSuggestions, setUsedSuggestions] = useState<string[]>([]);
 
   function handleAdd() {
     const trimmedName = name.trim();
@@ -53,11 +54,7 @@ export function AccountsStep({ accounts, onAdd, onRemove }: AccountsStepProps) {
 
     onAdd({ name: trimmedName, type, initialBalance: parseBalance(balance) });
     setName("");
-    setType("checking");
-    setBalance("");
   }
-
-  const addedNames = new Set(accounts.map((account) => account.name));
 
   return (
     <div className="flex flex-col gap-6">
@@ -76,16 +73,17 @@ export function AccountsStep({ accounts, onAdd, onRemove }: AccountsStepProps) {
         </span>
         <div className="flex flex-wrap gap-2">
           {ACCOUNT_SUGGESTIONS.map((suggestion) => {
-            const alreadyAdded = addedNames.has(suggestion.name);
+            const alreadyAdded = usedSuggestions.includes(suggestion.key);
 
             return (
               <button
                 key={suggestion.key}
                 type="button"
                 disabled={alreadyAdded}
-                onClick={() =>
-                  onAdd({ name: suggestion.name, type: suggestion.type })
-                }
+                onClick={() => {
+                  onAdd({ name: suggestion.name, type: suggestion.type });
+                  setUsedSuggestions((used) => [...used, suggestion.key]);
+                }}
                 className={cn(
                   "flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-sm text-foreground transition-colors hover:border-muted-foreground/40",
                   "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none",

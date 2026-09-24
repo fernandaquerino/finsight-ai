@@ -1,0 +1,13 @@
+diff --git a/src/features/onboarding/components/OnboardingWizard.tsx b/src/features/onboarding/components/OnboardingWizard.tsx
+index b36abb3..076f283 100644
+--- a/src/features/onboarding/components/OnboardingWizard.tsx
++++ b/src/features/onboarding/components/OnboardingWizard.tsx
+@@ -146,7 +146,7 @@ export function OnboardingWizard({ initialName }: OnboardingWizardProps) {
+               name={state.name}
+               currency={state.currency}
+               trackingStartMonth={state.trackingStartMonth}
+-              onNameChange={(value) => update("name", value)}
++              onNameChange={(value) => update("name", value.trim())}
+               onCurrencyChange={(value: CurrencyCode) =>
+                 update("currency", value)
+               }

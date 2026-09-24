@@ -1,0 +1,13 @@
+diff --git a/src/features/onboarding/components/OnboardingWizard.tsx b/src/features/onboarding/components/OnboardingWizard.tsx
+index f42f10c..5db591a 100644
+--- a/src/features/onboarding/components/OnboardingWizard.tsx
++++ b/src/features/onboarding/components/OnboardingWizard.tsx
+@@ -40,7 +40,7 @@ export function OnboardingWizard({ initialName }: OnboardingWizardProps) {
+     goal: null,
+     categoryKeys: [],
+     accounts: [],
+-    aiConsent: false,
++    aiConsent: true,
+   }));
+ 
+   const step = ONBOARDING_STEPS[stepIndex] ?? ONBOARDING_STEPS[0];

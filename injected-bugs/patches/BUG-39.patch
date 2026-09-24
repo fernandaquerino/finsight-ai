@@ -1,0 +1,13 @@
+diff --git a/src/server/services/dashboard/category-breakdown.ts b/src/server/services/dashboard/category-breakdown.ts
+index 7001a45..17c9ccd 100644
+--- a/src/server/services/dashboard/category-breakdown.ts
++++ b/src/server/services/dashboard/category-breakdown.ts
+@@ -87,7 +87,7 @@ export async function getCategoryBreakdown(
+   userId: string,
+   period: ResolvedPeriod,
+ ): Promise<CategorySlice[]> {
+-  const key = dashboardCacheKey(userId, `categories:${period.key}`);
++  const key = dashboardCacheKey(userId, "categories");
+ 
+   const cached = await getCached<CategorySlice[]>(key);
+   if (cached) {

@@ -1,0 +1,17 @@
+diff --git a/src/features/transactions/components/TransactionDetailPanel/TransactionDetailPanel.tsx b/src/features/transactions/components/TransactionDetailPanel/TransactionDetailPanel.tsx
+index 11ae440..44fb314 100644
+--- a/src/features/transactions/components/TransactionDetailPanel/TransactionDetailPanel.tsx
++++ b/src/features/transactions/components/TransactionDetailPanel/TransactionDetailPanel.tsx
+@@ -241,12 +241,6 @@ function TransactionDetailPanel({
+                     setMode("view");
+                     onChanged();
+                   },
+-                  onError: (error) =>
+-                    showToast.error({
+-                      title: "Não foi possível salvar",
+-                      description:
+-                        error instanceof Error ? error.message : undefined,
+-                    }),
+                 },
+               );
+             }}

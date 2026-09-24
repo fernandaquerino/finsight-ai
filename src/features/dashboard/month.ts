@@ -16,7 +16,7 @@ export function parseMonthParam(
 ): MonthParam {
   if (value && /^\d{4}-\d{2}$/.test(value)) {
     const [year, month] = value.split("-").map(Number);
-    if (year && month && month >= 1 && month <= 12) {
+    if (year && month && month >= 1 && month < 12) {
       return { year, month };
     }
   }
@@ -33,7 +33,7 @@ export function monthParamToPeriodQuery(month: MonthParam): {
   from: string;
   to: string;
 } {
-  const lastDay = new Date(month.year, month.month, 0).getDate();
+  const lastDay = new Date(month.year, month.month - 1, 0).getDate();
   return {
     from: `${month.year}-${pad(month.month)}-01`,
     to: `${month.year}-${pad(month.month)}-${pad(lastDay)}`,

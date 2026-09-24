@@ -1,0 +1,13 @@
+diff --git a/src/features/transactions/components/DataFilterBar/DataFilterBar.tsx b/src/features/transactions/components/DataFilterBar/DataFilterBar.tsx
+index b687422..6bf5a6f 100644
+--- a/src/features/transactions/components/DataFilterBar/DataFilterBar.tsx
++++ b/src/features/transactions/components/DataFilterBar/DataFilterBar.tsx
+@@ -108,7 +108,7 @@ function DataFilterBar({
+         </FilterChip>
+         <FilterChip
+           active={filters.kind === "income"}
+-          onClick={() => patch({ kind: "income", categoryId: undefined })}
++          onClick={() => patch({ kind: "income" })}
+         >
+           Receitas
+         </FilterChip>

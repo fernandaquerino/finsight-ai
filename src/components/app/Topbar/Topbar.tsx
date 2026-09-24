@@ -44,7 +44,7 @@ function Topbar({ title, onMenuClick, user }: TopbarProps) {
           />
         </div>
 
-        <div className="lg:hidden">
+        <div className="md:hidden">
           <IconButton
             aria-label="Busca de comandos"
             variant="secondary"

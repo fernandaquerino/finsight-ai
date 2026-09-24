@@ -11,10 +11,16 @@ import {
 type MobileSidebarProps = Readonly<{
   open: boolean;
   pathname: string;
+  isCollapsed?: boolean;
   onOpenChange: (open: boolean) => void;
 }>;
 
-function MobileSidebar({ open, pathname, onOpenChange }: MobileSidebarProps) {
+function MobileSidebar({
+  open,
+  pathname,
+  isCollapsed,
+  onOpenChange,
+}: MobileSidebarProps) {
   return (
     <Drawer open={open} onOpenChange={onOpenChange} direction="left">
       <DrawerContent
@@ -27,6 +33,7 @@ function MobileSidebar({ open, pathname, onOpenChange }: MobileSidebarProps) {
         </DrawerDescription>
         <Sidebar
           pathname={pathname}
+          isCollapsed={isCollapsed}
           className="flex h-full w-full flex-col border-r-0 md:hidden lg:flex-row"
           onNavigate={() => onOpenChange(false)}
         />

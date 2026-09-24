@@ -83,7 +83,6 @@ function Sidebar({
           route={settingsRoute}
           isActive={isActiveRoute(pathname, settingsRoute.href)}
           isCollapsed={isCollapsed}
-          onNavigate={onNavigate}
         />
       </div>
     </aside>

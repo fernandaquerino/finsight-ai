@@ -1,0 +1,13 @@
+diff --git a/src/components/app/CommandSearch/CommandSearch.tsx b/src/components/app/CommandSearch/CommandSearch.tsx
+index 1d691ba..c948479 100644
+--- a/src/components/app/CommandSearch/CommandSearch.tsx
++++ b/src/components/app/CommandSearch/CommandSearch.tsx
+@@ -53,7 +53,7 @@ function CommandSearch({ open, onOpenChange }: CommandSearchProps) {
+     if (!normalizedQuery) return pageRoutes;
+ 
+     return pageRoutes.filter((route) =>
+-      route.label.toLowerCase().includes(normalizedQuery),
++      route.label.toLowerCase().startsWith(normalizedQuery),
+     );
+   }, [normalizedQuery]);
+ 

@@ -154,6 +154,7 @@ function NotificationsPanel() {
   ).length;
 
   function handleOpenChange(next: boolean) {
+    if (next) setNotifications(MOCKED_NOTIFICATIONS);
     setOpen(next);
   }
 

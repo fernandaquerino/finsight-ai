@@ -31,7 +31,7 @@ function DataList<TItem>({
   loadingCount = 4,
   className,
 }: DataListProps<TItem>) {
-  if (isLoading) {
+  if (isLoading && !error) {
     return (
       <LoadingState label={ariaLabel} className={className}>
         <ul className="space-y-3">

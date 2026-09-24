@@ -161,7 +161,7 @@ export const transactionRepository = {
       .where(
         and(eq(transactions.userId, userId), isNull(transactions.deletedAt)),
       )
-      .orderBy(desc(transactions.occurredAt))
+      .orderBy(desc(transactions.createdAt))
       .limit(limit);
   },
 
@@ -194,7 +194,7 @@ export const transactionRepository = {
       .leftJoin(categories, eq(categories.id, transactions.categoryId))
       .leftJoin(accounts, eq(accounts.id, transactions.accountId))
       .where(where)
-      .orderBy(desc(transactions.occurredAt), desc(transactions.createdAt))
+      .orderBy(desc(transactions.occurredAt))
       .limit(filters.limit)
       .offset(offset);
 
@@ -215,9 +215,7 @@ export const transactionRepository = {
     const [transaction] = await db
       .select({ id: transactions.id })
       .from(transactions)
-      .where(
-        and(eq(transactions.userId, userId), isNull(transactions.deletedAt)),
-      )
+      .where(eq(transactions.userId, userId))
       .limit(1);
 
     return Boolean(transaction);

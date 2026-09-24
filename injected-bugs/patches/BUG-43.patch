@@ -1,0 +1,13 @@
+diff --git a/src/features/transactions/components/ManualTransactionScreen/ManualTransactionScreen.tsx b/src/features/transactions/components/ManualTransactionScreen/ManualTransactionScreen.tsx
+index e686ab9..65f0983 100644
+--- a/src/features/transactions/components/ManualTransactionScreen/ManualTransactionScreen.tsx
++++ b/src/features/transactions/components/ManualTransactionScreen/ManualTransactionScreen.tsx
+@@ -373,7 +373,7 @@ function ManualTransactionScreen({
+       description: "",
+       categoryId: categoriesForKind[0]?.id ?? "",
+       accountId: accounts[0]?.id ?? "",
+-      date: formatDateInput(new Date()),
++      date,
+     });
+   }
+ 

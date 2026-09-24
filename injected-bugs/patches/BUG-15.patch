@@ -1,0 +1,13 @@
+diff --git a/src/server/repositories/transactions.ts b/src/server/repositories/transactions.ts
+index e10d759..1ef520d 100644
+--- a/src/server/repositories/transactions.ts
++++ b/src/server/repositories/transactions.ts
+@@ -161,7 +161,7 @@ export const transactionRepository = {
+       .where(
+         and(eq(transactions.userId, userId), isNull(transactions.deletedAt)),
+       )
+-      .orderBy(desc(transactions.occurredAt))
++      .orderBy(desc(transactions.createdAt))
+       .limit(limit);
+   },
+ 

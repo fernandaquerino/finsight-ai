@@ -1,0 +1,19 @@
+diff --git a/src/app/api/categories/route.ts b/src/app/api/categories/route.ts
+index 1efa7e8..f3d463f 100644
+--- a/src/app/api/categories/route.ts
++++ b/src/app/api/categories/route.ts
+@@ -56,11 +56,10 @@ export async function GET(): Promise<Response> {
+ 
+     const uniqueRows = [...currentRows, ...createdRows].filter(
+       (category, index, rows) => {
+-        const key = `${category.kind}:${normalizeCategoryName(category.name)}`;
++        const key = normalizeCategoryName(category.name);
+         return (
+-          rows.findIndex(
+-            (row) => `${row.kind}:${normalizeCategoryName(row.name)}` === key,
+-          ) === index
++          rows.findIndex((row) => normalizeCategoryName(row.name) === key) ===
++          index
+         );
+       },
+     );

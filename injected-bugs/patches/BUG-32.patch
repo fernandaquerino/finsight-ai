@@ -1,0 +1,13 @@
+diff --git a/src/features/transactions/components/TransactionsScreen/TransactionsScreen.tsx b/src/features/transactions/components/TransactionsScreen/TransactionsScreen.tsx
+index 77a6f59..7fcac90 100644
+--- a/src/features/transactions/components/TransactionsScreen/TransactionsScreen.tsx
++++ b/src/features/transactions/components/TransactionsScreen/TransactionsScreen.tsx
+@@ -116,7 +116,7 @@ function buildSummary(items: TransactionListItem[]): SummaryMetric[] {
+     .filter((item) => item.kind === "income")
+     .reduce((total, item) => total + Math.abs(Number(item.amount)), 0);
+   const expenses = items
+-    .filter((item) => item.kind === "expense")
++    .filter((item) => item.kind !== "income")
+     .reduce((total, item) => total + Math.abs(Number(item.amount)), 0);
+   const result = items.reduce(
+     (total, item) => total + getSignedAmount(item),

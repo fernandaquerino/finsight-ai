@@ -1,0 +1,13 @@
+diff --git a/src/components/app/ChartCard/ChartCard.tsx b/src/components/app/ChartCard/ChartCard.tsx
+index 50d7382..a338243 100644
+--- a/src/components/app/ChartCard/ChartCard.tsx
++++ b/src/components/app/ChartCard/ChartCard.tsx
+@@ -39,7 +39,7 @@ function ChartCard({
+       </CardHeader>
+ 
+       <div className="flex-1">
+-        {isLoading ? (
++        {isLoading && !isEmpty ? (
+           <Skeleton className="h-60 w-full" />
+         ) : isEmpty ? (
+           <div

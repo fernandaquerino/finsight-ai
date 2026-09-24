@@ -39,7 +39,7 @@ function ChartCard({
       </CardHeader>
 
       <div className="flex-1">
-        {isLoading ? (
+        {isLoading && !isEmpty ? (
           <Skeleton className="h-60 w-full" />
         ) : isEmpty ? (
           <div

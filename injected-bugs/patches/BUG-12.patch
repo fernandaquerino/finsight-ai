@@ -1,0 +1,13 @@
+diff --git a/src/server/repositories/transactions.ts b/src/server/repositories/transactions.ts
+index 689c2cf..e10d759 100644
+--- a/src/server/repositories/transactions.ts
++++ b/src/server/repositories/transactions.ts
+@@ -194,7 +194,7 @@ export const transactionRepository = {
+       .leftJoin(categories, eq(categories.id, transactions.categoryId))
+       .leftJoin(accounts, eq(accounts.id, transactions.accountId))
+       .where(where)
+-      .orderBy(desc(transactions.occurredAt), desc(transactions.createdAt))
++      .orderBy(desc(transactions.occurredAt))
+       .limit(filters.limit)
+       .offset(offset);
+ 

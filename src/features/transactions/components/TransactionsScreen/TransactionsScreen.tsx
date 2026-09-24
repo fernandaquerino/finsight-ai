@@ -61,7 +61,6 @@ function readFiltersFromUrl(): TransactionFilters {
     from: params.get("from") ?? undefined,
     to: params.get("to") ?? undefined,
     kind: (params.get("kind") as TransactionFilters["kind"]) ?? undefined,
-    origin: (params.get("origin") as TransactionFilters["origin"]) ?? undefined,
     categoryId: params.get("categoryId") ?? undefined,
     accountId: params.get("accountId") ?? undefined,
   };
@@ -95,7 +94,7 @@ function syncFiltersToUrl(filters: TransactionFilters) {
 
   const query = params.toString();
   const nextUrl = query ? `/transacoes?${query}` : "/transacoes";
-  window.history.replaceState(null, "", nextUrl);
+  window.history.pushState(null, "", nextUrl);
 }
 
 function getSignedAmount(transaction: TransactionListItem): number {
@@ -117,7 +116,7 @@ function buildSummary(items: TransactionListItem[]): SummaryMetric[] {
     .filter((item) => item.kind === "income")
     .reduce((total, item) => total + Math.abs(Number(item.amount)), 0);
   const expenses = items
-    .filter((item) => item.kind === "expense")
+    .filter((item) => item.kind !== "income")
     .reduce((total, item) => total + Math.abs(Number(item.amount)), 0);
   const result = items.reduce(
     (total, item) => total + getSignedAmount(item),
@@ -230,10 +229,6 @@ function TransactionsScreen() {
         },
       );
 
-      if (!response.ok) {
-        throw new Error("Failed to load transactions");
-      }
-
       const envelope =
         (await response.json()) as ApiEnvelope<TransactionsResponse>;
       setData(envelope.data);
@@ -267,7 +262,9 @@ function TransactionsScreen() {
     () => items.find((item) => item.id === selectedId) ?? null,
     [items, selectedId],
   );
-  const hasActiveFilters = filterKeys.some((key) => Boolean(filters[key]));
+  const hasActiveFilters = Boolean(
+    filters.kind || filters.categoryId || filters.search,
+  );
   const categoryOptions = useMemo(() => {
     const options = new Map<
       string,
@@ -311,7 +308,7 @@ function TransactionsScreen() {
       className={cn(
         "mx-auto flex w-full max-w-[1240px] flex-col gap-5 p-5 sm:p-6",
         // Reserva a coluna do painel fixo (380px) à direita quando há seleção.
-        selectedTransaction && "lg:pr-[404px]",
+        selectedTransaction && "xl:pr-[404px]",
       )}
     >
       {status === "loading" ? (
@@ -373,7 +370,6 @@ function TransactionsScreen() {
 
       {selectedTransaction ? (
         <TransactionDetailPanel
-          key={selectedTransaction.id}
           transaction={selectedTransaction}
           onClose={() => setSelectedId(null)}
           onChanged={() => {

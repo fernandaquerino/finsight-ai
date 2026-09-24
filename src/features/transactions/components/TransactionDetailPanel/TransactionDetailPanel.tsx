@@ -158,8 +158,6 @@ function TransactionDetailPanel({
   const accountsQuery = useAccounts();
   const updateTransaction = useUpdateTransaction();
   const deleteTransaction = useDeleteTransaction();
-  // O pai remonta este painel via `key={transaction.id}`, então o estado
-  // (modo, confirmação) já nasce limpo a cada transação selecionada.
   const [mode, setMode] = useState<"view" | "edit">("view");
   const [confirmingDelete, setConfirmingDelete] = useState(false);
 
@@ -179,7 +177,6 @@ function TransactionDetailPanel({
       {
         onSuccess: () => {
           showToast.success({ title: "Categoria atualizada" });
-          onChanged();
         },
         onError: (error) =>
           showToast.error({
@@ -188,6 +185,7 @@ function TransactionDetailPanel({
           }),
       },
     );
+    onChanged();
   }
 
   function handleDelete() {
@@ -209,7 +207,7 @@ function TransactionDetailPanel({
   return (
     <aside
       aria-label="Detalhe da transação"
-      className="fixed inset-0 z-40 flex flex-col overflow-y-auto bg-card lg:top-14 lg:left-auto lg:z-10 lg:w-[380px] lg:border-l lg:border-border"
+      className="fixed inset-0 z-40 flex flex-col bg-card lg:top-14 lg:left-auto lg:z-10 lg:w-[380px] lg:border-l lg:border-border"
     >
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between border-b border-border px-4 py-3.5">
@@ -243,12 +241,6 @@ function TransactionDetailPanel({
                     setMode("view");
                     onChanged();
                   },
-                  onError: (error) =>
-                    showToast.error({
-                      title: "Não foi possível salvar",
-                      description:
-                        error instanceof Error ? error.message : undefined,
-                    }),
                 },
               );
             }}
@@ -547,7 +539,7 @@ function EditTransactionForm({
       amount: amountToInput(transaction.amount),
       description: transaction.description ?? "",
       categoryId: transaction.category?.id ?? "",
-      accountId: transaction.account.id,
+      accountId: accounts[0]?.id ?? transaction.account.id,
       date: formatDateInput(new Date(transaction.occurredAt)),
     },
   });

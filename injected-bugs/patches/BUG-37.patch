@@ -1,0 +1,15 @@
+diff --git a/src/server/repositories/transactions.ts b/src/server/repositories/transactions.ts
+index 1ef520d..ba35823 100644
+--- a/src/server/repositories/transactions.ts
++++ b/src/server/repositories/transactions.ts
+@@ -215,9 +215,7 @@ export const transactionRepository = {
+     const [transaction] = await db
+       .select({ id: transactions.id })
+       .from(transactions)
+-      .where(
+-        and(eq(transactions.userId, userId), isNull(transactions.deletedAt)),
+-      )
++      .where(eq(transactions.userId, userId))
+       .limit(1);
+ 
+     return Boolean(transaction);

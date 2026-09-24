@@ -40,7 +40,7 @@ export function OnboardingWizard({ initialName }: OnboardingWizardProps) {
     goal: null,
     categoryKeys: [],
     accounts: [],
-    aiConsent: false,
+    aiConsent: true,
   }));
 
   const step = ONBOARDING_STEPS[stepIndex] ?? ONBOARDING_STEPS[0];
@@ -58,7 +58,7 @@ export function OnboardingWizard({ initialName }: OnboardingWizardProps) {
   }
 
   function goBack() {
-    setStepIndex((index) => Math.max(index - 1, 0));
+    setStepIndex((index) => Math.max(index - 1, 1));
   }
 
   function toggleCategory(key: CategoryKey) {
@@ -146,7 +146,7 @@ export function OnboardingWizard({ initialName }: OnboardingWizardProps) {
               name={state.name}
               currency={state.currency}
               trackingStartMonth={state.trackingStartMonth}
-              onNameChange={(value) => update("name", value)}
+              onNameChange={(value) => update("name", value.trim())}
               onCurrencyChange={(value: CurrencyCode) =>
                 update("currency", value)
               }

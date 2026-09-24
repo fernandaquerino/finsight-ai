@@ -8,7 +8,7 @@ type DashboardHistoryProps = Readonly<{
 
 export async function DashboardHistory({ userId }: DashboardHistoryProps) {
   const series = await getMonthlyHistory(getDb(), userId);
-  const isEmpty = series.every(
+  const isEmpty = series.some(
     (point) => point.receitas === 0 && point.despesas === 0,
   );
 

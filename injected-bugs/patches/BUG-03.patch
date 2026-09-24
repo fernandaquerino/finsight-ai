@@ -1,0 +1,15 @@
+diff --git a/src/features/transactions/components/TransactionsScreen/TransactionsScreen.tsx b/src/features/transactions/components/TransactionsScreen/TransactionsScreen.tsx
+index ec623b8..801be77 100644
+--- a/src/features/transactions/components/TransactionsScreen/TransactionsScreen.tsx
++++ b/src/features/transactions/components/TransactionsScreen/TransactionsScreen.tsx
+@@ -229,10 +229,6 @@ function TransactionsScreen() {
+         },
+       );
+ 
+-      if (!response.ok) {
+-        throw new Error("Failed to load transactions");
+-      }
+-
+       const envelope =
+         (await response.json()) as ApiEnvelope<TransactionsResponse>;
+       setData(envelope.data);

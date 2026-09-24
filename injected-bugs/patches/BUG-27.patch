@@ -1,0 +1,25 @@
+diff --git a/src/components/app/theme-provider.tsx b/src/components/app/theme-provider.tsx
+index f6346e3..fd553a2 100644
+--- a/src/components/app/theme-provider.tsx
++++ b/src/components/app/theme-provider.tsx
+@@ -94,11 +94,18 @@ export function ThemeProvider({
+       applyTheme(nextResolvedTheme, enableColorScheme);
+     }
+ 
++    function handleSystemChange(): void {
++      const systemTheme = getSystemTheme();
++
++      setResolvedTheme(systemTheme);
++      applyTheme(systemTheme, enableColorScheme);
++    }
++
+     syncTheme();
+-    mediaQuery.addEventListener("change", syncTheme);
++    mediaQuery.addEventListener("change", handleSystemChange);
+ 
+     return () => {
+-      mediaQuery.removeEventListener("change", syncTheme);
++      mediaQuery.removeEventListener("change", handleSystemChange);
+     };
+   }, [enableColorScheme, enableSystem, theme]);
+ 

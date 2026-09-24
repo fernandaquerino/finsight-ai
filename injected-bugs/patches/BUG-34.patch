@@ -1,0 +1,14 @@
+diff --git a/src/features/transactions/components/ManualTransactionScreen/ManualTransactionScreen.tsx b/src/features/transactions/components/ManualTransactionScreen/ManualTransactionScreen.tsx
+index 541d9bd..e686ab9 100644
+--- a/src/features/transactions/components/ManualTransactionScreen/ManualTransactionScreen.tsx
++++ b/src/features/transactions/components/ManualTransactionScreen/ManualTransactionScreen.tsx
+@@ -262,8 +262,7 @@ function ManualTransactionScreen({
+   // Mantém uma categoria válida para o tipo atual. Se a selecionada não
+   // pertence ao tipo, cai para a primeira disponível (ou vazio).
+   useEffect(() => {
+-    const stillValid = categoriesForKind.some((c) => c.id === categoryId);
+-    if (!stillValid) {
++    if (!categoryId) {
+       setValue("categoryId", categoriesForKind[0]?.id ?? "");
+     }
+   }, [categoriesForKind, categoryId, setValue]);

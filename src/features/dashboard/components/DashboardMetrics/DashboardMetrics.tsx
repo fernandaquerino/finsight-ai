@@ -49,7 +49,7 @@ export async function DashboardMetrics({
         />
       </div>
 
-      {summary.transactionCount === 0 && (
+      {balance === 0 && (
         <EmptyState
           variant="chart"
           title={`Sem movimentações em ${monthLabel}`}

@@ -1,0 +1,12 @@
+diff --git a/src/components/app/Sidebar/Sidebar.tsx b/src/components/app/Sidebar/Sidebar.tsx
+index 17387b6..adacec2 100644
+--- a/src/components/app/Sidebar/Sidebar.tsx
++++ b/src/components/app/Sidebar/Sidebar.tsx
+@@ -83,7 +83,6 @@ function Sidebar({
+           route={settingsRoute}
+           isActive={isActiveRoute(pathname, settingsRoute.href)}
+           isCollapsed={isCollapsed}
+-          onNavigate={onNavigate}
+         />
+       </div>
+     </aside>

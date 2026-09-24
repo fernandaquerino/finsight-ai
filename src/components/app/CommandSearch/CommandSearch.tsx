@@ -33,7 +33,7 @@ function CommandSearch({ open, onOpenChange }: CommandSearchProps) {
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
       const isCommandSearchShortcut =
-        (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k";
+        (event.metaKey || event.ctrlKey) && event.key === "k";
 
       if (!isCommandSearchShortcut) return;
 
@@ -53,7 +53,7 @@ function CommandSearch({ open, onOpenChange }: CommandSearchProps) {
     if (!normalizedQuery) return pageRoutes;
 
     return pageRoutes.filter((route) =>
-      route.label.toLowerCase().includes(normalizedQuery),
+      route.label.toLowerCase().startsWith(normalizedQuery),
     );
   }, [normalizedQuery]);
 

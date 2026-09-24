@@ -37,6 +37,7 @@ function AppShell({ children, user }: AppShellProps) {
       <MobileSidebar
         open={isMobileOpen}
         pathname={pathname}
+        isCollapsed={isCollapsed}
         onOpenChange={setIsMobileOpen}
       />
 

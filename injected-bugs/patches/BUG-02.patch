@@ -1,0 +1,12 @@
+diff --git a/src/features/transactions/components/TransactionsScreen/TransactionsScreen.tsx b/src/features/transactions/components/TransactionsScreen/TransactionsScreen.tsx
+index 034d333..ec623b8 100644
+--- a/src/features/transactions/components/TransactionsScreen/TransactionsScreen.tsx
++++ b/src/features/transactions/components/TransactionsScreen/TransactionsScreen.tsx
+@@ -61,7 +61,6 @@ function readFiltersFromUrl(): TransactionFilters {
+     from: params.get("from") ?? undefined,
+     to: params.get("to") ?? undefined,
+     kind: (params.get("kind") as TransactionFilters["kind"]) ?? undefined,
+-    origin: (params.get("origin") as TransactionFilters["origin"]) ?? undefined,
+     categoryId: params.get("categoryId") ?? undefined,
+     accountId: params.get("accountId") ?? undefined,
+   };

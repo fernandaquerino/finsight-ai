@@ -1,0 +1,15 @@
+diff --git a/src/features/transactions/components/TransactionsScreen/TransactionsScreen.tsx b/src/features/transactions/components/TransactionsScreen/TransactionsScreen.tsx
+index 801be77..2709543 100644
+--- a/src/features/transactions/components/TransactionsScreen/TransactionsScreen.tsx
++++ b/src/features/transactions/components/TransactionsScreen/TransactionsScreen.tsx
+@@ -262,7 +262,9 @@ function TransactionsScreen() {
+     () => items.find((item) => item.id === selectedId) ?? null,
+     [items, selectedId],
+   );
+-  const hasActiveFilters = filterKeys.some((key) => Boolean(filters[key]));
++  const hasActiveFilters = Boolean(
++    filters.kind || filters.categoryId || filters.search,
++  );
+   const categoryOptions = useMemo(() => {
+     const options = new Map<
+       string,

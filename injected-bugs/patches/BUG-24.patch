@@ -1,0 +1,42 @@
+diff --git a/src/components/app/AppShell/AppShell.tsx b/src/components/app/AppShell/AppShell.tsx
+index 2135aec..7035eec 100644
+--- a/src/components/app/AppShell/AppShell.tsx
++++ b/src/components/app/AppShell/AppShell.tsx
+@@ -37,6 +37,7 @@ function AppShell({ children, user }: AppShellProps) {
+       <MobileSidebar
+         open={isMobileOpen}
+         pathname={pathname}
++        isCollapsed={isCollapsed}
+         onOpenChange={setIsMobileOpen}
+       />
+ 
+diff --git a/src/components/app/MobileSidebar/MobileSidebar.tsx b/src/components/app/MobileSidebar/MobileSidebar.tsx
+index 18e5fbf..a41fc77 100644
+--- a/src/components/app/MobileSidebar/MobileSidebar.tsx
++++ b/src/components/app/MobileSidebar/MobileSidebar.tsx
+@@ -11,10 +11,16 @@ import {
+ type MobileSidebarProps = Readonly<{
+   open: boolean;
+   pathname: string;
++  isCollapsed?: boolean;
+   onOpenChange: (open: boolean) => void;
+ }>;
+ 
+-function MobileSidebar({ open, pathname, onOpenChange }: MobileSidebarProps) {
++function MobileSidebar({
++  open,
++  pathname,
++  isCollapsed,
++  onOpenChange,
++}: MobileSidebarProps) {
+   return (
+     <Drawer open={open} onOpenChange={onOpenChange} direction="left">
+       <DrawerContent
+@@ -27,6 +33,7 @@ function MobileSidebar({ open, pathname, onOpenChange }: MobileSidebarProps) {
+         </DrawerDescription>
+         <Sidebar
+           pathname={pathname}
++          isCollapsed={isCollapsed}
+           className="flex h-full w-full flex-col border-r-0 md:hidden lg:flex-row"
+           onNavigate={() => onOpenChange(false)}
+         />

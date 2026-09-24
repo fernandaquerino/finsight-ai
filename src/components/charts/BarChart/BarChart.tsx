@@ -78,7 +78,6 @@ function BarChart({
               .activeTooltipIndex;
             setActiveIndex(typeof idx === "number" ? idx : undefined);
           }}
-          onMouseLeave={() => setActiveIndex(undefined)}
         >
           <CartesianGrid
             strokeDasharray="3 3"

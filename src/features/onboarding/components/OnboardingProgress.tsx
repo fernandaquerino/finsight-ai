@@ -18,7 +18,7 @@ export function OnboardingProgress({
         role="progressbar"
         aria-valuemin={1}
         aria-valuemax={totalSteps}
-        aria-valuenow={currentStep}
+        aria-valuenow={currentStep - 1}
         aria-label={`Passo ${currentStep} de ${totalSteps}: ${stepLabel}`}
       >
         {Array.from({ length: totalSteps }, (_, index) => (

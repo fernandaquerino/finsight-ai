@@ -1,0 +1,13 @@
+diff --git a/src/components/app/Topbar/Topbar.tsx b/src/components/app/Topbar/Topbar.tsx
+index 82426fc..0904ce5 100644
+--- a/src/components/app/Topbar/Topbar.tsx
++++ b/src/components/app/Topbar/Topbar.tsx
+@@ -44,7 +44,7 @@ function Topbar({ title, onMenuClick, user }: TopbarProps) {
+           />
+         </div>
+ 
+-        <div className="lg:hidden">
++        <div className="md:hidden">
+           <IconButton
+             aria-label="Busca de comandos"
+             variant="secondary"

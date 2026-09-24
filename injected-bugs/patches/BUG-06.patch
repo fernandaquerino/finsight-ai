@@ -1,0 +1,13 @@
+diff --git a/src/features/transactions/components/TransactionsScreen/TransactionsScreen.tsx b/src/features/transactions/components/TransactionsScreen/TransactionsScreen.tsx
+index 94d983e..77a6f59 100644
+--- a/src/features/transactions/components/TransactionsScreen/TransactionsScreen.tsx
++++ b/src/features/transactions/components/TransactionsScreen/TransactionsScreen.tsx
+@@ -308,7 +308,7 @@ function TransactionsScreen() {
+       className={cn(
+         "mx-auto flex w-full max-w-[1240px] flex-col gap-5 p-5 sm:p-6",
+         // Reserva a coluna do painel fixo (380px) à direita quando há seleção.
+-        selectedTransaction && "lg:pr-[404px]",
++        selectedTransaction && "xl:pr-[404px]",
+       )}
+     >
+       {status === "loading" ? (

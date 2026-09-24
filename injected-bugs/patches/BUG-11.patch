@@ -1,0 +1,13 @@
+diff --git a/src/features/transactions/components/TransactionDetailPanel/TransactionDetailPanel.tsx b/src/features/transactions/components/TransactionDetailPanel/TransactionDetailPanel.tsx
+index 2e171e2..11ae440 100644
+--- a/src/features/transactions/components/TransactionDetailPanel/TransactionDetailPanel.tsx
++++ b/src/features/transactions/components/TransactionDetailPanel/TransactionDetailPanel.tsx
+@@ -207,7 +207,7 @@ function TransactionDetailPanel({
+   return (
+     <aside
+       aria-label="Detalhe da transação"
+-      className="fixed inset-0 z-40 flex flex-col overflow-y-auto bg-card lg:top-14 lg:left-auto lg:z-10 lg:w-[380px] lg:border-l lg:border-border"
++      className="fixed inset-0 z-40 flex flex-col bg-card lg:top-14 lg:left-auto lg:z-10 lg:w-[380px] lg:border-l lg:border-border"
+     >
+       <div className="flex flex-col gap-4">
+         <div className="flex items-center justify-between border-b border-border px-4 py-3.5">

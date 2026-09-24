@@ -1,0 +1,13 @@
+diff --git a/src/features/onboarding/components/OnboardingWizard.tsx b/src/features/onboarding/components/OnboardingWizard.tsx
+index 076f283..f42f10c 100644
+--- a/src/features/onboarding/components/OnboardingWizard.tsx
++++ b/src/features/onboarding/components/OnboardingWizard.tsx
+@@ -58,7 +58,7 @@ export function OnboardingWizard({ initialName }: OnboardingWizardProps) {
+   }
+ 
+   function goBack() {
+-    setStepIndex((index) => Math.max(index - 1, 0));
++    setStepIndex((index) => Math.max(index - 1, 1));
+   }
+ 
+   function toggleCategory(key: CategoryKey) {

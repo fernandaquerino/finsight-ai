@@ -1,0 +1,13 @@
+diff --git a/src/features/transactions/components/DataFilterBar/DataFilterBar.tsx b/src/features/transactions/components/DataFilterBar/DataFilterBar.tsx
+index 6bf5a6f..115377a 100644
+--- a/src/features/transactions/components/DataFilterBar/DataFilterBar.tsx
++++ b/src/features/transactions/components/DataFilterBar/DataFilterBar.tsx
+@@ -151,7 +151,7 @@ function DataFilterBar({
+           icon={FileTextIcon}
+           onClick={() =>
+             patch({
+-              origin: filters.origin === "import" ? undefined : "import",
++              origin: filters.origin === "manual" ? undefined : "import",
+             })
+           }
+         >

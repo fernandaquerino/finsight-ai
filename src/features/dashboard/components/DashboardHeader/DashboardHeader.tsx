@@ -1,6 +1,6 @@
 "use client";
 
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Download } from "lucide-react";
 
@@ -26,9 +26,12 @@ export function DashboardHeader({
   const [isPending, startTransition] = useTransition();
 
   // Date determinístico (server/client) para o seletor.
-  const selectedDate = new Date(month.year, month.month - 1, 1);
+  const [selectedDate, setSelectedDate] = useState(
+    () => new Date(month.year, month.month - 1, 1),
+  );
 
   function handleMonthChange(date: Date) {
+    setSelectedDate(date);
     const next: MonthParam = {
       year: date.getFullYear(),
       month: date.getMonth() + 1,

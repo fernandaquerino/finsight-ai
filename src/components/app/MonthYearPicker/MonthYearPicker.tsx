@@ -41,13 +41,14 @@ type MonthYearPickerProps = {
 
 function MonthYearPicker({ value, onChange }: MonthYearPickerProps) {
   const [open, setOpen] = useState(false);
-  const [viewYear, setViewYear] = useState(value.getFullYear());
+  const [initialYear] = useState(value.getFullYear());
+  const [viewYear, setViewYear] = useState(initialYear);
 
   const selectedMonth = value.getMonth();
   const selectedYear = value.getFullYear();
 
   function handleOpenChange(next: boolean) {
-    if (next) setViewYear(value.getFullYear());
+    if (next) setViewYear(initialYear);
     setOpen(next);
   }
 

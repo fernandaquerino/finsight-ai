@@ -1,0 +1,13 @@
+diff --git a/src/features/transactions/components/TransactionDetailPanel/TransactionDetailPanel.tsx b/src/features/transactions/components/TransactionDetailPanel/TransactionDetailPanel.tsx
+index 44fb314..dfdd958 100644
+--- a/src/features/transactions/components/TransactionDetailPanel/TransactionDetailPanel.tsx
++++ b/src/features/transactions/components/TransactionDetailPanel/TransactionDetailPanel.tsx
+@@ -539,7 +539,7 @@ function EditTransactionForm({
+       amount: amountToInput(transaction.amount),
+       description: transaction.description ?? "",
+       categoryId: transaction.category?.id ?? "",
+-      accountId: transaction.account.id,
++      accountId: accounts[0]?.id ?? transaction.account.id,
+       date: formatDateInput(new Date(transaction.occurredAt)),
+     },
+   });

@@ -22,7 +22,7 @@ function getCallbackUrl(callbackUrl?: string): string {
     return "/";
   }
 
-  return callbackUrl;
+  return callbackUrl.split("?")[0] || "/";
 }
 
 const highlights = [

@@ -94,11 +94,18 @@ export function ThemeProvider({
       applyTheme(nextResolvedTheme, enableColorScheme);
     }
 
+    function handleSystemChange(): void {
+      const systemTheme = getSystemTheme();
+
+      setResolvedTheme(systemTheme);
+      applyTheme(systemTheme, enableColorScheme);
+    }
+
     syncTheme();
-    mediaQuery.addEventListener("change", syncTheme);
+    mediaQuery.addEventListener("change", handleSystemChange);
 
     return () => {
-      mediaQuery.removeEventListener("change", syncTheme);
+      mediaQuery.removeEventListener("change", handleSystemChange);
     };
   }, [enableColorScheme, enableSystem, theme]);
 

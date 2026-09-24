@@ -1,0 +1,13 @@
+diff --git a/src/features/dashboard/month.ts b/src/features/dashboard/month.ts
+index 1d860f6..6bce156 100644
+--- a/src/features/dashboard/month.ts
++++ b/src/features/dashboard/month.ts
+@@ -33,7 +33,7 @@ export function monthParamToPeriodQuery(month: MonthParam): {
+   from: string;
+   to: string;
+ } {
+-  const lastDay = new Date(month.year, month.month, 0).getDate();
++  const lastDay = new Date(month.year, month.month - 1, 0).getDate();
+   return {
+     from: `${month.year}-${pad(month.month)}-01`,
+     to: `${month.year}-${pad(month.month)}-${pad(lastDay)}`,

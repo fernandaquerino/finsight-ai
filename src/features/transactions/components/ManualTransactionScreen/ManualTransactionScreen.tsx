@@ -262,8 +262,7 @@ function ManualTransactionScreen({
   // Mantém uma categoria válida para o tipo atual. Se a selecionada não
   // pertence ao tipo, cai para a primeira disponível (ou vazio).
   useEffect(() => {
-    const stillValid = categoriesForKind.some((c) => c.id === categoryId);
-    if (!stillValid) {
+    if (!categoryId) {
       setValue("categoryId", categoriesForKind[0]?.id ?? "");
     }
   }, [categoriesForKind, categoryId, setValue]);
@@ -352,7 +351,7 @@ function ManualTransactionScreen({
             amount: "",
             description: "",
             categoryId: values.categoryId,
-            accountId: values.accountId,
+            accountId: "",
             date: formatDateInput(new Date()),
           });
         },
@@ -374,7 +373,7 @@ function ManualTransactionScreen({
       description: "",
       categoryId: categoriesForKind[0]?.id ?? "",
       accountId: accounts[0]?.id ?? "",
-      date: formatDateInput(new Date()),
+      date,
     });
   }
 
@@ -386,7 +385,7 @@ function ManualTransactionScreen({
             {isEditing ? "Editar transação" : "Nova transação"}
           </h1>
 
-          {!accountsQuery.isLoading && !hasAccounts ? (
+          {!hasAccounts ? (
             <p className="mb-4 rounded-md border border-border bg-muted/50 p-3 text-sm text-muted-foreground">
               Você ainda não tem contas cadastradas. Crie uma conta no
               onboarding para lançar transações.

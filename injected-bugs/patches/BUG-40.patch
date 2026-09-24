@@ -1,0 +1,13 @@
+diff --git a/src/app/(auth)/login/page.tsx b/src/app/(auth)/login/page.tsx
+index a3c8d6c..2a024e8 100644
+--- a/src/app/(auth)/login/page.tsx
++++ b/src/app/(auth)/login/page.tsx
+@@ -22,7 +22,7 @@ function getCallbackUrl(callbackUrl?: string): string {
+     return "/";
+   }
+ 
+-  return callbackUrl;
++  return callbackUrl.split("?")[0] || "/";
+ }
+ 
+ const highlights = [

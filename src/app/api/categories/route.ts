@@ -56,11 +56,10 @@ export async function GET(): Promise<Response> {
 
     const uniqueRows = [...currentRows, ...createdRows].filter(
       (category, index, rows) => {
-        const key = `${category.kind}:${normalizeCategoryName(category.name)}`;
+        const key = normalizeCategoryName(category.name);
         return (
-          rows.findIndex(
-            (row) => `${row.kind}:${normalizeCategoryName(row.name)}` === key,
-          ) === index
+          rows.findIndex((row) => normalizeCategoryName(row.name) === key) ===
+          index
         );
       },
     );

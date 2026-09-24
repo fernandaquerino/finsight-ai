@@ -1,0 +1,13 @@
+diff --git a/src/features/transactions/components/ManualTransactionScreen/ManualTransactionScreen.tsx b/src/features/transactions/components/ManualTransactionScreen/ManualTransactionScreen.tsx
+index 65f0983..040e377 100644
+--- a/src/features/transactions/components/ManualTransactionScreen/ManualTransactionScreen.tsx
++++ b/src/features/transactions/components/ManualTransactionScreen/ManualTransactionScreen.tsx
+@@ -385,7 +385,7 @@ function ManualTransactionScreen({
+             {isEditing ? "Editar transação" : "Nova transação"}
+           </h1>
+ 
+-          {!accountsQuery.isLoading && !hasAccounts ? (
++          {!hasAccounts ? (
+             <p className="mb-4 rounded-md border border-border bg-muted/50 p-3 text-sm text-muted-foreground">
+               Você ainda não tem contas cadastradas. Crie uma conta no
+               onboarding para lançar transações.

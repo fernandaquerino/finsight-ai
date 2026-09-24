@@ -1,0 +1,12 @@
+diff --git a/src/components/charts/BarChart/BarChart.tsx b/src/components/charts/BarChart/BarChart.tsx
+index 4da7a63..2959cb8 100644
+--- a/src/components/charts/BarChart/BarChart.tsx
++++ b/src/components/charts/BarChart/BarChart.tsx
+@@ -78,7 +78,6 @@ function BarChart({
+               .activeTooltipIndex;
+             setActiveIndex(typeof idx === "number" ? idx : undefined);
+           }}
+-          onMouseLeave={() => setActiveIndex(undefined)}
+         >
+           <CartesianGrid
+             strokeDasharray="3 3"

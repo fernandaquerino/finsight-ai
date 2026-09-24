@@ -1,0 +1,13 @@
+diff --git a/src/components/app/DataList/DataList.tsx b/src/components/app/DataList/DataList.tsx
+index 8ddf1d7..542806f 100644
+--- a/src/components/app/DataList/DataList.tsx
++++ b/src/components/app/DataList/DataList.tsx
+@@ -31,7 +31,7 @@ function DataList<TItem>({
+   loadingCount = 4,
+   className,
+ }: DataListProps<TItem>) {
+-  if (isLoading) {
++  if (isLoading && !error) {
+     return (
+       <LoadingState label={ariaLabel} className={className}>
+         <ul className="space-y-3">

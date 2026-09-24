@@ -98,7 +98,7 @@ function DataFilterBar({
       aria-label="Filtros de transações"
       className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between"
     >
-      <div className="flex min-w-0 items-center gap-2 overflow-x-auto pb-1">
+      <div className="flex min-w-0 items-center gap-2 pb-1">
         <FilterChip
           active={!filters.kind && !filters.categoryId}
           icon={LayersIcon}
@@ -108,7 +108,7 @@ function DataFilterBar({
         </FilterChip>
         <FilterChip
           active={filters.kind === "income"}
-          onClick={() => patch({ kind: "income", categoryId: undefined })}
+          onClick={() => patch({ kind: "income" })}
         >
           Receitas
         </FilterChip>
@@ -151,7 +151,7 @@ function DataFilterBar({
           icon={FileTextIcon}
           onClick={() =>
             patch({
-              origin: filters.origin === "import" ? undefined : "import",
+              origin: filters.origin === "manual" ? undefined : "import",
             })
           }
         >

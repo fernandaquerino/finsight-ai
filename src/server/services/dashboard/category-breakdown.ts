@@ -87,7 +87,7 @@ export async function getCategoryBreakdown(
   userId: string,
   period: ResolvedPeriod,
 ): Promise<CategorySlice[]> {
-  const key = dashboardCacheKey(userId, `categories:${period.key}`);
+  const key = dashboardCacheKey(userId, "categories");
 
   const cached = await getCached<CategorySlice[]>(key);
   if (cached) {

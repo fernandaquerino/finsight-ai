@@ -1,0 +1,25 @@
+diff --git a/src/features/transactions/components/TransactionDetailPanel/TransactionDetailPanel.tsx b/src/features/transactions/components/TransactionDetailPanel/TransactionDetailPanel.tsx
+index 504b85f..27c8cae 100644
+--- a/src/features/transactions/components/TransactionDetailPanel/TransactionDetailPanel.tsx
++++ b/src/features/transactions/components/TransactionDetailPanel/TransactionDetailPanel.tsx
+@@ -158,8 +158,6 @@ function TransactionDetailPanel({
+   const accountsQuery = useAccounts();
+   const updateTransaction = useUpdateTransaction();
+   const deleteTransaction = useDeleteTransaction();
+-  // O pai remonta este painel via `key={transaction.id}`, então o estado
+-  // (modo, confirmação) já nasce limpo a cada transação selecionada.
+   const [mode, setMode] = useState<"view" | "edit">("view");
+   const [confirmingDelete, setConfirmingDelete] = useState(false);
+ 
+diff --git a/src/features/transactions/components/TransactionsScreen/TransactionsScreen.tsx b/src/features/transactions/components/TransactionsScreen/TransactionsScreen.tsx
+index 2709543..94d983e 100644
+--- a/src/features/transactions/components/TransactionsScreen/TransactionsScreen.tsx
++++ b/src/features/transactions/components/TransactionsScreen/TransactionsScreen.tsx
+@@ -370,7 +370,6 @@ function TransactionsScreen() {
+ 
+       {selectedTransaction ? (
+         <TransactionDetailPanel
+-          key={selectedTransaction.id}
+           transaction={selectedTransaction}
+           onClose={() => setSelectedId(null)}
+           onChanged={() => {

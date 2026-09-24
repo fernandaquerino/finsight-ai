@@ -1,0 +1,13 @@
+diff --git a/src/features/onboarding/components/steps/AccountsStep.tsx b/src/features/onboarding/components/steps/AccountsStep.tsx
+index 17fb233..bd5f05e 100644
+--- a/src/features/onboarding/components/steps/AccountsStep.tsx
++++ b/src/features/onboarding/components/steps/AccountsStep.tsx
+@@ -53,8 +53,6 @@ export function AccountsStep({ accounts, onAdd, onRemove }: AccountsStepProps) {
+ 
+     onAdd({ name: trimmedName, type, initialBalance: parseBalance(balance) });
+     setName("");
+-    setType("checking");
+-    setBalance("");
+   }
+ 
+   const addedNames = new Set(accounts.map((account) => account.name));

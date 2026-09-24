@@ -1,0 +1,13 @@
+diff --git a/src/server/services/dashboard/cache.ts b/src/server/services/dashboard/cache.ts
+index 4602fc0..8c3fb94 100644
+--- a/src/server/services/dashboard/cache.ts
++++ b/src/server/services/dashboard/cache.ts
+@@ -36,7 +36,7 @@ export async function setCached(key: string, value: unknown): Promise<void> {
+ export async function invalidateDashboardCache(userId: string): Promise<void> {
+   try {
+     const redis = await getRedisClient();
+-    const pattern = `${KEY_PREFIX}:${userId}:*`;
++    const pattern = `${KEY_PREFIX}:${userId}`;
+     const keys: string[] = [];
+ 
+     for await (const key of redis.scanIterator({ MATCH: pattern })) {

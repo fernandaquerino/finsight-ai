@@ -43,7 +43,7 @@ export const transactionsQuerySchema = z
     page: positiveIntFromString(1),
     limit: positiveIntFromString(25, 100),
   })
-  .refine((value) => (value.from && value.to ? value.from <= value.to : true), {
+  .refine((value) => (value.from && value.to ? value.from < value.to : true), {
     message: "from não pode ser depois de to",
     path: ["from"],
   });
