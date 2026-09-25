@@ -8,9 +8,13 @@ import { Pool } from "pg";
 
 import * as schema from "@/../db/schema";
 import { getCategoriesSummary } from "@/server/services/categories/summary";
+import { getDebtsSummary } from "@/server/services/debts/summary";
+import { getGoalsSummary } from "@/server/services/goals/summary";
 
 import { accountRepository } from "./accounts";
 import { categoryRepository } from "./categories";
+import { debtRepository } from "./debts";
+import { goalRepository } from "./goals";
 import { transactionRepository } from "./transactions";
 
 const databaseUrl = process.env.TEST_DATABASE_URL ?? process.env.DATABASE_URL;
@@ -33,6 +37,8 @@ describeIntegration("repository userId isolation", () => {
   let accountBId: string;
   let categoryBId: string;
   let transactionBId: string;
+  let goalBId: string;
+  let debtBId: string;
 
   beforeAll(async () => {
     if (!databaseUrl) {
@@ -78,9 +84,31 @@ describeIntegration("repository userId isolation", () => {
       dedupeHash: randomUUID(),
     });
 
+    const goalB = await goalRepository.create(db, {
+      userId: userBId,
+      name: "Meta B",
+      icon: "shield",
+      targetAmount: "10000.00",
+      currentAmount: "2500.00",
+      monthlyContribution: "500.00",
+      deadline: "2027-12-31",
+    });
+    const debtB = await debtRepository.create(db, {
+      userId: userBId,
+      name: "Dívida B",
+      kind: "credit_card",
+      totalAmount: "5000.00",
+      remainingAmount: "2000.00",
+      monthlyPayment: "500.00",
+      interestRate: "10.000",
+      dueDay: 5,
+    });
+
     accountBId = accountB.id;
     categoryBId = categoryB.id;
     transactionBId = transactionB.id;
+    goalBId = goalB.id;
+    debtBId = debtB.id;
   });
 
   afterAll(async () => {
@@ -184,6 +212,54 @@ describeIntegration("repository userId isolation", () => {
         icon: "moradia",
         monthlyBudget: 500,
       }),
+    ]);
+  });
+
+  it("findById denies access to another user's goal and debt", async () => {
+    expect(await goalRepository.findById(db, userAId, goalBId)).toBeUndefined();
+    expect(await debtRepository.findById(db, userAId, debtBId)).toBeUndefined();
+  });
+
+  it("goal update/softDelete do not affect another user's goal", async () => {
+    const updated = await goalRepository.update(db, userAId, goalBId, {
+      name: "Invadida",
+    });
+    const deleted = await goalRepository.softDelete(db, userAId, goalBId);
+
+    expect(updated).toBeUndefined();
+    expect(deleted).toBeUndefined();
+    const stillThere = await goalRepository.findById(db, userBId, goalBId);
+    expect(stillThere?.name).toBe("Meta B");
+  });
+
+  it("debt update/softDelete do not affect another user's debt", async () => {
+    const updated = await debtRepository.update(db, userAId, debtBId, {
+      name: "Invadida",
+    });
+    const deleted = await debtRepository.softDelete(db, userAId, debtBId);
+
+    expect(updated).toBeUndefined();
+    expect(deleted).toBeUndefined();
+    const stillThere = await debtRepository.findById(db, userBId, debtBId);
+    expect(stillThere?.name).toBe("Dívida B");
+  });
+
+  it("goal and debt summaries only include the requester's rows", async () => {
+    const goalsA = await getGoalsSummary(db, userAId);
+    const goalsB = await getGoalsSummary(db, userBId);
+    const debtsA = await getDebtsSummary(db, userAId, "avalanche");
+    const debtsB = await getDebtsSummary(db, userBId, "avalanche");
+
+    expect(goalsA.items).toHaveLength(0);
+    expect(goalsA.totals.saved).toBe(0);
+    expect(goalsB.items).toEqual([
+      expect.objectContaining({ id: goalBId, targetAmount: 10000 }),
+    ]);
+
+    expect(debtsA.items).toHaveLength(0);
+    expect(debtsA.focusDebtName).toBeNull();
+    expect(debtsB.items).toEqual([
+      expect.objectContaining({ id: debtBId, remainingAmount: 2000 }),
     ]);
   });
 });

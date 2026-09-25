@@ -1,0 +1,1 @@
+export { DeleteGoalDialog } from "./DeleteGoalDialog";

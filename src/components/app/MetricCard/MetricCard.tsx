@@ -16,6 +16,10 @@ type MetricCardProps = {
   // Quando ausentes, a linha de tendência não é renderizada.
   trend?: string;
   trendUp?: boolean;
+  // Texto de apoio que NÃO é uma comparação de período (ex.: "de R$ 31.500,00",
+  // o nome do maior gasto). Renderiza sem seta e sem cor de tendência, para não
+  // sugerir alta ou queda onde não há. Pode acompanhar `trend`.
+  caption?: string;
   icon: ElementType;
   iconClassName?: string;
   variant?: "default" | "ai";
@@ -26,6 +30,7 @@ function MetricCard({
   value,
   trend,
   trendUp = false,
+  caption,
   icon: Icon,
   iconClassName,
   variant = "default",
@@ -51,6 +56,7 @@ function MetricCard({
         <p className="font-mono text-2xl font-bold tracking-tight text-card-foreground tabular-nums">
           {value}
         </p>
+        {caption && <p className="text-xs text-muted-foreground">{caption}</p>}
         {trend && (
           <div
             className={cn(
