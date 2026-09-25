@@ -8,6 +8,7 @@ import {
   isNull,
   lt,
   or,
+  sum,
   type SQL,
 } from "drizzle-orm";
 
@@ -209,6 +210,67 @@ export const transactionRepository = {
       items,
       total: totalRow?.total ?? 0,
     };
+  },
+
+  // Soma e contagem por categoria no período [from, toExclusive), por tipo.
+  // Base da tela de categorias (gasto do mês vs orçamento).
+  sumByCategoryInPeriod(
+    db: Database,
+    userId: string,
+    from: Date,
+    toExclusive: Date,
+  ) {
+    return db
+      .select({
+        categoryId: transactions.categoryId,
+        kind: transactions.kind,
+        total: sum(transactions.amount),
+        count: count(),
+      })
+      .from(transactions)
+      .where(
+        and(
+          eq(transactions.userId, userId),
+          isNull(transactions.deletedAt),
+          gte(transactions.occurredAt, from),
+          lt(transactions.occurredAt, toExclusive),
+        ),
+      )
+      .groupBy(transactions.categoryId, transactions.kind);
+  },
+
+  // Quantidade de transações ativas por categoria (todas as datas). Usada para
+  // avisar quantas transações serão movidas ao excluir uma categoria.
+  countByCategory(db: Database, userId: string) {
+    return db
+      .select({ categoryId: transactions.categoryId, count: count() })
+      .from(transactions)
+      .where(
+        and(eq(transactions.userId, userId), isNull(transactions.deletedAt)),
+      )
+      .groupBy(transactions.categoryId);
+  },
+
+  // Move todas as transações (inclusive soft-deleted, para manter o histórico
+  // coerente) de uma categoria para outra. Retorna quantas foram movidas.
+  async reassignCategory(
+    db: Database,
+    userId: string,
+    fromCategoryId: string,
+    toCategoryId: string,
+  ) {
+    const moved = await db
+      .update(transactions)
+      .set({ categoryId: toCategoryId })
+      .where(
+        and(
+          eq(transactions.userId, userId),
+          eq(transactions.categoryId, fromCategoryId),
+        ),
+      )
+      .returning({ id: transactions.id, deletedAt: transactions.deletedAt });
+
+    return moved.filter((row) => row.deletedAt === null).length;
   },
 
   async hasAny(db: Database, userId: string) {

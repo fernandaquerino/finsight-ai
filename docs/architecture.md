@@ -155,6 +155,9 @@ PATCH  /api/transactions/:id        # edita / recategoriza
 DELETE /api/transactions/:id        # soft delete
 GET    /api/categories              # lista
 POST   /api/categories              # cria
+GET    /api/categories/summary      # total do mês + uso do orçamento (?month=YYYY-MM)
+PATCH  /api/categories/:id          # edita nome, cor, ícone, orçamento (kind é imutável)
+DELETE /api/categories/:id          # move transações p/ "Outros" e remove
 POST   /api/imports                 # cria job (upload)
 GET    /api/imports/:id             # status / preview
 POST   /api/imports/:id/confirm     # confirma persistência
@@ -188,7 +191,7 @@ Tabelas (resumo de campos-chave):
 users(id, email, oauth_provider, created_at)
 user_profiles(user_id PK/FK, currency, primary_goal, closing_day, ai_consent_at)
 accounts(id, user_id, name, type, institution, created_at, deleted_at)
-categories(id, user_id, name, color, kind[income|expense], parent_id?)
+categories(id, user_id, name, color, kind[income|expense], icon?, budget?, parent_id?)
 transactions(id, user_id, account_id, category_id?, amount, currency, kind,
              description, occurred_at, origin[manual|import|recurring|integration],
              recurring_rule_id?, dedupe_hash, created_at, deleted_at)

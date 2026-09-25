@@ -1,8 +1,14 @@
 import { getDb } from "@/lib/db";
 import { DEFAULT_INCOME_CATEGORIES } from "@/features/onboarding/data/catalog";
+import { resolveCategoryIconKey } from "@/lib/categories";
 import { jsonError, jsonOk } from "@/server/api/responses";
 import { UnauthorizedError, requireUserId } from "@/server/auth/session";
 import { categoryRepository } from "@/server/repositories";
+import {
+  DuplicateCategoryError,
+  createCategory,
+} from "@/server/services/categories/mutate";
+import { createCategorySchema } from "@/server/validators/categories";
 
 export const runtime = "nodejs";
 
@@ -70,12 +76,60 @@ export async function GET(): Promise<Response> {
       name: category.name,
       color: category.color,
       kind: category.kind,
+      icon: resolveCategoryIconKey(category),
+      monthlyBudget:
+        category.monthlyBudget === null ? null : Number(category.monthlyBudget),
     }));
     return jsonOk(items);
   } catch {
     return jsonError(
       "INTERNAL_ERROR",
       "Não foi possível carregar as categorias.",
+      500,
+    );
+  }
+}
+
+// POST /api/categories — cria categoria do usuário autenticado.
+export async function POST(request: Request): Promise<Response> {
+  let userId: string;
+
+  try {
+    userId = await requireUserId();
+  } catch (error) {
+    if (error instanceof UnauthorizedError) {
+      return jsonError("UNAUTHORIZED", "Autenticação necessária.", 401);
+    }
+    throw error;
+  }
+
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch {
+    return jsonError("INVALID_BODY", "Corpo da requisição inválido.", 400);
+  }
+
+  const parsed = createCategorySchema.safeParse(body);
+  if (!parsed.success) {
+    return jsonError(
+      "INVALID_BODY",
+      "Dados da categoria inválidos.",
+      422,
+      parsed.error.flatten(),
+    );
+  }
+
+  try {
+    const created = await createCategory(getDb(), userId, parsed.data);
+    return jsonOk(created, { status: 201 });
+  } catch (error) {
+    if (error instanceof DuplicateCategoryError) {
+      return jsonError(error.code, error.message, 409);
+    }
+    return jsonError(
+      "INTERNAL_ERROR",
+      "Não foi possível criar a categoria.",
       500,
     );
   }

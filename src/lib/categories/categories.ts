@@ -247,3 +247,22 @@ export function resolveCategoryKey(category: string): CategoryKey {
 export function getCategoryMeta(category: string): CategoryMeta {
   return categoryMap[resolveCategoryKey(category)];
 }
+
+// Ícone efetivo de uma categoria do usuário: a chave salva (quando válida) ou,
+// na ausência dela, o ícone inferido pelo nome.
+export function resolveCategoryIconKey(category: {
+  icon?: string | null;
+  name: string;
+}): CategoryKey {
+  if (category.icon && isCategoryKey(category.icon)) {
+    return category.icon;
+  }
+
+  return resolveCategoryKey(category.name);
+}
+
+// Paleta oferecida no formulário de categoria. Cores únicas do mapa estável,
+// para que categorias novas conversem visualmente com as existentes.
+export const categoryColorPalette: readonly string[] = Array.from(
+  new Set(Object.values(categoryMap).map((category) => category.color)),
+);

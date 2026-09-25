@@ -57,6 +57,13 @@
       "when": 1782442631474,
       "tag": "0007_pink_thunderbolt",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1790345735058,
+      "tag": "0008_melted_scorpion",
+      "breakpoints": true
     }
   ]
 }
