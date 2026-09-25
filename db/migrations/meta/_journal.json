@@ -64,6 +64,13 @@
       "when": 1790345735058,
       "tag": "0008_melted_scorpion",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1790351967667,
+      "tag": "0009_cheerful_the_hunter",
+      "breakpoints": true
     }
   ]
 }

@@ -7,3 +7,6 @@ export {
   type TransactionListFilters,
 } from "./transactions";
 export { categoryRepository } from "./categories";
+export { goalRepository } from "./goals";
+export { debtRepository } from "./debts";
+export { auditLogRepository } from "./audit-logs";

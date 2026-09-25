@@ -117,6 +117,42 @@ export const transactionRepository = {
       .orderBy(desc(transactions.occurredAt));
   },
 
+  // Transações de um período [from, toExclusive) com nome de categoria e conta.
+  // Base da exportação de relatório (CSV/PDF), que precisa dos rótulos legíveis.
+  // Isolado por userId, sem soft-deleted. Mais antigas primeiro — a ordem
+  // cronológica é a esperada num extrato exportado.
+  listByUserInPeriodWithRelations(
+    db: Database,
+    userId: string,
+    from: Date,
+    toExclusive: Date,
+  ) {
+    return db
+      .select({
+        id: transactions.id,
+        occurredAt: transactions.occurredAt,
+        description: transactions.description,
+        amount: transactions.amount,
+        currency: transactions.currency,
+        kind: transactions.kind,
+        origin: transactions.origin,
+        categoryName: categories.name,
+        accountName: accounts.name,
+      })
+      .from(transactions)
+      .leftJoin(categories, eq(categories.id, transactions.categoryId))
+      .leftJoin(accounts, eq(accounts.id, transactions.accountId))
+      .where(
+        and(
+          eq(transactions.userId, userId),
+          isNull(transactions.deletedAt),
+          gte(transactions.occurredAt, from),
+          lt(transactions.occurredAt, toExclusive),
+        ),
+      )
+      .orderBy(transactions.occurredAt);
+  },
+
   // Valores de despesa no período com o nome da categoria (join). Base para o
   // donut de composição de gastos. Isolado por userId, sem soft-deleted.
   listExpenseCategoryAmounts(
