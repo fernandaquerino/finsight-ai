@@ -1,6 +1,7 @@
 import type { InferInsertModel, InferSelectModel } from "drizzle-orm";
 import { sql } from "drizzle-orm";
 import {
+  boolean,
   check,
   date,
   index,
@@ -32,12 +33,28 @@ export const userProfiles = pgTable(
     onboardingCompletedAt: timestamp("onboarding_completed_at", {
       withTimezone: true,
     }),
+    // Contato opcional, informado em Minha conta. Usado apenas para alertas que
+    // o usuário ativar — nunca em logs.
+    phone: text("phone"),
+    // CPF em dígitos, sem máscara. PII sensível: nunca sai do servidor em claro
+    // (a API devolve só a versão mascarada) e nunca é logado.
+    cpf: varchar("cpf", { length: 11 }),
+    // Preferências de IA. Moram aqui, ao lado de ai_consent_at, porque só fazem
+    // sentido quando existe consentimento.
+    aiAutoCategorize: boolean("ai_auto_categorize").default(true).notNull(),
+    aiProactiveInsights: boolean("ai_proactive_insights")
+      .default(true)
+      .notNull(),
   },
   (table) => [
     index("user_profiles_user_id_idx").on(table.userId),
     check(
       "user_profiles_closing_day_check",
       sql`${table.closingDay} IS NULL OR (${table.closingDay} >= 1 AND ${table.closingDay} <= 31)`,
+    ),
+    check(
+      "user_profiles_cpf_check",
+      sql`${table.cpf} IS NULL OR ${table.cpf} ~ '^[0-9]{11}$'`,
     ),
   ],
 );

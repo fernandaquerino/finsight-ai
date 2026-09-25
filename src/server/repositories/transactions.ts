@@ -321,6 +321,24 @@ export const transactionRepository = {
     return Boolean(transaction);
   },
 
+  // Usado antes de remover uma conta: uma conta com lançamentos não pode sair
+  // sem que o usuário decida o que fazer com eles.
+  async hasAnyForAccount(db: Database, userId: string, accountId: string) {
+    const [transaction] = await db
+      .select({ id: transactions.id })
+      .from(transactions)
+      .where(
+        and(
+          eq(transactions.userId, userId),
+          eq(transactions.accountId, accountId),
+          isNull(transactions.deletedAt),
+        ),
+      )
+      .limit(1);
+
+    return Boolean(transaction);
+  },
+
   async findById(db: Database, userId: string, id: string) {
     const [transaction] = await db
       .select()

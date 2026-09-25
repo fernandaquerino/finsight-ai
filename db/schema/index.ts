@@ -4,6 +4,7 @@ export * from "./auth";
 export * from "./categories";
 export * from "./debts";
 export * from "./goals";
+export * from "./notification-preferences";
 export * from "./transactions";
 export * from "./user-profiles";
 export * from "./users";

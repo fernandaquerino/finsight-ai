@@ -1,0 +1,1 @@
+export { DeleteBankAccountDialog } from "./DeleteBankAccountDialog";

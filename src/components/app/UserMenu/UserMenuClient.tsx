@@ -8,9 +8,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/Popover";
-import { CreditCard, LogOut, Settings, UserRound } from "lucide-react";
+import { LogOut, Settings, UserRound } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+
+import { appRoutes } from "@/lib/app-routes";
 
 export type UserMenuUser = Readonly<{
   name?: string | null;
@@ -60,7 +62,7 @@ function UserMenuClient({ user }: UserMenuClientProps) {
             size="sm"
             className="justify-start text-dense font-normal"
           >
-            <Link href="#">
+            <Link href={appRoutes.account} onClick={() => setOpen(false)}>
               <UserRound />
               Minha conta
             </Link>
@@ -71,18 +73,7 @@ function UserMenuClient({ user }: UserMenuClientProps) {
             size="sm"
             className="justify-start text-dense font-normal"
           >
-            <Link href="#">
-              <CreditCard />
-              Plano e cobrança
-            </Link>
-          </Button>
-          <Button
-            asChild
-            variant="ghost"
-            size="sm"
-            className="justify-start text-dense font-normal"
-          >
-            <Link href="#">
+            <Link href={appRoutes.settings} onClick={() => setOpen(false)}>
               <Settings />
               Configurações
             </Link>
