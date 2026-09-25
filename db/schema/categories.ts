@@ -1,6 +1,7 @@
 import type { InferInsertModel, InferSelectModel } from "drizzle-orm";
 import {
   index,
+  numeric,
   pgEnum,
   pgTable,
   text,
@@ -22,6 +23,11 @@ export const categories = pgTable(
     name: text("name").notNull(),
     color: varchar("color", { length: 7 }).notNull(),
     kind: categoryKind("kind").notNull(),
+    // Chave do ícone (allowlist em lib/categories/category-icons). Nulo →
+    // ícone resolvido pelo nome da categoria.
+    icon: varchar("icon", { length: 32 }),
+    // Orçamento mensal opcional; coluna física existente: budget.
+    monthlyBudget: numeric("budget", { precision: 14, scale: 2 }),
     parentId: uuid("parent_id").references((): AnyPgColumn => categories.id, {
       onDelete: "set null",
     }),

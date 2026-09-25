@@ -18,6 +18,7 @@ import {
 } from "@/features/transactions/components/DataFilterBar";
 import { TransactionDetailPanel } from "@/features/transactions/components/TransactionDetailPanel";
 import { TransactionList } from "@/features/transactions/components/TransactionList";
+import { useCategories } from "@/features/transactions/hooks/useReferenceData";
 import type {
   TransactionListItem,
   TransactionsResponse,
@@ -216,6 +217,7 @@ function TransactionsScreen() {
     "loading",
   );
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const categoriesQuery = useCategories();
 
   async function loadTransactions(
     nextFilters: TransactionFilters,
@@ -274,8 +276,18 @@ function TransactionsScreen() {
       { value: string; label: string; color: string | null }
     >();
 
+    // Categorias cadastradas primeiro: uma categoria recém-criada (ainda sem
+    // transações) também precisa aparecer no filtro.
+    for (const category of categoriesQuery.data ?? []) {
+      options.set(category.id, {
+        value: category.id,
+        label: category.name,
+        color: category.color,
+      });
+    }
+
     for (const item of items) {
-      if (item.category) {
+      if (item.category && !options.has(item.category.id)) {
         options.set(item.category.id, {
           value: item.category.id,
           label: item.category.name,
@@ -285,7 +297,7 @@ function TransactionsScreen() {
     }
 
     return Array.from(options.values());
-  }, [items]);
+  }, [items, categoriesQuery.data]);
   const accountOptions = useMemo(() => {
     const options = new Map<string, { value: string; label: string }>();
 

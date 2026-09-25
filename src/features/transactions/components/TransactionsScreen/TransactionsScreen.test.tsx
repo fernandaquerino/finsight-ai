@@ -17,6 +17,21 @@ function renderScreen() {
   );
 }
 
+// A tela também busca /api/categories (opções do filtro de categoria). Responde
+// vazio para manter estes testes focados na lista de transações.
+function stubFetch(transactionsFetch: ReturnType<typeof vi.fn>) {
+  vi.stubGlobal(
+    "fetch",
+    vi.fn((input: RequestInfo | URL, init?: RequestInit) =>
+      String(input).startsWith("/api/categories")
+        ? Promise.resolve(
+            new Response(JSON.stringify({ data: [] }), { status: 200 }),
+          )
+        : transactionsFetch(input, init),
+    ),
+  );
+}
+
 afterEach(() => {
   vi.unstubAllGlobals();
   vi.useRealTimers();
@@ -25,8 +40,7 @@ afterEach(() => {
 
 describe("TransactionsScreen", () => {
   it("renders loading state and then grouped transactions from the API", async () => {
-    vi.stubGlobal(
-      "fetch",
+    stubFetch(
       vi.fn().mockResolvedValue(
         new Response(
           JSON.stringify({
@@ -75,8 +89,7 @@ describe("TransactionsScreen", () => {
   });
 
   it("renders an empty state when the API has no items", async () => {
-    vi.stubGlobal(
-      "fetch",
+    stubFetch(
       vi.fn().mockResolvedValue(
         new Response(
           JSON.stringify({
@@ -95,10 +108,7 @@ describe("TransactionsScreen", () => {
   });
 
   it("renders an error state when the API fails", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn().mockResolvedValue(new Response(null, { status: 500 })),
-    );
+    stubFetch(vi.fn().mockResolvedValue(new Response(null, { status: 500 })));
 
     renderScreen();
 
@@ -119,7 +129,7 @@ describe("TransactionsScreen", () => {
         { status: 200 },
       ),
     );
-    vi.stubGlobal("fetch", fetchMock);
+    stubFetch(fetchMock);
     window.history.replaceState(null, "", "/transacoes?kind=expense");
 
     renderScreen();

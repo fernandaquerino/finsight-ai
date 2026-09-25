@@ -7,6 +7,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { Pool } from "pg";
 
 import * as schema from "@/../db/schema";
+import { getCategoriesSummary } from "@/server/services/categories/summary";
 
 import { accountRepository } from "./accounts";
 import { categoryRepository } from "./categories";
@@ -64,6 +65,8 @@ describeIntegration("repository userId isolation", () => {
       name: "Categoria B",
       color: "#000000",
       kind: "expense",
+      icon: "moradia",
+      monthlyBudget: "500.00",
     });
     const transactionB = await transactionRepository.create(db, {
       userId: userBId,
@@ -128,5 +131,59 @@ describeIntegration("repository userId isolation", () => {
       accountBId,
     );
     expect(stillThere?.id).toBe(accountBId);
+  });
+
+  it("category update/delete do not affect another user's category", async () => {
+    const updated = await categoryRepository.update(db, userAId, categoryBId, {
+      name: "Invadida",
+    });
+    const deleted = await categoryRepository.delete(db, userAId, categoryBId);
+
+    expect(updated).toBeUndefined();
+    expect(deleted).toBeUndefined();
+    const stillThere = await categoryRepository.findById(
+      db,
+      userBId,
+      categoryBId,
+    );
+    expect(stillThere?.name).toBe("Categoria B");
+  });
+
+  it("reassignCategory does not move another user's transactions", async () => {
+    const moved = await transactionRepository.reassignCategory(
+      db,
+      userAId,
+      categoryBId,
+      categoryBId,
+    );
+    expect(moved).toBe(0);
+  });
+
+  it("category aggregations only include the requester's transactions", async () => {
+    const totals = await transactionRepository.sumByCategoryInPeriod(
+      db,
+      userAId,
+      new Date(0),
+      new Date(Date.now() + 86_400_000),
+    );
+    const counts = await transactionRepository.countByCategory(db, userAId);
+
+    expect(totals).toHaveLength(0);
+    expect(counts).toHaveLength(0);
+  });
+
+  it("loads category budgets and icons in the summary without exposing another user", async () => {
+    const month = new Date().toISOString().slice(0, 7);
+    const summaryA = await getCategoriesSummary(db, userAId, month);
+    const summaryB = await getCategoriesSummary(db, userBId, month);
+
+    expect(summaryA.items).toHaveLength(0);
+    expect(summaryB.items).toEqual([
+      expect.objectContaining({
+        id: categoryBId,
+        icon: "moradia",
+        monthlyBudget: 500,
+      }),
+    ]);
   });
 });
