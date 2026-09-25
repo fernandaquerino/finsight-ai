@@ -71,6 +71,13 @@
       "when": 1790351967667,
       "tag": "0009_cheerful_the_hunter",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1790361356765,
+      "tag": "0010_silky_scarecrow",
+      "breakpoints": true
     }
   ]
 }

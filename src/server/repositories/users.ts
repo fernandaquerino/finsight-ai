@@ -24,4 +24,27 @@ export const userRepository = {
 
     return user;
   },
+
+  async updatePasswordHash(db: Database, id: string, passwordHash: string) {
+    const [user] = await db
+      .update(users)
+      .set({ passwordHash })
+      .where(eq(users.id, id))
+      .returning({ id: users.id });
+
+    return user;
+  },
+
+  // Hard delete — único lugar do app onde dados saem de vez do banco (exclusão
+  // de conta, LGPD/GDPR). Todas as tabelas de domínio têm FK com
+  // onDelete: cascade, então este DELETE apaga tudo. audit_logs é a exceção
+  // proposital (onDelete: set null): a trilha sobrevive à exclusão que prova.
+  async hardDelete(db: Database, id: string) {
+    const [user] = await db
+      .delete(users)
+      .where(eq(users.id, id))
+      .returning({ id: users.id });
+
+    return user;
+  },
 };

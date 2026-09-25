@@ -11,6 +11,7 @@ import {
   TagIcon,
   TargetIcon,
   UploadIcon,
+  UserRoundIcon,
 } from "lucide-react";
 
 export type AppRoute = Readonly<{
@@ -37,6 +38,7 @@ export const appRoutes = {
   imports: "/imports",
   manualEntry: "/lancamento-manual",
   settings: "/settings",
+  account: "/account",
 } as const;
 
 export const sidebarRouteGroups: readonly AppRouteGroup[] = [
@@ -91,6 +93,14 @@ export const settingsRoute = {
   icon: SettingsIcon,
 } satisfies AppRoute;
 
+// "Minha conta" fica fora da sidebar de propósito: a navegação é pelo menu do
+// usuário na topbar. Consta aqui só para que a topbar resolva o título da página.
+export const accountRoute = {
+  label: "Minha conta",
+  href: appRoutes.account,
+  icon: UserRoundIcon,
+} satisfies AppRoute;
+
 export function isActiveRoute(pathname: string, href: string): boolean {
   if (href === appRoutes.dashboard) return pathname === appRoutes.dashboard;
 
@@ -101,6 +111,7 @@ export function getRouteTitle(pathname: string): string {
   const routes = [
     ...sidebarRouteGroups.flatMap((group) => group.routes),
     settingsRoute,
+    accountRoute,
   ];
 
   return (

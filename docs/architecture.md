@@ -168,9 +168,25 @@ GET    /api/reports                 # gera relatório
 GET    /api/goals  POST /api/goals  PATCH/DELETE /api/goals/:id
 GET    /api/debts  POST /api/debts  PATCH/DELETE /api/debts/:id
 GET    /api/settings  PATCH /api/settings
-POST   /api/settings/export         # exporta dados
-DELETE /api/settings/account        # exclui conta
+POST   /api/settings/export         # exporta dados (JSON, registra audit_log)
+POST   /api/settings/password       # troca de senha (só contas com credenciais)
+DELETE /api/settings/account        # exclui conta (hard delete + audit_log)
+GET    /api/accounts  POST /api/accounts
+DELETE /api/accounts/:id            # soft delete; 409 se ainda houver lançamentos
 ```
+
+Notas de implementação (Configurações / Minha conta):
+
+- `POST /api/settings/password`, `POST /api/settings/export` e
+  `DELETE /api/settings/account` são rate limited via Redis
+  (`src/server/api/rate-limit.ts`). O helper **falha aberto** se o Redis estiver
+  indisponível: a requisição segue (autenticação continua exigida) em vez de
+  trancar o usuário fora da própria conta.
+- O export é `POST` e não `GET` de propósito: um `GET` de dados pessoais acabaria
+  em histórico de navegador, log de proxy e link compartilhável.
+- `Risk` — a sessão é JWT: após a exclusão da conta o cookie continua
+  criptograficamente válido até expirar. Os dados já não existem e toda query
+  filtra por `userId`, mas o cliente força logout (`POST /logout`) logo depois.
 
 ---
 
@@ -189,7 +205,9 @@ Tabelas (resumo de campos-chave):
 
 ```txt
 users(id, email, oauth_provider, created_at)
-user_profiles(user_id PK/FK, currency, primary_goal, closing_day, ai_consent_at)
+user_profiles(user_id PK/FK, currency, primary_goal, closing_day, ai_consent_at,
+              onboarding_completed_at, phone?, cpf?, ai_auto_categorize,
+              ai_proactive_insights)
 accounts(id, user_id, name, type, institution, created_at, deleted_at)
 categories(id, user_id, name, color, kind[income|expense], icon?, budget?, parent_id?)
 transactions(id, user_id, account_id, category_id?, amount, currency, kind,
@@ -215,8 +233,21 @@ integration_connections(id, user_id, provider, status, access_token_enc,
 webhook_events(id, connection_id, type, payload, processed_at?)  # Future
 audit_logs(id, user_id, action, target, metadata, created_at)    # append-only
 notification_preferences(user_id PK/FK, spend_alerts, installment_reminders,
-                         weekly_summary, anomaly_alerts)
+                         weekly_summary)
 ```
+
+Desvios conscientes do desenho original:
+
+- `notification_preferences` **não** tem `anomaly_alerts`: nada no produto
+  controla essa preferência hoje, e coluna morta é pior que coluna ausente.
+  Entra quando existir a tela que a liga.
+- As duas flags de IA (`ai_auto_categorize`, `ai_proactive_insights`) ficam em
+  `user_profiles`, ao lado de `ai_consent_at`, e não em
+  `notification_preferences`: só fazem sentido quando existe consentimento.
+- `cpf` é `varchar(11)` (só dígitos, com `CHECK`) e **nunca sai do servidor em
+  claro** — a API devolve apenas uma versão mascarada
+  (`src/server/services/settings/mask.ts`). `Risk` — é PII sensível sem
+  finalidade definida no MVP; mantido por decisão de produto.
 
 Índices/constraints principais: `transactions(user_id, occurred_at)`, `transactions(dedupe_hash)` único por conta, `ai_embeddings` HNSW em `embedding`, FKs com `on delete cascade` no fluxo de exclusão de conta.
 

@@ -1,6 +1,7 @@
 export * from "./types";
 export { userRepository } from "./users";
 export { userProfileRepository } from "./user-profiles";
+export { notificationPreferenceRepository } from "./notification-preferences";
 export { accountRepository } from "./accounts";
 export {
   transactionRepository,
