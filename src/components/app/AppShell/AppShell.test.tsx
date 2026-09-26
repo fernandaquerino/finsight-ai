@@ -98,9 +98,9 @@ describe("AppShell", () => {
     );
   });
 
-  it("renders the Insights visual indicator as decorative", () => {
+  it("renders a pending-route indicator as decorative", () => {
     render(
-      <AppShell user={mockUser}>
+      <AppShell user={mockUser} indicatorRoutes={["/insights"]}>
         <section>Conteudo</section>
       </AppShell>,
     );

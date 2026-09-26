@@ -74,14 +74,36 @@ describe("Sidebar — collapsed", () => {
     expect(screen.getByRole("link", { name: "Configurações" })).toBeVisible();
   });
 
-  it("renders the Insights indicator in compact position", () => {
+  it("renders the indicator in compact position for a pending route", () => {
     render(
-      <Sidebar pathname={appRoutes.dashboard} className="flex" isCollapsed />,
+      <Sidebar
+        pathname={appRoutes.dashboard}
+        className="flex"
+        isCollapsed
+        indicatorRoutes={[appRoutes.insights]}
+      />,
     );
 
     expect(screen.getByTestId("sidebar-route-indicator")).toHaveAttribute(
       "aria-hidden",
       "true",
     );
+  });
+
+  // Sem rota pendente não há ponto: o indicador reflete estado real, não é
+  // decoração fixa da rota de insights.
+  it("renders no indicator when nothing is pending", () => {
+    render(
+      <Sidebar
+        pathname={appRoutes.dashboard}
+        className="flex"
+        isCollapsed
+        indicatorRoutes={[]}
+      />,
+    );
+
+    expect(
+      screen.queryByTestId("sidebar-route-indicator"),
+    ).not.toBeInTheDocument();
   });
 });

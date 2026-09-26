@@ -14,6 +14,9 @@ type SidebarProps = Readonly<{
   className?: string;
   isCollapsed?: boolean;
   onNavigate?: () => void;
+  // hrefs com algo pendente agora. Vem do layout autenticado, que conhece o
+  // estado real (ex.: quantos insights o mês tem).
+  indicatorRoutes?: readonly string[];
 }>;
 
 function Sidebar({
@@ -21,7 +24,9 @@ function Sidebar({
   className,
   isCollapsed = false,
   onNavigate,
+  indicatorRoutes,
 }: SidebarProps) {
+  const indicators = indicatorRoutes ? new Set(indicatorRoutes) : null;
   return (
     <aside
       className={cn(
@@ -66,6 +71,9 @@ function Sidebar({
                   isActive={isActiveRoute(pathname, route.href)}
                   isCollapsed={isCollapsed}
                   onNavigate={onNavigate}
+                  hasIndicator={
+                    indicators ? indicators.has(route.href) : undefined
+                  }
                 />
               ))}
             </div>

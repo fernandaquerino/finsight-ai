@@ -15,6 +15,9 @@ type SidebarNavItemProps = Readonly<{
   isActive: boolean;
   isCollapsed?: boolean;
   onNavigate?: () => void;
+  // Sobrepõe `route.hasIndicator`. A rota declara que *pode* ter indicador; quem
+  // renderiza decide se há algo pendente de fato (ex.: insights do mês).
+  hasIndicator?: boolean;
 }>;
 
 function SidebarNavItem({
@@ -22,8 +25,10 @@ function SidebarNavItem({
   isActive,
   isCollapsed = false,
   onNavigate,
+  hasIndicator,
 }: SidebarNavItemProps) {
   const Icon = route.icon;
+  const showIndicator = hasIndicator ?? route.hasIndicator ?? false;
   const link = (
     <Link
       href={route.href}
@@ -40,7 +45,7 @@ function SidebarNavItem({
     >
       <Icon className="size-4" aria-hidden="true" />
       {!isCollapsed && <span>{route.label}</span>}
-      {route.hasIndicator && (
+      {showIndicator && (
         <span
           data-testid="sidebar-route-indicator"
           className={cn(

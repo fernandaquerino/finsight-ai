@@ -10,15 +10,16 @@ import { IconButton } from "@/components/ui/IconButton";
 import { SearchInput } from "@/components/ui/SearchInput";
 import { appRoutes } from "@/lib/app-routes";
 import { UserMenuClient, type UserMenuUser } from "../UserMenu/UserMenuClient";
-import { NotificationsPanel } from "../NotificationsPanel";
+import { NotificationsPanel, type Notification } from "../NotificationsPanel";
 
 type TopbarProps = Readonly<{
   title: string;
   onMenuClick: () => void;
   user?: UserMenuUser | null;
+  notifications?: readonly Notification[];
 }>;
 
-function Topbar({ title, onMenuClick, user }: TopbarProps) {
+function Topbar({ title, onMenuClick, user, notifications }: TopbarProps) {
   const [isCommandSearchOpen, setIsCommandSearchOpen] = useState(false);
 
   return (
@@ -61,7 +62,7 @@ function Topbar({ title, onMenuClick, user }: TopbarProps) {
           <ThemeToggle variant="icon" />
         </div>
 
-        <NotificationsPanel />
+        <NotificationsPanel notifications={notifications} />
 
         <UserMenuClient user={user} />
       </header>

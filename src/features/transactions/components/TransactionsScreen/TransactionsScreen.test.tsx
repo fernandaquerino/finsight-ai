@@ -19,7 +19,7 @@ function renderScreen() {
 
 // A tela também busca /api/categories (opções do filtro de categoria). Responde
 // vazio para manter estes testes focados na lista de transações.
-function stubFetch(transactionsFetch: ReturnType<typeof vi.fn>) {
+function stubFetch(transactionsFetch: typeof fetch) {
   vi.stubGlobal(
     "fetch",
     vi.fn((input: RequestInfo | URL, init?: RequestInit) =>
