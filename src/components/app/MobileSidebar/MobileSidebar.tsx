@@ -12,9 +12,15 @@ type MobileSidebarProps = Readonly<{
   open: boolean;
   pathname: string;
   onOpenChange: (open: boolean) => void;
+  indicatorRoutes?: readonly string[];
 }>;
 
-function MobileSidebar({ open, pathname, onOpenChange }: MobileSidebarProps) {
+function MobileSidebar({
+  open,
+  pathname,
+  onOpenChange,
+  indicatorRoutes,
+}: MobileSidebarProps) {
   return (
     <Drawer open={open} onOpenChange={onOpenChange} direction="left">
       <DrawerContent
@@ -29,6 +35,7 @@ function MobileSidebar({ open, pathname, onOpenChange }: MobileSidebarProps) {
           pathname={pathname}
           className="flex h-full w-full flex-col border-r-0 md:hidden lg:flex-row"
           onNavigate={() => onOpenChange(false)}
+          indicatorRoutes={indicatorRoutes}
         />
       </DrawerContent>
     </Drawer>

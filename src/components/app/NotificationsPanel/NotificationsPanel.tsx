@@ -20,6 +20,7 @@ import {
   TriangleAlertIcon,
 } from "lucide-react";
 import { useState } from "react";
+import Link from "next/link";
 
 type NotificationType = "ai" | "budget" | "debt" | "goal" | "import";
 
@@ -28,8 +29,15 @@ type Notification = Readonly<{
   type: NotificationType;
   title: string;
   description: string;
-  createdAt: Date;
+  // Data do evento, quando existe uma. Notificações derivadas de análise não
+  // têm: elas são recalculadas a cada leitura, e inventar um "há 2 horas" seria
+  // mostrar um dado que não existe. Nesses casos use `caption`.
+  createdAt?: Date;
+  // Texto curto no lugar do tempo relativo (ex.: "análise de mai 2026").
+  caption?: string;
   unread: boolean;
+  // Para onde a notificação leva ao ser clicada.
+  href?: string;
 }>;
 
 const NOTIFICATION_TYPES = {
@@ -106,14 +114,20 @@ const MOCKED_NOTIFICATIONS: readonly Notification[] = [
 
 type NotificationItemProps = Readonly<{
   notification: Notification;
+  onNavigate?: () => void;
 }>;
 
-function NotificationItem({ notification }: NotificationItemProps) {
+function NotificationItem({ notification, onNavigate }: NotificationItemProps) {
   const type = NOTIFICATION_TYPES[notification.type];
   const Icon = type.icon;
+  const timeLabel =
+    notification.caption ??
+    (notification.createdAt
+      ? formatRelativeTime(notification.createdAt)
+      : null);
 
-  return (
-    <li className="relative flex gap-4 border-b px-6 py-4 last:border-b-0">
+  const body = (
+    <>
       <div
         className={cn(
           "flex size-10 shrink-0 items-center justify-center rounded-lg",
@@ -131,10 +145,26 @@ function NotificationItem({ notification }: NotificationItemProps) {
         <p className="mt-0.5 text-sm leading-5 text-muted-foreground">
           {notification.description}
         </p>
-        <p className="mt-1 text-xs text-muted-foreground">
-          {formatRelativeTime(notification.createdAt)}
-        </p>
+        {timeLabel && (
+          <p className="mt-1 text-xs text-muted-foreground">{timeLabel}</p>
+        )}
       </div>
+    </>
+  );
+
+  return (
+    <li className="relative border-b last:border-b-0">
+      {notification.href ? (
+        <Link
+          href={notification.href}
+          onClick={onNavigate}
+          className="flex gap-4 px-6 py-4 transition-colors hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none focus-visible:ring-inset"
+        >
+          {body}
+        </Link>
+      ) : (
+        <div className="flex gap-4 px-6 py-4">{body}</div>
+      )}
 
       {notification.unread && (
         <span
@@ -146,9 +176,17 @@ function NotificationItem({ notification }: NotificationItemProps) {
   );
 }
 
-function NotificationsPanel() {
+type NotificationsPanelProps = Readonly<{
+  // Sem lista explícita o painel mostra o conjunto de exemplo (Storybook/teste).
+  // Em produção o layout autenticado injeta as notificações reais.
+  notifications?: readonly Notification[];
+}>;
+
+function NotificationsPanel({
+  notifications: initialNotifications = MOCKED_NOTIFICATIONS,
+}: NotificationsPanelProps = {}) {
   const [open, setOpen] = useState(false);
-  const [notifications, setNotifications] = useState(MOCKED_NOTIFICATIONS);
+  const [notifications, setNotifications] = useState(initialNotifications);
   const unreadCount = notifications.filter(
     (notification) => notification.unread,
   ).length;
@@ -217,6 +255,7 @@ function NotificationsPanel() {
             <NotificationItem
               key={notification.id}
               notification={notification}
+              onNavigate={() => setOpen(false)}
             />
           ))}
         </ul>
@@ -226,4 +265,4 @@ function NotificationsPanel() {
 }
 
 export { NotificationItem, NotificationsPanel };
-export type { Notification, NotificationType };
+export type { Notification, NotificationsPanelProps, NotificationType };

@@ -6,12 +6,14 @@ import {
   TransactionListSkeleton,
 } from "@/components/app/skeletons";
 import { Card } from "@/components/ui/Card";
+import { Skeleton } from "@/components/ui/Skeleton";
 import { CategoryDonut } from "@/features/dashboard/components/CategoryDonut";
 import { DashboardEmptyState } from "@/features/dashboard/components/DashboardEmptyState";
 import { DashboardHeader } from "@/features/dashboard/components/DashboardHeader";
 import { DashboardHistory } from "@/features/dashboard/components/DashboardHistory";
 import { DashboardMetrics } from "@/features/dashboard/components/DashboardMetrics";
 import { RecentTransactions } from "@/features/dashboard/components/RecentTransactions";
+import { DashboardInsightBanner } from "@/features/insights/components/DashboardInsightBanner";
 import {
   monthParamLabel,
   monthParamToString,
@@ -62,6 +64,13 @@ export default async function DashboardPage({
         month={month}
         monthLabel={monthLabel}
       />
+
+      <Suspense
+        key={`insight-${monthKey}`}
+        fallback={<Skeleton className="h-[124px] rounded-lg" />}
+      >
+        <DashboardInsightBanner userId={userId} month={monthKey} />
+      </Suspense>
 
       <Suspense key={monthKey} fallback={<MetricsSkeleton />}>
         <DashboardMetrics

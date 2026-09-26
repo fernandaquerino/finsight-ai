@@ -4,7 +4,7 @@ import {
   transactionRepository,
   type Database,
 } from "@/server/repositories";
-import { invalidateDashboardCache } from "@/server/services/dashboard/cache";
+import { invalidateDerivedCaches } from "@/server/services/cache/invalidate";
 import type {
   CreateCategoryInput,
   UpdateCategoryInput,
@@ -99,7 +99,7 @@ export async function createCategory(
   db: Database,
   userId: string,
   input: CreateCategoryInput,
-  { invalidate = invalidateDashboardCache }: Deps = {},
+  { invalidate = invalidateDerivedCaches }: Deps = {},
 ) {
   await assertNameAvailable(db, userId, input.name, input.kind);
 
@@ -127,7 +127,7 @@ export async function updateCategory(
   userId: string,
   id: string,
   input: UpdateCategoryInput,
-  { invalidate = invalidateDashboardCache }: Deps = {},
+  { invalidate = invalidateDerivedCaches }: Deps = {},
 ) {
   const current = await categoryRepository.findById(db, userId, id);
   if (!current) {
@@ -170,7 +170,7 @@ export async function deleteCategory(
   db: Database,
   userId: string,
   id: string,
-  { invalidate = invalidateDashboardCache }: Deps = {},
+  { invalidate = invalidateDerivedCaches }: Deps = {},
 ) {
   const result = await db.transaction(async (tx) => {
     const category = await categoryRepository.findById(tx, userId, id);
@@ -229,7 +229,7 @@ export async function updateCategoryBudgets(
   db: Database,
   userId: string,
   budgets: readonly CategoryBudgetUpdate[],
-  { invalidate = invalidateDashboardCache }: Deps = {},
+  { invalidate = invalidateDerivedCaches }: Deps = {},
 ) {
   const updated = await db.transaction(async (tx) => {
     const rows = [];

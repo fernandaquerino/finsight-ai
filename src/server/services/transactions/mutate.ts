@@ -5,7 +5,7 @@ import {
   transactionRepository,
   type Database,
 } from "@/server/repositories";
-import { invalidateDashboardCache } from "@/server/services/dashboard/cache";
+import { invalidateDerivedCaches } from "@/server/services/cache/invalidate";
 import type {
   CreateTransactionInput,
   UpdateTransactionInput,
@@ -13,7 +13,8 @@ import type {
 
 // Mutações de transação passam por aqui para: (1) calcular o dedupe_hash antes
 // do insert, (2) validar a propriedade de conta/categoria (isolamento por
-// usuário), (3) invalidar o cache do dashboard em qualquer escrita.
+// usuário), (3) invalidar os caches derivados (dashboard e insights) em
+// qualquer escrita.
 // `invalidate` é injetável para teste; em produção usa o cache real.
 type Deps = {
   invalidate?: (userId: string) => Promise<void>;
@@ -77,7 +78,7 @@ export async function createTransaction(
   db: Database,
   userId: string,
   input: CreateTransactionInput,
-  { invalidate = invalidateDashboardCache }: Deps = {},
+  { invalidate = invalidateDerivedCaches }: Deps = {},
 ) {
   await assertReferencesBelongToUser(
     db,
@@ -125,7 +126,7 @@ export async function updateTransaction(
   userId: string,
   id: string,
   input: UpdateTransactionInput,
-  { invalidate = invalidateDashboardCache }: Deps = {},
+  { invalidate = invalidateDerivedCaches }: Deps = {},
 ) {
   const current = await transactionRepository.findById(db, userId, id);
   if (!current) {
@@ -186,7 +187,7 @@ export async function deleteTransaction(
   db: Database,
   userId: string,
   id: string,
-  { invalidate = invalidateDashboardCache }: Deps = {},
+  { invalidate = invalidateDerivedCaches }: Deps = {},
 ) {
   const deleted = await transactionRepository.softDelete(db, userId, id);
   if (deleted) {

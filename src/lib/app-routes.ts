@@ -18,6 +18,8 @@ export type AppRoute = Readonly<{
   label: string;
   href: string;
   icon: LucideIcon;
+  // A rota admite um indicador de pendência. Quem renderiza decide se há algo
+  // pendente de fato — ver `indicatorRoutes` na Sidebar.
   hasIndicator?: boolean;
 }>;
 
@@ -58,12 +60,7 @@ export const sidebarRouteGroups: readonly AppRouteGroup[] = [
     label: "INTELIGÊNCIA",
     routes: [
       { label: "Chat IA", href: appRoutes.aiChat, icon: MessageCircleIcon },
-      {
-        label: "Insights",
-        href: appRoutes.insights,
-        icon: SparklesIcon,
-        hasIndicator: true,
-      },
+      { label: "Insights", href: appRoutes.insights, icon: SparklesIcon },
     ],
   },
   {
