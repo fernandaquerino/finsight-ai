@@ -1,22 +1,22 @@
 ---
 name: Feature / Task
-about: Padrão de issue do FinSight AI
+about: FinSight AI issue template
 title: "[EPIC-XX] "
 labels: ""
 assignees: ""
 ---
 
-## Contexto
+## Context
 
-<!-- Por que esta issue existe? Que problema/oportunidade ela endereça? -->
+<!-- Why does this issue exist? What problem/opportunity does it address? -->
 
-## Objetivo
+## Goal
 
-<!-- O resultado esperado em uma frase. -->
+<!-- The expected outcome in one sentence. -->
 
-## Escopo
+## Scope
 
-## <!-- O que está dentro. Liste o que está explicitamente fora, se útil. -->
+## <!-- What is in. List what is explicitly out, if useful. -->
 
 ## Tasks
 
@@ -24,27 +24,27 @@ assignees: ""
 - [ ]
 - [ ]
 
-## Critérios de aceite
+## Acceptance criteria
 
 - [ ]
 - [ ]
 - [ ]
 
-## Notas técnicas
+## Technical notes
 
-## <!-- Decisões, abordagem sugerida, pontos de atenção (ex.: isolamento por userId). -->
+## <!-- Decisions, suggested approach, things to watch (e.g. per-userId isolation). -->
 
-## Dependências
+## Dependencies
 
-## <!-- Issues que precisam estar prontas antes. -->
+## <!-- Issues that need to be done first. -->
 
-## Referências / screenshots
+## References / screenshots
 
-<!-- Padrão de tela, wireframe, link de design. -->
+<!-- Screen pattern, wireframe, design link. -->
 
 ## Checklist
 
-- [ ] Estimativa definida (P/M/G)
-- [ ] Prioridade definida (P0–P3)
-- [ ] Labels aplicadas
-- [ ] Atende à Definition of Ready
+- [ ] Estimate defined (S/M/L)
+- [ ] Priority defined (P0–P3)
+- [ ] Labels applied
+- [ ] Meets the Definition of Ready

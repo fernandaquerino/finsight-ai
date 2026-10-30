@@ -1,75 +1,75 @@
 # CLAUDE.md — FinSight AI
 
-> Instruções persistentes para o Claude Code. Leia este arquivo antes de qualquer ação no repositório.
+> Persistent instructions for Claude Code. Read this file before any action in the repository.
 
 ---
 
 ## 1. Project overview
 
-**FinSight AI** é uma plataforma de análise financeira pessoal com IA — full-stack, production-ready e open source.
+**FinSight AI** is an AI-powered personal finance analysis platform — full-stack, production-ready and open source.
 
-O usuário importa extratos bancários (CSV/PDF), lança dados manualmente e conversa em linguagem natural com seus próprios dados financeiros. A IA responde com números reais (tool calling, não "memória"), categoriza transações, gera insights e sugere estratégias de quitação de dívidas e metas de economia.
+The user imports bank statements (CSV/PDF), enters data manually and talks in natural language to their own financial data. The AI responds with real numbers (tool calling, not "memory"), categorizes transactions, generates insights and suggests debt-payoff strategies and savings goals.
 
-**O que resolve:** a lacuna entre planilhas (controle, mas trabalhosas) e apps fechados (fáceis, mas caixas-pretas sem IA conversacional).
+**What it solves:** the gap between spreadsheets (control, but laborious) and closed apps (easy, but black boxes without conversational AI).
 
-**Escopo do MVP:**
+**MVP scope:**
 
-- Auth OAuth + onboarding mínimo
-- Lançamentos manuais + transações recorrentes
-- Importação de CSV com preview, validação e deduplicação
-- Dashboard (métricas, gráficos, top categorias)
-- Gestão de transações (CRUD, filtros, master-detail)
-- Categorização com sugestão de IA (Should Have)
-- Chat com IA financeira via tool calling (Should Have)
-- Insights básicos, metas e módulo de dívidas (Should Have)
+- OAuth auth + minimal onboarding
+- Manual entries + recurring transactions
+- CSV import with preview, validation and deduplication
+- Dashboard (metrics, charts, top categories)
+- Transaction management (CRUD, filters, master-detail)
+- Categorization with AI suggestion (Should Have)
+- Chat with a financial AI via tool calling (Should Have)
+- Basic insights, goals and a debt module (Should Have)
 
-**O que NÃO assumir sem validação:**
+**What NOT to assume without validation:**
 
-- Integrações bancárias automáticas (Plaid/Open Finance) → `Future`
-- Multi-moeda simultânea → `Future`
-- App mobile nativo → `Future`
-- Multi-usuário / contas familiares → `Future`
-- Aplicar sugestão de IA diretamente nos dados sem confirmação do usuário → **nunca**
+- Automatic bank integrations (Plaid/Open Finance) → `Future`
+- Simultaneous multi-currency → `Future`
+- Native mobile app → `Future`
+- Multi-user / family accounts → `Future`
+- Applying an AI suggestion directly to data without user confirmation → **never**
 
-**Perfil do projeto:** production-ready, portfolio-grade, open source. Cada decisão técnica deve ser defensável como se fosse um produto real com usuários reais e dados financeiros sensíveis.
+**Project profile:** production-ready, portfolio-grade, open source. Every technical decision must be defensible as if it were a real product with real users and sensitive financial data.
 
 ---
 
 ## 2. Technical stack
 
-Stack oficial — não adicionar bibliotecas fora desta lista sem justificar claramente o trade-off (propósito, tamanho, manutenção, alternativa descartada):
+Official stack — don't add libraries outside this list without clearly justifying the trade-off (purpose, size, maintenance, alternative rejected):
 
-| Camada             | Tecnologia                            |
+| Layer              | Technology                            |
 | ------------------ | ------------------------------------- |
 | Framework          | Next.js 15 (App Router)               |
-| Linguagem          | TypeScript (strict)                   |
-| Estilo             | Tailwind CSS + shadcn/ui              |
-| Estado cliente     | React Query (servidor) + Zustand (UI) |
+| Language           | TypeScript (strict)                   |
+| Styling            | Tailwind CSS + shadcn/ui              |
+| Client state       | React Query (server) + Zustand (UI)   |
 | ORM                | Drizzle ORM                           |
-| Banco              | PostgreSQL + pgvector                 |
+| Database           | PostgreSQL + pgvector                 |
 | Cache / rate limit | Redis                                 |
 | Auth               | Auth.js (OAuth + JWT)                 |
-| IA                 | Vercel AI SDK                         |
-| Testes             | Vitest + Testing Library + Playwright |
-| Observabilidade    | Sentry + OpenTelemetry                |
+| AI                 | Vercel AI SDK                         |
+| Tests              | Vitest + Testing Library + Playwright |
+| Observability      | Sentry + OpenTelemetry                |
 | Deploy             | Vercel                                |
 
-**Regra:** antes de instalar qualquer pacote novo, perguntar: "existe forma de fazer isso com o que já temos?" Se não existir, justificar com: propósito, alternativas consideradas, impacto no bundle, manutenção.
+**Rule:** before installing any new package, ask: "is there a way to do this with what we already have?" If not, justify with: purpose, alternatives considered, bundle impact, maintenance.
 
 ---
 
 ## 3. Engineering principles
 
-- **Simplicidade antes de abstração.** Se uma abstração não tem pelo menos dois usos reais, provavelmente é cedo demais.
-- **Tipagem forte.** Sem `any` desnecessário. Tipos explícitos nas bordas da aplicação (API responses, props, DB schema). Inferência OK no interior de funções.
-- **Componentes pequenos e coesos.** Uma responsabilidade por componente. Se crescer, quebrar.
-- **Separação clara de camadas:** UI → hooks/query → service → repository → banco. Lógica de domínio não vive em componentes React.
-- **Server Components por padrão.** Client Component só quando há interatividade, estado local, browser API ou evento do usuário.
-- **Segurança e privacidade por padrão.** Isolamento por `userId` em toda query. Sem PII em logs. Consentimento antes de IA.
-- **Testabilidade como critério de design.** Se está difícil de testar, o design provavelmente está errado.
-- **Acessibilidade é parte da feature.** WCAG 2.1 AA mínimo. Teclado, foco visível, gráficos com alternativa textual.
-- **Observabilidade é parte da feature.** Eventos de telemetria, tracing, métricas de custo de IA.
-- **Entrega incremental.** Preferir pequenas mudanças que funcionam completamente a grandes mudanças que "quase funcionam".
+- **Simplicity before abstraction.** If an abstraction doesn't have at least two real usages, it's probably too early.
+- **Strong typing.** No unnecessary `any`. Explicit types at the application's edges (API responses, props, DB schema). Inference is fine inside functions.
+- **Small, cohesive components.** One responsibility per component. If it grows, split it.
+- **Clear layer separation:** UI → hooks/query → service → repository → database. Domain logic does not live in React components.
+- **Server Components by default.** Client Component only when there is interactivity, local state, a browser API or a user event.
+- **Security and privacy by default.** Isolation by `userId` in every query. No PII in logs. Consent before AI.
+- **Testability as a design criterion.** If it's hard to test, the design is probably wrong.
+- **Accessibility is part of the feature.** WCAG 2.1 AA minimum. Keyboard, visible focus, charts with a textual alternative.
+- **Observability is part of the feature.** Telemetry events, tracing, AI cost metrics.
+- **Incremental delivery.** Prefer small changes that work completely over large changes that "almost work".
 
 ---
 
@@ -77,49 +77,49 @@ Stack oficial — não adicionar bibliotecas fora desta lista sem justificar cla
 
 ```
 src/
-  app/                    # Roteamento (App Router). Mínimo de lógica aqui.
-                          # Grupos: (auth) para login/onboarding, (app) para autenticado.
-                          # api/ para route handlers por domínio.
+  app/                    # Routing (App Router). Minimal logic here.
+                          # Groups: (auth) for login/onboarding, (app) for authenticated.
+                          # api/ for route handlers per domain.
 
   components/
-    ui/                   # Primitivos shadcn. Não editar lógica, só tokens.
-    app/                  # Componentes de layout/produto genéricos:
+    ui/                   # shadcn primitives. Don't edit the logic, only tokens.
+    app/                  # Generic layout/product components:
                           # AppShell, PageHeader, MetricCard, etc.
-    charts/               # Wrappers de Recharts/D3. Sem lógica de domínio.
+    charts/               # Recharts/D3 wrappers. No domain logic.
     feedback/             # EmptyState, LoadingState, ErrorState, Toast.
 
-  features/               # Um diretório por domínio:
+  features/               # One directory per domain:
                           # auth, onboarding, dashboard, transactions, imports,
                           # categories, ai-chat, insights, reports, goals, debts, settings.
-                          # Cada feature contém: components/, hooks/, types/, (opcionalmente) utils/.
+                          # Each feature contains: components/, hooks/, types/, (optionally) utils/.
 
   server/
-    actions/              # Server Actions (mutações simples acopladas a forms).
-    api/                  # Helpers compartilhados: responses, errors, middleware.
-    services/             # Regras de negócio — funções puras, testáveis, sem I/O direto.
-    repositories/         # Acesso a dados (Drizzle). SEMPRE filtra por userId.
-    validators/           # Schemas Zod por domínio (compartilhados com o front).
+    actions/              # Server Actions (simple mutations coupled to forms).
+    api/                  # Shared helpers: responses, errors, middleware.
+    services/             # Business rules — pure, testable functions, no direct I/O.
+    repositories/         # Data access (Drizzle). ALWAYS filters by userId.
+    validators/           # Zod schemas per domain (shared with the front).
 
   db/
-    schema/               # Definição das tabelas Drizzle.
-    migrations/           # Geradas pelo Drizzle — nunca editar manualmente.
-    seed/                 # Dados de desenvolvimento.
+    schema/               # Drizzle table definitions.
+    migrations/           # Generated by Drizzle — never edit manually.
+    seed/                 # Development data.
 
   ai/
-    tools/                # Tools de leitura e escrita controlada para o LLM.
-                          # Toda tool recebe userId da sessão, nunca do prompt.
-    prompts/              # System prompts versionados.
-    rag/                  # Recuperação de contexto por similaridade.
-    embeddings/           # Geração e armazenamento de embeddings.
-    guards/               # Sanitização, anti prompt-injection, rate limit.
+    tools/                # Read and controlled-write tools for the LLM.
+                          # Every tool receives userId from the session, never from the prompt.
+    prompts/              # Versioned system prompts.
+    rag/                  # Context retrieval by similarity.
+    embeddings/           # Embedding generation and storage.
+    guards/               # Sanitization, anti prompt-injection, rate limit.
 
-  lib/                    # Utilitários sem estado: formatadores, helpers de data, etc.
-  hooks/                  # Hooks React reutilizáveis entre features.
+  lib/                    # Stateless utilities: formatters, date helpers, etc.
+  hooks/                  # React hooks reused across features.
   styles/                 # globals.css, tokens.
-  types/                  # Tipos TypeScript compartilhados.
+  types/                  # Shared TypeScript types.
 ```
 
-**Regra de ouro:** se não sabe onde algo vai, prefira mais específico a mais genérico. Evitar um `utils/` ou `helpers/` que vira coleção de tudo.
+**Golden rule:** if you don't know where something goes, prefer more specific over more generic. Avoid a `utils/` or `helpers/` that becomes a dumping ground for everything.
 
 ---
 
@@ -127,70 +127,70 @@ src/
 
 ### Server vs Client Components
 
-- **Server Component (padrão):** busca de dados no carregamento inicial, sem estado ou evento do usuário.
-- **Client Component (`"use client"`):** forms, filtros, gráficos interativos, chat, painel de detalhe. Marcar no menor componente possível.
+- **Server Component (default):** data fetching on initial load, no user state or event.
+- **Client Component (`"use client"`):** forms, filters, interactive charts, chat, detail panel. Mark it on the smallest possible component.
 
 ### React Query
 
-- Um hook de query por recurso em `features/<domínio>/hooks/`.
-- Query keys como constantes nomeadas: `['transactions', userId, filters]`.
-- Sempre tratar loading, error e empty nos consumidores.
-- Invalidar queries após mutações relacionadas.
+- One query hook per resource in `features/<domain>/hooks/`.
+- Query keys as named constants: `['transactions', userId, filters]`.
+- Always handle loading, error and empty in the consumers.
+- Invalidate queries after related mutations.
 
 ### Zustand
 
-- Para estado de UI efêmero: qual transação está selecionada, filtros ativos, rascunho de chat.
-- **Nunca** duplicar dados de servidor no Zustand (React Query faz isso melhor).
-- Stores por domínio, não uma store global monolítica.
+- For ephemeral UI state: which transaction is selected, active filters, chat draft.
+- **Never** duplicate server data in Zustand (React Query does that better).
+- Stores per domain, not one monolithic global store.
 
-### Formulários
+### Forms
 
-- React Hook Form + Zod. O mesmo schema Zod do backend via `server/validators/`.
-- Nunca validar só no cliente.
+- React Hook Form + Zod. The same backend Zod schema via `server/validators/`.
+- Never validate only on the client.
 
-### Tabelas / listas
+### Tables / lists
 
-- TanStack Table dentro do componente `DataTable`.
-- Considerar virtualização quando a lista puder crescer.
-- Filtros sincronizados na URL (searchParams) para deep-link e SSR.
+- TanStack Table inside the `DataTable` component.
+- Consider virtualization when the list can grow.
+- Filters synced to the URL (searchParams) for deep-linking and SSR.
 
-### Gráficos
+### Charts
 
-- Wrappers em `components/charts/`. Dados chegam prontos (sem transformação dentro do chart).
-- Sempre com `aria-label` descritivo e tabela alternativa acessível.
-- Cores de categoria estáveis (mesmo mapa de cores em todo o app).
+- Wrappers in `components/charts/`. Data arrives ready (no transformation inside the chart).
+- Always with a descriptive `aria-label` and an accessible alternative table.
+- Stable category colors (the same color map across the whole app).
 
-### Estados obrigatórios
+### Required states
 
-Toda tela/componente que busca dados deve tratar:
+Every screen/component that fetches data must handle:
 
-- **Loading:** skeleton no shape do conteúdo.
-- **Error:** `ErrorState` com mensagem e botão de retry.
-- **Empty:** `EmptyState` com CTA claro — nunca tela em branco.
+- **Loading:** a skeleton in the shape of the content.
+- **Error:** `ErrorState` with a message and a retry button.
+- **Empty:** `EmptyState` with a clear CTA — never a blank screen.
 
-### Responsividade
+### Responsiveness
 
-- Mobile-first. Sidebar vira drawer/bottom-nav em mobile.
-- Tabelas com scroll horizontal em telas menores.
-- Painel de detalhe (master-detail) vira tela cheia no mobile.
+- Mobile-first. The sidebar becomes a drawer/bottom-nav on mobile.
+- Tables with horizontal scroll on smaller screens.
+- The detail panel (master-detail) becomes full screen on mobile.
 
-### Acessibilidade
+### Accessibility
 
-- Navegação por teclado funcional em todos os componentes interativos.
-- Focus ring visível (anel 2px, nunca remover outline sem substituir).
-- Labels em todos os inputs. `aria-describedby` em mensagens de erro.
-- Modais com focus trap. `aria-live` no streaming de IA.
+- Working keyboard navigation on all interactive components.
+- Visible focus ring (2px ring, never remove the outline without replacing it).
+- Labels on all inputs. `aria-describedby` on error messages.
+- Modals with focus trap. `aria-live` on AI streaming.
 
 ### shadcn/ui
 
-- Não usar componentes shadcn no estado "cru" — sempre passar pelos tokens do FinSight.
-- Primitivos em `components/ui/`, sem lógica de domínio.
-- Variantes com `cva`.
+- Don't use shadcn components in the "raw" state — always go through FinSight's tokens.
+- Primitives in `components/ui/`, no domain logic.
+- Variants with `cva`.
 
 ### Tailwind
 
-- Classes de token (ex: `text-primary`, `bg-secondary`) em vez de valores arbitrários quando possível.
-- Não usar `!important`. Se precisar, o design está errado.
+- Token classes (e.g. `text-primary`, `bg-secondary`) instead of arbitrary values when possible.
+- Don't use `!important`. If you need it, the design is wrong.
 
 ---
 
@@ -198,105 +198,105 @@ Toda tela/componente que busca dados deve tratar:
 
 ### Route Handlers
 
-- Um arquivo por recurso: `app/api/<domínio>/route.ts`.
-- Handlers finos: extraem sessão, validam input (Zod), delegam a service, retornam resposta.
-- Nunca lógica de negócio dentro do handler.
+- One file per resource: `app/api/<domain>/route.ts`.
+- Thin handlers: extract session, validate input (Zod), delegate to a service, return the response.
+- Never business logic inside the handler.
 
 ### Services
 
-- Funções puras ou quase-puras. Recebem repositórios/dependências por parâmetro (facilita teste).
-- Lógica de negócio aqui: cálculo de deduplicação, estratégia de dívida, agregações do dashboard.
+- Pure or near-pure functions. Receive repositories/dependencies as parameters (makes testing easier).
+- Business logic here: deduplication computation, debt strategy, dashboard aggregations.
 
 ### Repositories
 
-- Única camada que fala com o banco.
-- **Toda query filtra por `userId`.** Sem exceção. Nunca confiar em IDs vindos do cliente para autorização.
+- The only layer that talks to the database.
+- **Every query filters by `userId`.** No exceptions. Never trust IDs coming from the client for authorization.
 
-### Validação
+### Validation
 
-- Todo input de route handler passa por schema Zod antes de qualquer processamento.
-- Rejeitar com 422 e mensagem estruturada em caso de falha.
+- Every route handler input goes through a Zod schema before any processing.
+- Reject with 422 and a structured message on failure.
 
-### Responses / erros
+### Responses / errors
 
-- Envelope consistente: `{ data: T }` ou `{ error: { code, message, details? } }`.
-- Status HTTP corretos (400 validação, 401 não autenticado, 403 não autorizado, 404 não encontrado, 422 input inválido, 500 erro interno).
-- Nunca vazar stack trace ou dados de banco em responses de produção.
+- Consistent envelope: `{ data: T }` or `{ error: { code, message, details? } }`.
+- Correct HTTP statuses (400 validation, 401 not authenticated, 403 not authorized, 404 not found, 422 invalid input, 500 internal error).
+- Never leak a stack trace or database data in production responses.
 
-### Autorização
+### Authorization
 
-- `userId` vem **sempre** da sessão do servidor, nunca de body/params do cliente.
-- Verificar propriedade do recurso em cada acesso antes de retornar/modificar.
+- `userId` **always** comes from the server session, never from the client's body/params.
+- Verify resource ownership on each access before returning/modifying.
 
 ### Rate limiting
 
-- Redis para rate limit por usuário/IP em endpoints sensíveis e IA.
-- Retornar 429 com `Retry-After` quando atingido.
+- Redis for rate limiting per user/IP on sensitive and AI endpoints.
+- Return 429 with `Retry-After` when hit.
 
-### Logs seguros
+### Safe logs
 
-- Logs estruturados (JSON), com `requestId` e `userId` (hash/opaco), sem dados financeiros.
-- Nunca logar: valores de transação, extratos, tokens de integração, segredos.
+- Structured logs (JSON), with `requestId` and `userId` (hashed/opaque), without financial data.
+- Never log: transaction amounts, statements, integration tokens, secrets.
 
-### Webhooks / integrações (`Future`)
+### Webhooks / integrations (`Future`)
 
-- Verificar assinatura antes de processar.
-- Idempotência: processar o mesmo evento duas vezes deve ser seguro.
-- Logar evento + resultado, sem payload completo se contiver dados sensíveis.
+- Verify the signature before processing.
+- Idempotency: processing the same event twice must be safe.
+- Log the event + result, without the full payload if it contains sensitive data.
 
 ---
 
 ## 7. Database guidelines
 
-### Schema Drizzle
+### Drizzle schema
 
-- Schema em `db/schema/`, separado por tabela/domínio.
-- Tipos TypeScript inferidos do schema — nunca criar tipos duplicados manualmente para entidades de banco.
-- `snake_case` para nomes de tabela e coluna; `camelCase` no TypeScript via mapeamento do Drizzle.
+- Schema in `db/schema/`, split by table/domain.
+- TypeScript types inferred from the schema — never manually create duplicate types for database entities.
+- `snake_case` for table and column names; `camelCase` in TypeScript via Drizzle mapping.
 
 ### Migrations
 
-- Geradas com `drizzle-kit generate`. **Nunca editar manualmente.**
-- Cada migration deve ser revisada antes de aplicar em produção.
-- CI verifica que migrations estão consistentes com o schema.
+- Generated with `drizzle-kit generate`. **Never edit manually.**
+- Each migration must be reviewed before applying in production.
+- CI checks that migrations are consistent with the schema.
 
-### Relacionamentos e índices
+### Relationships and indexes
 
-- FK explícitas com `references()`.
-- Índices obrigatórios: `userId` em todas as tabelas de domínio, `dedupe_hash` em `transactions`, `occurred_at` em `transactions`, embedding com HNSW no pgvector.
+- Explicit FKs with `references()`.
+- Mandatory indexes: `userId` on all domain tables, `dedupe_hash` on `transactions`, `occurred_at` on `transactions`, embedding with HNSW on pgvector.
 
 ### Soft delete
 
-- Coluna `deleted_at` nas entidades de domínio para deletar sem perder auditoria.
-- Hard delete só no fluxo de exclusão de conta (LGPD/GDPR).
+- A `deleted_at` column on domain entities to delete without losing the audit trail.
+- Hard delete only in the account-deletion flow (LGPD/GDPR).
 
-### Multi-tenancy por usuário
+### Per-user multi-tenancy
 
-- **Toda tabela de domínio tem `userId` (FK indexada).**
-- Repository sempre filtra: `where(eq(transactions.userId, userId))`.
-- `Decision Needed` — habilitar Postgres RLS como defesa extra no hardening (v1.0).
+- **Every domain table has `userId` (indexed FK).**
+- The repository always filters: `where(eq(transactions.userId, userId))`.
+- `Decision Needed` — enable Postgres RLS as an extra defense in hardening (v1.0).
 
 ### pgvector
 
-- Coluna `vector(1536)` em `ai_embeddings`.
-- Índice HNSW (`cosine`).
-- Toda busca de embedding filtra por `userId` antes de ordenar por similaridade.
+- A `vector(1536)` column in `ai_embeddings`.
+- HNSW index (`cosine`).
+- Every embedding search filters by `userId` before ranking by similarity.
 
-### Deduplicação
+### Deduplication
 
 - `dedupe_hash` = `sha256(date + amount + description + accountId)`.
-- Constraint unique por conta. Detectar antes de inserir, não confiar só na constraint.
+- Unique constraint per account. Detect before inserting, don't rely only on the constraint.
 
-### Histórico de importação
+### Import history
 
-- `import_jobs` e `import_rows` preservam o bruto para auditoria.
-- Status do job: `pending | parsing | preview | confirmed | failed | rolled_back`.
-- Linhas inválidas não bloqueiam as válidas — registrar erro por linha.
+- `import_jobs` and `import_rows` preserve the raw data for auditing.
+- Job status: `pending | parsing | preview | confirmed | failed | rolled_back`.
+- Invalid rows don't block valid ones — record a per-row error.
 
 ### Audit logs
 
-- Tabela `audit_logs` append-only: export de dados, exclusão de conta, import confirmado.
-- Nunca atualizar ou deletar linhas de audit.
+- An append-only `audit_logs` table: data export, account deletion, confirmed import.
+- Never update or delete audit rows.
 
 ---
 
@@ -304,178 +304,178 @@ Toda tela/componente que busca dados deve tratar:
 
 ### Vercel AI SDK
 
-- `streamText` para chat. `generateText` para tasks internas (categorização, insight).
-- Sempre com `maxTokens` e `temperature` explícitos por use case.
+- `streamText` for chat. `generateText` for internal tasks (categorization, insight).
+- Always with explicit `maxTokens` and `temperature` per use case.
 
 ### Streaming
 
-- Resposta chega ao cliente via `ReadableStream`. Usar `AIThinkingState` enquanto processa.
-- `aria-live="polite"` na região de chat para acessibilidade.
+- The response reaches the client via a `ReadableStream`. Use `AIThinkingState` while processing.
+- `aria-live="polite"` on the chat region for accessibility.
 
 ### Tool calling
 
-- Tools definidas em `ai/tools/` com schema Zod de input e output.
-- **Toda tool recebe `userId` do contexto de sessão do servidor — nunca do prompt do usuário.**
-- Tools de leitura são seguras. Tools de escrita (categorizar, criar insight) **exigem confirmação do usuário** antes de efetivar.
-- A IA nunca acessa o banco diretamente; só via tools.
+- Tools defined in `ai/tools/` with input and output Zod schemas.
+- **Every tool receives `userId` from the server session context — never from the user's prompt.**
+- Read tools are safe. Write tools (categorize, create insight) **require user confirmation** before applying.
+- The AI never accesses the database directly; only via tools.
 
 ### RAG
 
-- Recuperar embeddings filtrados por `userId` antes de qualquer ordenação por similaridade.
-- RAG complementa as tools (semântico); tools dominam (estruturado/numérico).
+- Retrieve embeddings filtered by `userId` before any ranking by similarity.
+- RAG complements the tools (semantic); tools dominate (structured/numeric).
 
 ### Embeddings
 
-- Gerar ao criar/importar transação (assíncrono quando possível).
-- Representação textual: `"YYYY-MM-DD · <descrição> · <categoria> · <valor>"`.
-- Armazenar em `ai_embeddings` com `userId` e `transactionId`.
+- Generate when a transaction is created/imported (asynchronous when possible).
+- Textual representation: `"YYYY-MM-DD · <description> · <category> · <amount>"`.
+- Store in `ai_embeddings` with `userId` and `transactionId`.
 
 ### Prompt injection
 
-- Conteúdo vindo de dados do usuário (descrições de transação, PDFs) é tratado como dado, não como instrução.
-- Separação explícita no system prompt entre instruções e dados.
-- `ai/guards/` sanitiza antes de injetar no contexto.
+- Content coming from user data (transaction descriptions, PDFs) is treated as data, not as instructions.
+- Explicit separation in the system prompt between instructions and data.
+- `ai/guards/` sanitizes before injecting into the context.
 
-### Dados sensíveis
+### Sensitive data
 
-- Nunca incluir valores exatos de transação no system prompt de forma bruta — passar via tools.
-- Números específicos só via tool calls (auditáveis).
+- Never include exact transaction amounts raw in the system prompt — pass them via tools.
+- Specific numbers only via tool calls (auditable).
 
-### Limites de resposta
+### Response limits
 
-- Respostas com números financeiros **sempre** citam a fonte (qual tool, qual período).
-- Se a tool não retornou dados, a IA diz que não tem dados suficientes — nunca inventa.
-- Projeções e recomendações vêm com disclaimer: "estimativa baseada nos seus dados, não aconselhamento financeiro profissional".
+- Responses with financial numbers **always** cite the source (which tool, which period).
+- If the tool returned no data, the AI says it doesn't have enough data — it never makes things up.
+- Projections and recommendations come with a disclaimer: "an estimate based on your data, not professional financial advice".
 
-### Tom da IA
+### AI tone
 
-- Copiloto, não juiz. "Seu gasto com X foi 17% acima da média" — não "você gastou demais com X".
-- Sem promessas absolutas. "Você pode economizar até X" — não "você vai economizar X".
+- A copilot, not a judge. "Your spending on X was 17% above average" — not "you spent too much on X".
+- No absolute promises. "You could save up to X" — not "you will save X".
 
-### Confirmação antes de mutações
+### Confirmation before mutations
 
-- Qualquer ação que altere dados (categorização em lote, criar insight) exige confirmação visual antes.
-- A IA propõe; o usuário decide.
+- Any action that changes data (batch categorization, create insight) requires visual confirmation first.
+- The AI proposes; the user decides.
 
-### Histórico de conversa
+### Conversation history
 
-- Persistir em `ai_conversations` e `ai_messages`.
-- Registrar tokens usados para métrica de custo.
+- Persist in `ai_conversations` and `ai_messages`.
+- Record tokens used for a cost metric.
 
-### Testes de IA
+### AI tests
 
-- Tools testadas com fixtures de banco (Vitest + banco de teste).
-- Chat testado com modelo mockado — nunca chamar a API real em testes.
-- `ai/guards/` testados com payloads maliciosos.
+- Tools tested with database fixtures (Vitest + test database).
+- Chat tested with a mocked model — never call the real API in tests.
+- `ai/guards/` tested with malicious payloads.
 
 ---
 
 ## 9. Security & privacy guidelines
 
-- **LGPD/GDPR:** consentimento explícito antes de processar IA; export self-service; delete self-service (hard delete de todos os dados do usuário).
-- **Nunca logar:** valores de transação, descrições de extrato, CPF, e-mail completo, tokens de integração, chaves de API.
-- **Isolamento por usuário:** toda query filtra por `userId`. Sem acesso a dados de outros usuários possível — testar isso explicitamente.
-- **Sanitização:** todo input validado com Zod no backend. Conteúdo de arquivo (CSV/PDF) sanitizado antes de qualquer uso.
-- **Upload seguro:** validar tipo MIME + extensão + tamanho. Arquivo descartado após processamento (`purged_at`). Nunca armazenar arquivo em caminho público sem autenticação.
-- **Rate limit:** Redis, por usuário e por IP, em IA e endpoints sensíveis. 429 com `Retry-After`.
-- **Auth:** `userId` sempre da sessão do servidor. `httpOnly + sameSite` nos cookies. Sessão expira e rotaciona.
-- **Secrets:** apenas em `.env` e variáveis de ambiente da Vercel. Nunca em código, nunca commitados. `.env` no `.gitignore`.
-- **Exportação de dados:** registrar em `audit_logs`. Gerar JSON/CSV apenas dos dados do próprio usuário.
-- **Exclusão de conta:** hard delete de todas as entidades com FK para `userId`. Confirmar antes de executar.
+- **LGPD/GDPR:** explicit consent before processing AI; self-service export; self-service delete (hard delete of all the user's data).
+- **Never log:** transaction amounts, statement descriptions, CPF, full email, integration tokens, API keys.
+- **Per-user isolation:** every query filters by `userId`. No access to other users' data possible — test this explicitly.
+- **Sanitization:** every input validated with Zod on the backend. File content (CSV/PDF) sanitized before any use.
+- **Safe upload:** validate MIME type + extension + size. File discarded after processing (`purged_at`). Never store a file at a public path without authentication.
+- **Rate limit:** Redis, per user and per IP, on AI and sensitive endpoints. 429 with `Retry-After`.
+- **Auth:** `userId` always from the server session. `httpOnly + sameSite` on cookies. Session expires and rotates.
+- **Secrets:** only in `.env` and Vercel environment variables. Never in code, never committed. `.env` in `.gitignore`.
+- **Data export:** record in `audit_logs`. Generate JSON/CSV only of the user's own data.
+- **Account deletion:** hard delete of all entities with an FK to `userId`. Confirm before executing.
 
 ---
 
 ## 10. Testing guidelines
 
-### Estratégia geral
+### General strategy
 
-- Testar o que tem maior risco: isolamento por usuário, lógica de negócio (deduplicação, cálculo de dívida, agregações), importação de CSV, tools de IA.
-- Preferir testes de integração (service + repository + banco de teste) a mocks pesados.
+- Test what carries the most risk: per-user isolation, business logic (deduplication, debt calculation, aggregations), CSV import, AI tools.
+- Prefer integration tests (service + repository + test database) over heavy mocks.
 
 ### Vitest (unit + integration)
 
-- Services com lógica pura: unitário.
-- Repositories + services juntos: integração com banco de teste (Docker no CI).
-- Validators (Zod): unitário — inputs válidos e inválidos.
+- Services with pure logic: unit.
+- Repositories + services together: integration with a test database (Docker in CI).
+- Validators (Zod): unit — valid and invalid inputs.
 
-### Testing Library (componentes)
+### Testing Library (components)
 
-- Componentes do design system: fumaça + acessibilidade (axe).
-- Formulários: submit válido, submit inválido, estados de loading/error.
-- `TransactionRow`, `InsightCard`, `AIChatMessage`: renderização com props críticas.
+- Design system components: smoke + accessibility (axe).
+- Forms: valid submit, invalid submit, loading/error states.
+- `TransactionRow`, `InsightCard`, `AIChatMessage`: rendering with critical props.
 
 ### Playwright (E2E)
 
-- Fluxos críticos: onboarding → criar transação → ver dashboard.
-- Importar CSV → preview → confirmar → transações aparecem.
-- Perguntar à IA → resposta com fonte exibida (modelo mockado).
-- Tentar acessar dado de outro usuário → 403.
+- Critical flows: onboarding → create transaction → see dashboard.
+- Import CSV → preview → confirm → transactions appear.
+- Ask the AI → response with the source displayed (mocked model).
+- Try to access another user's data → 403.
 
-### Testes de segurança
+### Security tests
 
-- **Isolamento:** criar dois usuários no seed; tentar acessar recurso do outro → verificar rejeição.
-- **Autorização:** tentar chamar endpoints sem sessão → 401.
+- **Isolation:** create two users in the seed; try to access the other's resource → verify rejection.
+- **Authorization:** try to call endpoints without a session → 401.
 
 ### Mocks
 
-- IA: mock do `generateText`/`streamText` retornando resposta fixture.
-- APIs externas: mock com `msw` ou `nock`.
-- Nunca usar dados financeiros reais em fixtures.
+- AI: mock `generateText`/`streamText` returning a fixture response.
+- External APIs: mock with `msw` or `nock`.
+- Never use real financial data in fixtures.
 
-### Acessibilidade
+### Accessibility
 
-- `@axe-core/playwright` nas páginas principais.
-- Verificar navegação por teclado nos E2E críticos.
+- `@axe-core/playwright` on the main pages.
+- Verify keyboard navigation in the critical E2E.
 
-### Regressão
+### Regression
 
-- Qualquer bug corrigido vira um teste antes da correção.
+- Any fixed bug becomes a test before the fix.
 
 ---
 
 ## 11. Workflow rules
 
-Antes de qualquer ação no repositório:
+Before any action in the repository:
 
-1. **Ler os arquivos relevantes primeiro.** Nunca assumir o estado do código — verificar.
-2. **Explicar o plano antes de mudanças grandes.** Propor abordagem e aguardar confirmação para refatorações, mudanças de arquitetura ou alterações que tocam muitos arquivos.
-3. **Mudanças pequenas e incrementais.** Uma coisa de cada vez. Preferir um commit que funciona completamente a vários commits quebrados.
-4. **Não refatorar arquivos fora do escopo da tarefa.** Se notar algo a melhorar, apontar e sugerir — não fazer silenciosamente.
-5. **Não alterar arquitetura sem justificar.** Qualquer desvio das convenções de `architecture.md` precisa de razão explícita.
-6. **Não remover testes sem explicar.** Se um teste precisa ser removido, explicar por quê e o que o substitui.
-7. **Rodar validações quando possível:** `npm lint`, `npm type-check`, `npm test`. Reportar resultado.
-8. **Atualizar documentação quando alterar comportamento.** Se uma função, rota ou componente muda de contrato, atualizar o doc relevante.
-9. **Commits pequenos e descritivos quando solicitado.** Formato: `feat(transactions): add grouped list with master-detail`.
+1. **Read the relevant files first.** Never assume the state of the code — check it.
+2. **Explain the plan before big changes.** Propose an approach and wait for confirmation for refactors, architecture changes or changes touching many files.
+3. **Small, incremental changes.** One thing at a time. Prefer one commit that works completely over several broken commits.
+4. **Don't refactor files outside the task's scope.** If you notice something to improve, point it out and suggest it — don't do it silently.
+5. **Don't change architecture without justification.** Any deviation from the conventions in `architecture.md` needs an explicit reason.
+6. **Don't remove tests without explaining.** If a test needs to be removed, explain why and what replaces it.
+7. **Run checks when possible:** `npm lint`, `npm type-check`, `npm test`. Report the result.
+8. **Update documentation when changing behavior.** If a function, route or component changes its contract, update the relevant doc.
+9. **Small, descriptive commits when requested.** Format: `feat(transactions): add grouped list with master-detail`.
 
 ---
 
 ## 12. Senior engineering mentorship mode
 
-Este projeto também é um espaço de crescimento profissional. A IA deve atuar como **mentora de engenharia sênior**, não apenas como geradora de código.
+This project is also a space for professional growth. The AI should act as a **senior engineering mentor**, not just a code generator.
 
-Comportamentos esperados:
+Expected behaviors:
 
-- **Explicar trade-offs** antes de recomendar uma abordagem. "Poderia usar X ou Y — X é mais simples agora, mas Y escala melhor quando tivermos integração com Plaid."
-- **Questionar decisões frágeis.** "Você quer fazer isso dessa forma — tem certeza? Qual é o risco se o parsing do PDF falhar no meio?"
-- **Sugerir alternativas.** "Fiz assim, mas outra opção seria... O trade-off é..."
-- **Apontar riscos proativamente.** Marcar com `Risk` quando algo pode falhar em produção, comprometer segurança ou criar dívida técnica.
-- **Pedir decisões arquiteturais.** Para escolhas importantes, apresentar opções e pedir que eu decida — não decidir por mim silenciosamente.
-- **Não entregar código sem contexto.** Sempre explicar: o que foi feito, por quê, quais padrões foram usados, onde revisar com mais cuidado.
-- **Destacar padrões.** "Usei o padrão repository aqui para facilitar o teste unitário do service."
-- **Sugerir testes relevantes.** Após implementar, listar o que vale testar e por quê.
-- **Sugerir melhorias de performance, segurança e DX** como follow-ups — sem implementar sem pedir.
-- **Ajudar a comunicar decisões.** "Como eu explicaria essa escolha para a equipe/recrutador/PR?"
+- **Explain trade-offs** before recommending an approach. "You could use X or Y — X is simpler now, but Y scales better once we have Plaid integration."
+- **Question fragile decisions.** "You want to do it this way — are you sure? What's the risk if the PDF parsing fails halfway through?"
+- **Suggest alternatives.** "I did it this way, but another option would be... The trade-off is..."
+- **Point out risks proactively.** Mark with `Risk` when something could fail in production, compromise security or create technical debt.
+- **Ask for architectural decisions.** For important choices, present options and ask me to decide — don't decide for me silently.
+- **Don't deliver code without context.** Always explain: what was done, why, which patterns were used, where to review more carefully.
+- **Highlight patterns.** "I used the repository pattern here to make the service's unit test easier."
+- **Suggest relevant tests.** After implementing, list what's worth testing and why.
+- **Suggest performance, security and DX improvements** as follow-ups — without implementing them unasked.
+- **Help communicate decisions.** "How would I explain this choice to the team/recruiter/PR?"
 
 ---
 
 ## 13. Output style
 
-- **Objetiva e clara.** Sem rodeios, sem enrolação.
-- **Português** quando a mensagem for em português. **Inglês** para código, nomes de variáveis, comentários de código, nomes de branch, commits, documentação técnica.
-- **Sem abstrações exageradas.** Se a solução mais simples funciona, use-a.
-- **Sinalização consistente:**
-  - `Risk` — algo que pode falhar, criar vulnerabilidade ou gerar dívida.
-  - `Decision Needed` — escolha arquitetural ou de produto que precisa de validação.
-  - `Future` — melhoria válida, mas fora do escopo atual.
-- **Nunca usar `any` sem comentar o motivo** e propor o caminho para remover.
-- **Sempre mostrar diff/arquivos alterados** ao fim de uma implementação.
+- **Objective and clear.** No beating around the bush.
+- **Portuguese** when the message is in Portuguese. **English** for code, variable names, code comments, branch names, commits, technical documentation.
+- **No over-abstraction.** If the simplest solution works, use it.
+- **Consistent signaling:**
+  - `Risk` — something that can fail, create a vulnerability or generate debt.
+  - `Decision Needed` — an architectural or product choice that needs validation.
+  - `Future` — a valid improvement, but out of the current scope.
+- **Never use `any` without commenting the reason** and proposing the path to remove it.
+- **Always show the diff/changed files** at the end of an implementation.

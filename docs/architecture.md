@@ -1,207 +1,208 @@
 # FinSight AI — Technical Architecture
 
-> Perspectiva: Tech Lead / Staff Engineer.
-> Versão: 0.1 · Status: living document
+> Perspective: Tech Lead / Staff Engineer.
+> Version: 0.1 · Status: living document
 
 ---
 
-## 1. Arquitetura técnica (visão geral)
+## 1. Technical architecture (overview)
 
-FinSight AI é um monólito modular sobre Next.js 15 (App Router), deployado na Vercel, com Postgres + pgvector como fonte da verdade e Redis para cache/rate limit. A IA é orquestrada pelo Vercel AI SDK com tool calling sobre os dados do usuário. A separação é por **domínio** (features) no front e por **camadas** (route handler → service → repository) no back.
+FinSight AI is a modular monolith on Next.js 15 (App Router), deployed on Vercel, with Postgres + pgvector as the source of truth and Redis for cache/rate limit. The AI is orchestrated by the Vercel AI SDK with tool calling over the user's data. Separation is by **domain** (features) on the front and by **layers** (route handler → service → repository) on the back.
 
-Princípios:
+Principles:
 
-- **Server-first:** dados sensíveis e lógica ficam no servidor (RSC, route handlers, services). O cliente só recebe o que precisa renderizar.
-- **Isolamento por usuário em toda query** — a camada de repositório sempre recebe e filtra por `userId`.
-- **IA não acessa o banco diretamente** — só através de tools que já aplicam o isolamento por usuário.
-- **Degradação graciosa:** falha de IA/Redis não derruba o core (transações continuam acessíveis).
+- **Server-first:** sensitive data and logic stay on the server (RSC, route handlers, services). The client only receives what it needs to render.
+- **Per-user isolation in every query** — the repository layer always receives and filters by `userId`.
+- **The AI does not access the database directly** — only through tools that already enforce per-user isolation.
+- **Graceful degradation:** an AI/Redis failure doesn't take down the core (transactions remain accessible).
 
-Estratégias por tecnologia:
+Strategies per technology:
 
-- **Server Components:** páginas, leituras iniciais (dashboard, listas) — buscam dados no servidor sem expor lógica.
-- **Client Components:** interatividade (formulários, filtros, chat, gráficos).
-- **React Query:** cache e sincronização de dados client-side que mudam por interação (filtros de transações, refetch após mutação).
-- **Zustand:** estado de UI efêmero/global (painel de detalhe aberto, filtros ativos, draft do chat) — não para dados de servidor.
-- **Route Handlers:** API REST por domínio (`/api/transactions`, `/api/import`, `/api/ai/chat`...).
-- **Server Actions:** mutações simples acopladas a forms (criar transação, salvar meta) onde não há necessidade de endpoint público.
-- **Drizzle:** schema tipado, migrations versionadas, queries no repository.
-- **Redis:** cache de agregações do dashboard, rate limit de IA, dedupe de import.
-- **pgvector:** embeddings de transações para RAG no chat.
-- **Vercel AI SDK:** streaming + tool calling; prompts e tools versionados em `ai/`.
-- **Upload:** via route handler com validação; armazenamento temporário; descarte pós-processo.
-- **Testes:** Vitest (unit/integration) + Playwright (E2E) + Testing Library (componentes).
+- **Server Components:** pages, initial reads (dashboard, lists) — fetch data on the server without exposing logic.
+- **Client Components:** interactivity (forms, filters, chat, charts).
+- **React Query:** cache and sync of client-side data that changes through interaction (transaction filters, refetch after mutation).
+- **Zustand:** ephemeral/global UI state (open detail panel, active filters, chat draft) — not for server data.
+- **Route Handlers:** REST API per domain (`/api/transactions`, `/api/import`, `/api/ai/chat`...).
+- **Server Actions:** simple mutations coupled to forms (create transaction, save goal) where there's no need for a public endpoint.
+- **Drizzle:** typed schema, versioned migrations, queries in the repository.
+- **Redis:** dashboard aggregation cache, AI rate limit, import dedupe.
+- **pgvector:** transaction embeddings for RAG in chat.
+- **Vercel AI SDK:** streaming + tool calling; prompts and tools versioned in `ai/`.
+- **Upload:** via route handler with validation; temporary storage; discard after processing.
+- **Tests:** Vitest (unit/integration) + Playwright (E2E) + Testing Library (components).
 - **Local:** Docker Compose (Postgres+pgvector, Redis); seed script; `.env.example`.
-- **Deploy:** Vercel (preview por PR, produção no merge em `main`); migrations no pipeline.
+- **Deploy:** Vercel (preview per PR, production on merge to `main`); migrations in the pipeline.
 
 ---
 
-## 2. Estrutura de pastas recomendada
+## 2. Recommended folder structure
 
 ```txt
 src/
-  app/                      # rotas (App Router): páginas, layouts, route handlers
-    (auth)/                 # grupo de rotas de auth/onboarding
-    (app)/                  # grupo autenticado (dashboard, transactions, chat...)
-    api/                    # route handlers por domínio
+  app/                      # routes (App Router): pages, layouts, route handlers
+    (auth)/                 # auth/onboarding route group
+    (app)/                  # authenticated group (dashboard, transactions, chat...)
+    api/                    # route handlers per domain
   components/
-    ui/                     # primitivos shadcn (Button, Input, Dialog...)
-    app/                    # layout/produto genérico (AppShell, PageHeader, MetricCard)
-    charts/                 # wrappers de gráficos (Recharts/D3)
+    ui/                     # shadcn primitives (Button, Input, Dialog...)
+    app/                    # generic layout/product (AppShell, PageHeader, MetricCard)
+    charts/                 # chart wrappers (Recharts/D3)
     feedback/               # EmptyState, LoadingState, ErrorState, Toast
-  features/                 # código por domínio (UI + hooks + tipos locais)
+  features/                 # code per domain (UI + hooks + local types)
     auth/  onboarding/  dashboard/  transactions/  imports/
     categories/  ai-chat/  insights/  reports/  goals/  debts/
     settings/  integrations/
   server/
     actions/                # Server Actions
-    api/                    # helpers compartilhados de route handlers (responses, errors)
-    services/               # regras de negócio (puras, testáveis)
-    repositories/           # acesso a dados (Drizzle), sempre com userId
-    validators/             # schemas Zod por domínio
+    api/                    # shared route handler helpers (responses, errors)
+    services/               # business rules (pure, testable)
+    repositories/           # data access (Drizzle), always with userId
+    validators/             # Zod schemas per domain
   db/
-    schema/                 # tabelas Drizzle
-    migrations/             # migrations geradas
-    seed/                   # seed de desenvolvimento
+    schema/                 # Drizzle tables
+    migrations/             # generated migrations
+    seed/                   # development seed
   ai/
-    tools/                  # tools de leitura (getMonthlySummary...) + escrita controlada
-    prompts/                # system prompts versionados
-    rag/                    # recuperação de contexto
-    embeddings/             # geração/armazenamento de embeddings
-    guards/                 # sanitização, anti prompt-injection, limites
-  lib/                      # utilitários (formatadores de moeda, datas, etc.)
-  hooks/                    # hooks reutilizáveis
+    tools/                  # read tools (getMonthlySummary...) + controlled writes
+    prompts/                # versioned system prompts
+    rag/                    # context retrieval
+    embeddings/             # embedding generation/storage
+    guards/                 # sanitization, anti prompt-injection, limits
+  lib/                      # utilities (currency/date formatters, etc.)
+  hooks/                    # reusable hooks
   styles/                   # globals, tokens
-  types/                    # tipos compartilhados
-  tests/                    # setup de testes, fixtures, mocks
-docs/                       # esta documentação
+  types/                    # shared types
+  tests/                    # test setup, fixtures, mocks
+docs/                       # this documentation
 ```
 
-Responsabilidades:
+Responsibilities:
 
-- `app/` — roteamento e composição; o mínimo de lógica.
-- `features/` — tudo de um domínio junto (componentes, hooks, tipos), facilitando navegação.
-- `server/services` — onde mora a regra de negócio (sem I/O direto, recebe repositórios).
-- `server/repositories` — única camada que fala com o banco; impõe isolamento por usuário.
-- `ai/` — orquestração de IA isolada, testável com mocks.
-- `db/` — schema e migrations como fonte da verdade do modelo físico.
+- `app/` — routing and composition; minimal logic.
+- `features/` — everything for a domain together (components, hooks, types), making navigation easier.
+- `server/services` — where business rules live (no direct I/O, receives repositories).
+- `server/repositories` — the only layer that talks to the database; enforces per-user isolation.
+- `ai/` — isolated AI orchestration, testable with mocks.
+- `db/` — schema and migrations as the source of truth of the physical model.
 
 ---
 
-## 3. Estratégia de frontend
+## 3. Frontend strategy
 
-- **Server Components:** páginas e leituras iniciais (dashboard, lista de transações no primeiro load, relatórios). Sem `useState`/efeitos.
-- **Client Components:** formulários, filtros, chat, gráficos interativos, painel de detalhe — marcados com `"use client"`.
-- **React Query:** para dados que mudam por interação no cliente (paginação/filtro de transações, refetch pós-mutação, polling de status de import). Query keys por domínio + parâmetros.
-- **Zustand:** estado de UI (qual transação está selecionada no master-detail, filtros ativos compartilhados, rascunho do chat). Nunca duplicar dados de servidor.
-- **Hooks:** `features/x/hooks/useTransactions.ts` encapsula React Query; UI não chama fetch direto.
-- **Formulários:** React Hook Form + Zod (mesmo schema do back via `validators/`).
-- **Filtros:** estado em Zustand + sincronizado na URL (searchParams) para deep-link e SSR.
-- **Tabelas:** TanStack Table dentro de `DataTable`; virtualização quando a lista crescer.
-- **Loading/error/empty:** sempre via componentes dedicados de `feedback/`; toda query trata os 3 estados.
-- **Layouts reutilizáveis:** `AppShell` no layout do grupo `(app)`.
-- **Genérico vs produto:** primitivo em `components/ui`, layout em `components/app`, domínio em `features/*/components`.
+- **Server Components:** pages and initial reads (dashboard, transaction list on first load, reports). No `useState`/effects.
+- **Client Components:** forms, filters, chat, interactive charts, detail panel — marked with `"use client"`.
+- **React Query:** for data that changes through client interaction (transaction pagination/filter, refetch after mutation, import status polling). Query keys per domain + parameters.
+- **Zustand:** UI state (which transaction is selected in master-detail, shared active filters, chat draft). Never duplicate server data.
+- **Hooks:** `features/x/hooks/useTransactions.ts` encapsulates React Query; UI doesn't call fetch directly.
+- **Forms:** React Hook Form + Zod (same back-end schema via `validators/`).
+- **Filters:** state in Zustand + synced to the URL (searchParams) for deep-linking and SSR.
+- **Tables:** TanStack Table inside `DataTable`; virtualization when the list grows.
+- **Loading/error/empty:** always via dedicated `feedback/` components; every query handles the 3 states.
+- **Reusable layouts:** `AppShell` in the `(app)` group layout.
+- **Generic vs product:** primitive in `components/ui`, layout in `components/app`, domain in `features/*/components`.
 
 ---
 
 ## 4. Design system / UI foundation
 
-| Componente                   | Onde                    | Tipo     | Props principais         | Estados                      | Testes           | Deps     |
+| Component                    | Where                   | Type     | Main props               | States                       | Tests            | Deps     |
 | ---------------------------- | ----------------------- | -------- | ------------------------ | ---------------------------- | ---------------- | -------- |
-| Button                       | `components/ui`         | genérico | variant, size, loading   | hover/focus/disabled/loading | unit             | cva      |
-| Input                        | `components/ui`         | genérico | error, label             | focus/error/disabled         | unit             | —        |
-| Select                       | `components/ui`         | genérico | options, value           | open/disabled                | unit             | radix    |
-| Dialog                       | `components/ui`         | genérico | open, onOpenChange       | open/closed (focus trap)     | unit a11y        | radix    |
-| Dropdown                     | `components/ui`         | genérico | items                    | open                         | —                | radix    |
-| Card                         | `components/app`        | genérico | —                        | —                            | —                | —        |
-| Table/DataTable              | `components/app`        | genérico | columns, data            | loading/empty                | unit             | tanstack |
-| EmptyState                   | `components/feedback`   | genérico | title, action            | —                            | —                | —        |
-| LoadingState                 | `components/feedback`   | genérico | variant (skeleton)       | —                            | —                | —        |
-| ErrorState                   | `components/feedback`   | genérico | onRetry                  | —                            | —                | —        |
-| ChartCard                    | `components/charts`     | genérico | title, data              | loading/empty                | —                | recharts |
-| MetricCard                   | `components/app`        | produto  | label, value, trend      | —                            | unit             | —        |
-| PageHeader                   | `components/app`        | produto  | title, subtitle, actions | —                            | —                | —        |
-| Sidebar / Topbar             | `components/app`        | produto  | items, user              | active                       | —                | —        |
-| DateRangePicker              | `components/app`        | genérico | range, onChange          | —                            | unit             | —        |
-| FileUploader                 | `features/imports`      | produto  | accept, maxSize, onFiles | idle/uploading/error         | unit             | —        |
-| TransactionForm              | `features/transactions` | produto  | initial, onSubmit        | submitting/error             | unit+integration | RHF+Zod  |
-| CategoryBadge                | `features/categories`   | produto  | category                 | —                            | —                | —        |
-| TransactionAmount            | `components/app`        | produto  | amount, currency         | —                            | unit             | —        |
-| AIChatMessage                | `features/ai-chat`      | produto  | role, content, sources   | streaming                    | unit             | —        |
-| InsightCard                  | `features/insights`     | produto  | insight, onAction        | —                            | unit             | —        |
-| DebtCard / DebtStrategyPanel | `features/debts`        | produto  | debt / strategy          | —                            | unit             | —        |
+| Button                       | `components/ui`         | generic  | variant, size, loading   | hover/focus/disabled/loading | unit             | cva      |
+| Input                        | `components/ui`         | generic  | error, label             | focus/error/disabled         | unit             | —        |
+| Select                       | `components/ui`         | generic  | options, value           | open/disabled                | unit             | radix    |
+| Dialog                       | `components/ui`         | generic  | open, onOpenChange       | open/closed (focus trap)     | unit a11y        | radix    |
+| Dropdown                     | `components/ui`         | generic  | items                    | open                         | —                | radix    |
+| Card                         | `components/app`        | generic  | —                        | —                            | —                | —        |
+| Table/DataTable              | `components/app`        | generic  | columns, data            | loading/empty                | unit             | tanstack |
+| EmptyState                   | `components/feedback`   | generic  | title, action            | —                            | —                | —        |
+| LoadingState                 | `components/feedback`   | generic  | variant (skeleton)       | —                            | —                | —        |
+| ErrorState                   | `components/feedback`   | generic  | onRetry                  | —                            | —                | —        |
+| ChartCard                    | `components/charts`     | generic  | title, data              | loading/empty                | —                | recharts |
+| MetricCard                   | `components/app`        | product  | label, value, trend      | —                            | unit             | —        |
+| PageHeader                   | `components/app`        | product  | title, subtitle, actions | —                            | —                | —        |
+| Sidebar / Topbar             | `components/app`        | product  | items, user              | active                       | —                | —        |
+| DateRangePicker              | `components/app`        | generic  | range, onChange          | —                            | unit             | —        |
+| FileUploader                 | `features/imports`      | product  | accept, maxSize, onFiles | idle/uploading/error         | unit             | —        |
+| TransactionForm              | `features/transactions` | product  | initial, onSubmit        | submitting/error             | unit+integration | RHF+Zod  |
+| CategoryBadge                | `features/categories`   | product  | category                 | —                            | —                | —        |
+| TransactionAmount            | `components/app`        | product  | amount, currency         | —                            | unit             | —        |
+| AIChatMessage                | `features/ai-chat`      | product  | role, content, sources   | streaming                    | unit             | —        |
+| InsightCard                  | `features/insights`     | product  | insight, onAction        | —                            | unit             | —        |
+| DebtCard / DebtStrategyPanel | `features/debts`        | product  | debt / strategy          | —                            | unit             | —        |
 
 ---
 
-## 5. Backend e API
+## 5. Backend and API
 
-- **Route Handlers:** um arquivo por recurso em `app/api/<domínio>/route.ts`; lógica delegada a services.
-- **Validação:** todo input passa por schema Zod (`validators/`); rejeita cedo com 422.
-- **Auth/autorização:** middleware extrai sessão; cada handler obtém `userId` e repassa aos services/repos. Nenhuma query sem `userId`.
-- **Responses:** envelope consistente `{ data }` ou `{ error: { code, message, details? } }`.
-- **Erros:** classe de erro de domínio mapeada para status HTTP; nunca vazar stack/PII.
-- **Services/Repositories:** service = regra; repository = dados. Handlers ficam finos.
-- **Sem lógica pesada na rota:** parsing/cálculo em services; rota só orquestra.
+- **Route Handlers:** one file per resource in `app/api/<domain>/route.ts`; logic delegated to services.
+- **Validation:** every input goes through a Zod schema (`validators/`); reject early with 422.
+- **Auth/authorization:** middleware extracts the session; each handler obtains `userId` and passes it to services/repos. No query without `userId`.
+- **Responses:** consistent envelope `{ data }` or `{ error: { code, message, details? } }`.
+- **Errors:** a domain error class mapped to an HTTP status; never leak stack/PII.
+- **Services/Repositories:** service = rules; repository = data. Handlers stay thin.
+- **No heavy logic in the route:** parsing/computation in services; the route only orchestrates.
 
-Endpoints iniciais:
+Initial endpoints:
 
 ```txt
 POST   /api/auth/session            # via Auth.js
-GET    /api/onboarding              # estado do onboarding
-POST   /api/onboarding              # salva preferências
-GET    /api/dashboard               # agregações do período
-GET    /api/transactions            # lista (filtros, paginação)
-POST   /api/transactions            # cria manual
-PATCH  /api/transactions/:id        # edita / recategoriza
+GET    /api/onboarding              # onboarding state
+POST   /api/onboarding              # saves preferences
+GET    /api/dashboard               # period aggregations
+GET    /api/transactions            # list (filters, pagination)
+POST   /api/transactions            # create manual
+PATCH  /api/transactions/:id        # edit / recategorize
 DELETE /api/transactions/:id        # soft delete
-GET    /api/categories              # lista
-POST   /api/categories              # cria
-GET    /api/categories/summary      # total do mês + uso do orçamento (?month=YYYY-MM)
-PATCH  /api/categories/:id          # edita nome, cor, ícone, orçamento (kind é imutável)
-DELETE /api/categories/:id          # move transações p/ "Outros" e remove
-POST   /api/imports                 # cria job (upload)
+GET    /api/categories              # list
+POST   /api/categories              # create
+GET    /api/categories/summary      # month total + budget usage (?month=YYYY-MM)
+PATCH  /api/categories/:id          # edit name, color, icon, budget (kind is immutable)
+DELETE /api/categories/:id          # move transactions to "Others" and remove
+POST   /api/imports                 # create job (upload)
 GET    /api/imports/:id             # status / preview
-POST   /api/imports/:id/confirm     # confirma persistência
+POST   /api/imports/:id/confirm     # confirm persistence
 POST   /api/ai/chat                 # streaming + tool calling
-GET    /api/insights                # lista
-POST   /api/insights/:id/action     # aplicar/ignorar/útil
-GET    /api/reports                 # gera relatório
+GET    /api/insights                # list
+POST   /api/insights/:id/action     # apply/ignore/useful
+GET    /api/reports                 # generate report
 GET    /api/goals  POST /api/goals  PATCH/DELETE /api/goals/:id
 GET    /api/debts  POST /api/debts  PATCH/DELETE /api/debts/:id
 GET    /api/settings  PATCH /api/settings
-POST   /api/settings/export         # exporta dados (JSON, registra audit_log)
-POST   /api/settings/password       # troca de senha (só contas com credenciais)
-DELETE /api/settings/account        # exclui conta (hard delete + audit_log)
+POST   /api/settings/export         # export data (JSON, records an audit_log)
+POST   /api/settings/password       # change password (only credential accounts)
+DELETE /api/settings/account        # delete account (hard delete + audit_log)
 GET    /api/accounts  POST /api/accounts
-DELETE /api/accounts/:id            # soft delete; 409 se ainda houver lançamentos
+DELETE /api/accounts/:id            # soft delete; 409 if there are still entries
 ```
 
-Notas de implementação (Configurações / Minha conta):
+Implementation notes (Settings / My account):
 
-- `POST /api/settings/password`, `POST /api/settings/export` e
-  `DELETE /api/settings/account` são rate limited via Redis
-  (`src/server/api/rate-limit.ts`). O helper **falha aberto** se o Redis estiver
-  indisponível: a requisição segue (autenticação continua exigida) em vez de
-  trancar o usuário fora da própria conta.
-- O export é `POST` e não `GET` de propósito: um `GET` de dados pessoais acabaria
-  em histórico de navegador, log de proxy e link compartilhável.
-- `Risk` — a sessão é JWT: após a exclusão da conta o cookie continua
-  criptograficamente válido até expirar. Os dados já não existem e toda query
-  filtra por `userId`, mas o cliente força logout (`POST /logout`) logo depois.
+- `POST /api/settings/password`, `POST /api/settings/export` and
+  `DELETE /api/settings/account` are rate limited via Redis
+  (`src/server/api/rate-limit.ts`). The helper **fails open** if Redis is
+  unavailable: the request proceeds (authentication is still required) instead of
+  locking the user out of their own account.
+- The export is a `POST`, not a `GET`, on purpose: a `GET` of personal data would
+  end up in browser history, proxy logs and a shareable link.
+- `Risk` — the session is a JWT: after account deletion the cookie stays
+  cryptographically valid until it expires. The data no longer exists and every
+  query filters by `userId`, but the client forces a logout (`POST /logout`) right
+  after.
 
 ---
 
-## 6. Banco de dados (Drizzle + PostgreSQL)
+## 6. Database (Drizzle + PostgreSQL)
 
-Estratégias transversais:
+Cross-cutting strategies:
 
-- **Multi-tenant por usuário:** toda tabela de domínio tem `user_id` (FK, indexado). Sem RLS no MVP, mas o repository impõe o filtro; `Decision Needed` — habilitar Postgres RLS na fase de hardening como defesa em profundidade.
-- **Auditoria:** `audit_logs` append-only para ações sensíveis.
-- **Soft delete:** `deleted_at` nas entidades de domínio; hard delete só na exclusão de conta.
-- **Embeddings:** coluna `vector` (pgvector) em `ai_embeddings` com índice HNSW.
-- **Importações:** `import_jobs` + `import_rows` preservam o bruto para auditoria/rollback.
-- **IA:** `ai_conversations`/`ai_messages` guardam histórico; mensagens de tool registradas.
+- **Per-user multi-tenancy:** every domain table has `user_id` (FK, indexed). No RLS in the MVP, but the repository enforces the filter; `Decision Needed` — enable Postgres RLS in the hardening phase as defense in depth.
+- **Auditing:** append-only `audit_logs` for sensitive actions.
+- **Soft delete:** `deleted_at` on domain entities; hard delete only on account deletion.
+- **Embeddings:** a `vector` column (pgvector) in `ai_embeddings` with an HNSW index.
+- **Imports:** `import_jobs` + `import_rows` preserve the raw data for auditing/rollback.
+- **AI:** `ai_conversations`/`ai_messages` keep history; tool messages recorded.
 
-Tabelas (resumo de campos-chave):
+Tables (summary of key fields):
 
 ```txt
 users(id, email, oauth_provider, created_at)
@@ -214,7 +215,7 @@ transactions(id, user_id, account_id, category_id?, amount, currency, kind,
              description, occurred_at, origin[manual|import|recurring|integration],
              recurring_rule_id?, dedupe_hash, created_at, deleted_at)
 tags(id, user_id, name)
-transaction_tags(transaction_id, tag_id)            # PK composta
+transaction_tags(transaction_id, tag_id)            # composite PK
 import_jobs(id, user_id, file_id, status, total_rows, error_count, created_at)
 import_rows(id, job_id, raw, parsed, status, error?, dedupe_hash)
 uploaded_files(id, user_id, kind[csv|pdf], size, checksum, created_at, purged_at?)
@@ -236,100 +237,100 @@ notification_preferences(user_id PK/FK, spend_alerts, installment_reminders,
                          weekly_summary)
 ```
 
-Desvios conscientes do desenho original:
+Conscious deviations from the original design:
 
-- `notification_preferences` **não** tem `anomaly_alerts`: nada no produto
-  controla essa preferência hoje, e coluna morta é pior que coluna ausente.
-  Entra quando existir a tela que a liga.
-- As duas flags de IA (`ai_auto_categorize`, `ai_proactive_insights`) ficam em
-  `user_profiles`, ao lado de `ai_consent_at`, e não em
-  `notification_preferences`: só fazem sentido quando existe consentimento.
-- `cpf` é `varchar(11)` (só dígitos, com `CHECK`) e **nunca sai do servidor em
-  claro** — a API devolve apenas uma versão mascarada
-  (`src/server/services/settings/mask.ts`). `Risk` — é PII sensível sem
-  finalidade definida no MVP; mantido por decisão de produto.
+- `notification_preferences` does **not** have `anomaly_alerts`: nothing in the
+  product controls this preference today, and a dead column is worse than a
+  missing one. It comes in when the screen that uses it exists.
+- The two AI flags (`ai_auto_categorize`, `ai_proactive_insights`) live in
+  `user_profiles`, next to `ai_consent_at`, not in
+  `notification_preferences`: they only make sense when consent exists.
+- `cpf` is `varchar(11)` (digits only, with a `CHECK`) and **never leaves the
+  server in the clear** — the API returns only a masked version
+  (`src/server/services/settings/mask.ts`). `Risk` — it's sensitive PII with no
+  defined purpose in the MVP; kept by a product decision.
 
-Índices/constraints principais: `transactions(user_id, occurred_at)`, `transactions(dedupe_hash)` único por conta, `ai_embeddings` HNSW em `embedding`, FKs com `on delete cascade` no fluxo de exclusão de conta.
+Main indexes/constraints: `transactions(user_id, occurred_at)`, `transactions(dedupe_hash)` unique per account, `ai_embeddings` HNSW on `embedding`, FKs with `on delete cascade` in the account-deletion flow.
 
 ---
 
-## 7. IA e RAG
+## 7. AI and RAG
 
-- **Embeddings:** ao importar/criar transação, gerar embedding de uma representação textual ("2026-05-31 · Mercado Extra · Alimentação · -312"), armazenar em `ai_embeddings` com `user_id`.
-- **Armazenamento:** pgvector, índice HNSW, busca por similaridade filtrada por `user_id`.
-- **Recuperação de contexto (RAG):** para perguntas semânticas ("aquela compra grande no shopping"), recuperar top-k transações relevantes do próprio usuário e injetar no contexto.
-- **Tool calling:** o modelo decide quais tools chamar; tools fazem queries estruturadas (mais confiáveis que RAG para números). RAG complementa, tools dominam.
-- **Tools (leitura):** `getMonthlySummary`, `getTransactionsByCategory`, `getSpendingTrends`, `getRecurringExpenses`, `getBudgetRisks`, `getGoalProgress`, `getIncomeVsExpense`, `getTopMerchants`, `getUnusualSpending`, `getAvailableReports`, `getDebtOverview`.
-- **Tools (escrita controlada):** `createInsight`, `categorizeTransaction` — exigem confirmação do usuário antes de efetivar.
-- **Proteção de dados:** toda tool recebe `userId` do contexto de sessão (nunca do prompt) e filtra por ele. O modelo nunca recebe credenciais nem acessa o banco diretamente.
-- **Respostas seguras:** system prompt instrui tom não-julgador, disclaimers, e proíbe inventar números (só reportar o que as tools retornam).
-- **Custo:** rate limit por usuário; cache de respostas a perguntas idênticas no período; Haiku para tarefas baratas (categorização), modelo maior para chat. `Risk`
-- **Streaming:** via Vercel AI SDK (`streamText`/`streamUI`).
-- **Registro:** conversas e mensagens em `ai_*`; tokens contabilizados para métrica de custo.
-- **Testes de tools:** unitários com banco de teste/fixtures; testes do chat com modelo mockado.
-- **Prompt injection:** `ai/guards` sanitiza conteúdo vindo de dados do usuário (descrições, PDFs); instruções e dados são claramente separados; tools têm escopo restrito e jamais executam ações destrutivas sem confirmação. `Risk`
-- **Escopo da IA:** limitado às finanças do próprio usuário; recusa pedidos fora de escopo.
-- **System prompts:** versionados em `ai/prompts`, testáveis e revisáveis.
+- **Embeddings:** when importing/creating a transaction, generate an embedding of a textual representation ("2026-05-31 · Mercado Extra · Food · -312"), store it in `ai_embeddings` with `user_id`.
+- **Storage:** pgvector, HNSW index, similarity search filtered by `user_id`.
+- **Context retrieval (RAG):** for semantic questions ("that big purchase at the mall"), retrieve the top-k relevant transactions of the user and inject them into the context.
+- **Tool calling:** the model decides which tools to call; tools run structured queries (more reliable than RAG for numbers). RAG complements, tools dominate.
+- **Tools (read):** `getMonthlySummary`, `getTransactionsByCategory`, `getSpendingTrends`, `getRecurringExpenses`, `getBudgetRisks`, `getGoalProgress`, `getIncomeVsExpense`, `getTopMerchants`, `getUnusualSpending`, `getAvailableReports`, `getDebtOverview`.
+- **Tools (controlled write):** `createInsight`, `categorizeTransaction` — require user confirmation before applying.
+- **Data protection:** every tool receives `userId` from the session context (never from the prompt) and filters by it. The model never receives credentials nor accesses the database directly.
+- **Safe responses:** the system prompt instructs a non-judgmental tone, disclaimers, and forbids making up numbers (only report what the tools return).
+- **Cost:** rate limit per user; cache of responses to identical questions within the period; Haiku for cheap tasks (categorization), a larger model for chat. `Risk`
+- **Streaming:** via the Vercel AI SDK (`streamText`/`streamUI`).
+- **Recording:** conversations and messages in `ai_*`; tokens counted for a cost metric.
+- **Tool tests:** unit with a test database/fixtures; chat tests with a mocked model.
+- **Prompt injection:** `ai/guards` sanitizes content coming from user data (descriptions, PDFs); instructions and data are clearly separated; tools have a restricted scope and never run destructive actions without confirmation. `Risk`
+- **AI scope:** limited to the user's own finances; refuses out-of-scope requests.
+- **System prompts:** versioned in `ai/prompts`, testable and reviewable.
 
 ---
 
 ## 8. PDF/CSV ingestion
 
-- **Upload:** route handler recebe arquivo; valida tipo (csv/pdf) e tamanho (limite, ex. 10MB).
-- **CSV:** parsing com biblioteca robusta; mapeamento de colunas pelo usuário (data, valor, descrição); normalização de formatos (decimal, data).
-- **PDF (`Should Have`):** extração de texto + heurísticas/IA por layout de banco; qualidade varia → preview obrigatório. `Risk`
-- **Preview:** `ImportPreviewTable` com validação por linha; linhas inválidas sinalizadas sem bloquear as válidas.
-- **Deduplicação:** `dedupe_hash` = hash(data+valor+descrição+conta); duplicatas marcadas e não inseridas.
-- **Confirmação:** persistência só após o usuário confirmar; transação de banco para atomicidade.
-- **Persistência:** insere transações + gera embeddings (async/queue quando crescer).
-- **Erro/rollback:** falha no meio → job marcado como falho, sem transações órfãs.
-- **Segurança:** sem PII em logs; arquivo descartado (`purged_at`) após processamento conforme política.
-- **Logs/testes:** job auditável; testes com fixtures de CSV de vários bancos.
+- **Upload:** the route handler receives the file; validates type (csv/pdf) and size (a limit, e.g. 10MB).
+- **CSV:** parsing with a robust library; column mapping by the user (date, amount, description); format normalization (decimal, date).
+- **PDF (`Should Have`):** text extraction + heuristics/AI per bank layout; quality varies → mandatory preview. `Risk`
+- **Preview:** `ImportPreviewTable` with per-row validation; invalid rows flagged without blocking valid ones.
+- **Deduplication:** `dedupe_hash` = hash(date+amount+description+account); duplicates flagged and not inserted.
+- **Confirmation:** persistence only after the user confirms; a database transaction for atomicity.
+- **Persistence:** inserts transactions + generates embeddings (async/queue as it grows).
+- **Error/rollback:** failure halfway → job marked as failed, with no orphan transactions.
+- **Security:** no PII in logs; file discarded (`purged_at`) after processing per policy.
+- **Logs/tests:** auditable job; tests with CSV fixtures from various banks.
 
 ---
 
-## 9. Segurança e privacidade
+## 9. Security and privacy
 
-- **Autenticação:** Auth.js (OAuth + JWT), sessões seguras (httpOnly, sameSite).
-- **Autorização:** `userId` da sessão em toda operação; sem confiar em IDs vindos do cliente.
-- **Isolamento:** repository filtra por `userId`; `Decision Needed` Postgres RLS no hardening.
-- **Rate limit:** Redis (por usuário/IP) em endpoints sensíveis e IA.
-- **Criptografia:** tokens de integração cifrados em repouso (`Future`); TLS em trânsito (Vercel).
-- **Validação/sanitização:** Zod em toda entrada; sanitização de conteúdo para IA.
-- **Logs:** estruturados, sem dados financeiros/PII.
-- **Prompt injection / ingestão:** guards dedicados; limites de arquivo; escopo de tools.
-- **Permissões:** verificação de propriedade do recurso em cada acesso.
-- **LGPD/GDPR:** consentimento explícito; exportar dados; excluir conta (hard delete); auditoria.
-- **Session security:** rotação/expiração; CSRF para mutações via form quando aplicável.
-
----
-
-## 10. Observabilidade
-
-- **Sentry:** erros de front e back, releases vinculadas ao deploy.
-- **OpenTelemetry:** tracing distribuído (request → service → repo → db / IA).
-- **Logs estruturados:** JSON, com `requestId`/`userId` (hash), sem PII.
-- **Métricas de API:** latência, taxa de erro por endpoint.
-- **Métricas de IA:** tokens, custo por usuário, latência, taxa de feedback negativo.
-- **Tracing:** spans para tool calls e parsing de import.
-- **Import/webhooks:** contadores de erro por linha; falhas de webhook (`Future`).
-- **Alertas:** erro acima de threshold, custo de IA acima do orçamento, falha de migration.
+- **Authentication:** Auth.js (OAuth + JWT), secure sessions (httpOnly, sameSite).
+- **Authorization:** `userId` from the session in every operation; don't trust IDs coming from the client.
+- **Isolation:** repository filters by `userId`; `Decision Needed` Postgres RLS in hardening.
+- **Rate limit:** Redis (per user/IP) on sensitive and AI endpoints.
+- **Encryption:** integration tokens encrypted at rest (`Future`); TLS in transit (Vercel).
+- **Validation/sanitization:** Zod on every input; content sanitization for AI.
+- **Logs:** structured, without financial data/PII.
+- **Prompt injection / ingestion:** dedicated guards; file limits; tool scope.
+- **Permissions:** resource ownership check on each access.
+- **LGPD/GDPR:** explicit consent; export data; delete account (hard delete); auditing.
+- **Session security:** rotation/expiration; CSRF for form mutations where applicable.
 
 ---
 
-## 11. Testes
+## 10. Observability
 
-Ordem do que testar primeiro: regras de negócio dos services (mais valor, menos custo), depois endpoints e fluxos críticos, depois E2E dos caminhos principais.
+- **Sentry:** front and back errors, releases linked to the deploy.
+- **OpenTelemetry:** distributed tracing (request → service → repo → db / AI).
+- **Structured logs:** JSON, with `requestId`/`userId` (hashed), no PII.
+- **API metrics:** latency, error rate per endpoint.
+- **AI metrics:** tokens, cost per user, latency, negative-feedback rate.
+- **Tracing:** spans for tool calls and import parsing.
+- **Import/webhooks:** per-row error counters; webhook failures (`Future`).
+- **Alerts:** errors above threshold, AI cost above budget, migration failure.
 
-- **Vitest (unit):** services (cálculo de dashboard, dedupe, estratégia de dívida), validators, formatadores.
-- **Vitest (integration):** route handlers + repositories contra banco de teste.
-- **Testing Library:** componentes do design system e formulários.
-- **Playwright (E2E):** onboarding → criar transação → ver dashboard; importar CSV → confirmar; perguntar à IA (com modelo mockado).
-- **Testes de API:** contratos de resposta e erros.
-- **Regras de negócio:** isolamento por usuário (tentar acessar dado de outro → negado).
-- **Upload:** fixtures de CSV válidos/ inválidos; PDFs de exemplo.
-- **IA:** tools com fixtures; chat com modelo mockado (sem custo/flakiness).
-- **A11y:** axe nos componentes e páginas-chave.
+---
+
+## 11. Tests
+
+Order of what to test first: service business rules (most value, least cost), then endpoints and critical flows, then E2E of the main paths.
+
+- **Vitest (unit):** services (dashboard computation, dedupe, debt strategy), validators, formatters.
+- **Vitest (integration):** route handlers + repositories against a test database.
+- **Testing Library:** design system components and forms.
+- **Playwright (E2E):** onboarding → create transaction → see dashboard; import CSV → confirm; ask the AI (with a mocked model).
+- **API tests:** response contracts and errors.
+- **Business rules:** per-user isolation (try to access another's data → denied).
+- **Upload:** valid/invalid CSV fixtures; sample PDFs.
+- **AI:** tools with fixtures; chat with a mocked model (no cost/flakiness).
+- **A11y:** axe on the key components and pages.
 
 ---
 
@@ -342,38 +343,38 @@ jobs:
       - checkout
       - setup-node (cache npm)
       - install (npm install --frozen-lockfile)
-      - verify-envs (checa variáveis obrigatórias)
+      - verify-envs (checks required variables)
       - lint (eslint)
       - typecheck (tsc --noEmit)
       - unit (vitest run)
-      - drizzle-check (migrations consistentes com schema)
+      - drizzle-check (migrations consistent with schema)
       - build (next build)
-      - e2e (playwright, em serviço com Postgres+Redis)
-      - deploy-preview (Vercel, em PR)
-      - sentry-release (em main)
+      - e2e (playwright, in a service with Postgres+Redis)
+      - deploy-preview (Vercel, on PR)
+      - sentry-release (on main)
 ```
 
-- Cache de dependências e do build.
-- Deploy preview por PR; produção no merge em `main`.
-- Migrations aplicadas no pipeline de deploy.
+- Dependency and build cache.
+- Preview deploy per PR; production on merge to `main`.
+- Migrations applied in the deploy pipeline.
 
 ---
 
-## 13. Documentação open source
+## 13. Open source documentation
 
-Arquivos:
+Files:
 
-- `README.md` — pitch, screenshots, stack, setup, status do roadmap.
-- `CONTRIBUTING.md` — como rodar, padrões, fluxo de PR.
+- `README.md` — pitch, screenshots, stack, setup, roadmap status.
+- `CONTRIBUTING.md` — how to run, standards, PR flow.
 - `CODE_OF_CONDUCT.md` — Contributor Covenant.
-- `SECURITY.md` — como reportar vulnerabilidade.
-- `LICENSE` — `Decision Needed` (MIT recomendado para portfólio).
-- `.env.example` — todas as variáveis.
-- `docs/product.md`, `docs/design-system.md`, `docs/architecture.md` (este), `docs/api.md`, `docs/database.md`, `docs/ai.md`, `docs/roadmap.md`, `docs/testing.md`, `docs/observability.md`.
+- `SECURITY.md` — how to report a vulnerability.
+- `LICENSE` — `Decision Needed` (MIT recommended for a portfolio).
+- `.env.example` — all variables.
+- `docs/product.md`, `docs/design-system.md`, `docs/architecture.md` (this one), `docs/api.md`, `docs/database.md`, `docs/ai.md`, `docs/roadmap.md`, `docs/testing.md`, `docs/observability.md`.
 
 ---
 
-## Apêndice A — Diagrama de arquitetura (alto nível)
+## Appendix A — Architecture diagram (high level)
 
 ```mermaid
 flowchart TB
@@ -381,22 +382,22 @@ flowchart TB
     UI["Next.js UI<br/>RSC + Client Components"]
   end
 
-  subgraph Vercel["Next.js 15 na Vercel"]
+  subgraph Vercel["Next.js 15 on Vercel"]
     direction TB
-    RSC["Server Components<br/>(leituras iniciais)"]
+    RSC["Server Components<br/>(initial reads)"]
     RH["Route Handlers + Server Actions"]
-    SVC["Services<br/>(regras de negócio)"]
-    REPO["Repositories<br/>(isolamento por userId)"]
+    SVC["Services<br/>(business rules)"]
+    REPO["Repositories<br/>(per-userId isolation)"]
     AIORCH["AI Orchestration<br/>(Vercel AI SDK)"]
   end
 
-  subgraph Data["Camada de dados"]
+  subgraph Data["Data layer"]
     PG[("PostgreSQL<br/>+ pgvector")]
     REDIS[("Redis<br/>cache / rate limit")]
-    FILES["Armazenamento temporário<br/>de uploads"]
+    FILES["Temporary upload<br/>storage"]
   end
 
-  subgraph External["Externos"]
+  subgraph External["External"]
     OAUTH["OAuth Provider"]
     LLM["LLM API<br/>(Claude / OpenAI)"]
     BANKS["Plaid / Open Finance<br/>(Future)"]
@@ -408,7 +409,7 @@ flowchart TB
   RH --> SVC
   RH --> AIORCH
   SVC --> REPO
-  AIORCH -->|tools chamam| SVC
+  AIORCH -->|tools call| SVC
   AIORCH -->|streaming| LLM
   REPO --> PG
   SVC --> REDIS
@@ -417,43 +418,43 @@ flowchart TB
   BANKS -.->|webhooks Future| RH
 ```
 
-## Apêndice B — Fluxo de uma pergunta ao chat (sequência)
+## Appendix B — Flow of a chat question (sequence)
 
 ```mermaid
 sequenceDiagram
-  participant U as Usuário
+  participant U as User
   participant API as /api/ai/chat
   participant AI as AI Orchestration
   participant LLM as LLM
   participant T as Tools
   participant DB as Postgres
 
-  U->>API: pergunta (stream)
-  API->>AI: monta contexto + system prompt
-  AI->>LLM: prompt + definições de tools
-  LLM-->>AI: pede tool getTransactionsByCategory
-  AI->>T: executa tool (com userId da sessão)
-  T->>DB: query filtrada por userId
-  DB-->>T: dados
-  T-->>AI: resultado estruturado
-  AI->>LLM: resultado da tool
-  LLM-->>API: resposta (streaming) + fontes
-  API-->>U: tokens em streaming + SourceReference
+  U->>API: question (stream)
+  API->>AI: build context + system prompt
+  AI->>LLM: prompt + tool definitions
+  LLM-->>AI: requests tool getTransactionsByCategory
+  AI->>T: run tool (with userId from the session)
+  T->>DB: query filtered by userId
+  DB-->>T: data
+  T-->>AI: structured result
+  AI->>LLM: tool result
+  LLM-->>API: response (streaming) + sources
+  API-->>U: streaming tokens + SourceReference
 ```
 
-## Apêndice C — Fluxo de ingestão de extrato
+## Appendix C — Statement ingestion flow
 
 ```mermaid
 flowchart LR
-  UP["Upload CSV/PDF"] --> VAL{"Válido?"}
-  VAL -->|não| ERR["Erro de arquivo"]
-  VAL -->|sim| PARSE["Parse"]
-  PARSE --> MAP["Mapeamento de colunas<br/>(CSV)"]
-  MAP --> PREV["Preview + validação por linha"]
-  PREV --> DEDUP["Deduplicação (hash)"]
-  DEDUP --> CONF{"Usuário confirma?"}
-  CONF -->|não| CANCEL["Cancela job"]
-  CONF -->|sim| SAVE["Persiste transações"]
-  SAVE --> EMB["Gera embeddings"]
-  EMB --> DONE["Resumo + dashboard atualizado"]
+  UP["Upload CSV/PDF"] --> VAL{"Valid?"}
+  VAL -->|no| ERR["File error"]
+  VAL -->|yes| PARSE["Parse"]
+  PARSE --> MAP["Column mapping<br/>(CSV)"]
+  MAP --> PREV["Preview + per-row validation"]
+  PREV --> DEDUP["Deduplication (hash)"]
+  DEDUP --> CONF{"User confirms?"}
+  CONF -->|no| CANCEL["Cancel job"]
+  CONF -->|yes| SAVE["Persist transactions"]
+  SAVE --> EMB["Generate embeddings"]
+  EMB --> DONE["Summary + updated dashboard"]
 ```

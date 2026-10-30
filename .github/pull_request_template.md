@@ -1,6 +1,6 @@
 ## Description
 
-<!-- O que este PR faz e por quê. -->
+<!-- What this PR does and why. -->
 
 ## Related issue
 
@@ -19,32 +19,32 @@ Closes #
 
 ## How to test
 
-<!-- Passos para verificar localmente. -->
+<!-- Steps to verify locally. -->
 
 1.
 2.
 
 ## Screenshots
 
-<!-- Antes/depois para mudanças de UI. -->
+<!-- Before/after for UI changes. -->
 
 ## Checklist
 
-- [ ] Lint, typecheck e testes passam localmente
-- [ ] Testes adicionados/atualizados quando aplicável
-- [ ] Isolamento por usuário verificado (se toca dados)
-- [ ] A11y básica verificada (se UI)
-- [ ] Sem dados sensíveis em logs
-- [ ] Documentação atualizada se necessário
-- [ ] Critérios de aceite da issue atendidos
+- [ ] Lint, typecheck and tests pass locally
+- [ ] Tests added/updated when applicable
+- [ ] Per-user isolation verified (if it touches data)
+- [ ] Basic a11y verified (if UI)
+- [ ] No sensitive data in logs
+- [ ] Documentation updated if needed
+- [ ] Issue acceptance criteria met
 
 ## Notes
 
-<!-- Trade-offs, follow-ups, dívida técnica conhecida. -->
+<!-- Trade-offs, follow-ups, known tech debt. -->
 
 ## Risk level
 
 - [ ] Low
 - [ ] Medium
 - [ ] High
-<!-- Para Medium/High, descreva o plano de rollback ou mitigação. -->
+<!-- For Medium/High, describe the rollback or mitigation plan. -->
