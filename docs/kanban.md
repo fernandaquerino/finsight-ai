@@ -1,41 +1,41 @@
 # FinSight AI — Kanban Board Setup
 
-## Colunas
+## Columns
 
-| Coluna      | Significado                                                 |
-| ----------- | ----------------------------------------------------------- |
-| Backlog     | Tudo que ainda não foi refinado/priorizado                  |
-| Ready       | Refinada, atende a Definition of Ready, pronta para começar |
-| In Progress | Em desenvolvimento ativo (1 por pessoa idealmente)          |
-| Code Review | PR aberto, aguardando revisão                               |
-| QA          | Em verificação (testes manuais/E2E, validação de critérios) |
-| Done        | Mergeado, deployado em preview/prod, critérios atendidos    |
+| Column      | Meaning                                                      |
+| ----------- | ------------------------------------------------------------ |
+| Backlog     | Everything not yet refined/prioritized                       |
+| Ready       | Refined, meets the Definition of Ready, ready to start       |
+| In Progress | In active development (1 per person ideally)                 |
+| Code Review | PR open, awaiting review                                      |
+| QA          | In verification (manual/E2E tests, criteria validation)      |
+| Done        | Merged, deployed to preview/prod, criteria met               |
 
-## Labels recomendadas
+## Recommended labels
 
 `frontend` · `backend` · `ai` · `database` · `design-system` · `security` · `testing` · `docs` · `infra` · `bug` · `enhancement` · `good first issue` · `help wanted`
 
-Labels de controle: `Decision Needed` · `Risk` · `Future` · `blocked`.
+Control labels: `Decision Needed` · `Risk` · `Future` · `blocked`.
 
 ## Milestones
 
-Alinhados ao roadmap: `v0.1 Foundation`, `v0.2 Manual MVP`, `v0.3 Import MVP`, `v0.4 AI MVP`, `v0.5 Reports/Goals/Debts`, `v1.0 Production`.
+Aligned with the roadmap: `v0.1 Foundation`, `v0.2 Manual MVP`, `v0.3 Import MVP`, `v0.4 AI MVP`, `v0.5 Reports/Goals/Debts`, `v1.0 Production`.
 
-## Prioridades
+## Priorities
 
-`P0` crítica (bloqueia) · `P1` alta · `P2` média · `P3` baixa. Usar como label ou campo de projeto.
+`P0` critical (blocks) · `P1` high · `P2` medium · `P3` low. Use as a label or project field.
 
-## Convenção de branches
+## Branch convention
 
 ```
-main                      # produção
+main                      # production
 feat/<epic>-<n>-slug      # feature  → feat/06-02-transaction-list
-fix/<slug>                # correção → fix/dashboard-empty-state
-chore/<slug>              # tarefa de manutenção
-docs/<slug>               # documentação
+fix/<slug>                # fix      → fix/dashboard-empty-state
+chore/<slug>              # maintenance task
+docs/<slug>               # documentation
 ```
 
-## Convenção de commits (Conventional Commits)
+## Commit convention (Conventional Commits)
 
 ```
 feat(transactions): add grouped list with master-detail
@@ -45,28 +45,28 @@ docs(architecture): add ingestion flow diagram
 test(ai): mock model in chat e2e
 ```
 
-Tipos: `feat` `fix` `chore` `docs` `test` `refactor` `perf` `style` `build` `ci`.
+Types: `feat` `fix` `chore` `docs` `test` `refactor` `perf` `style` `build` `ci`.
 
 ## Definition of Ready
 
-Uma issue está pronta para entrar em "Ready" quando:
+An issue is ready to move to "Ready" when:
 
-- [ ] Tem descrição, objetivo e escopo claros.
-- [ ] Tem critérios de aceite verificáveis.
-- [ ] Tem estimativa e prioridade.
-- [ ] Dependências identificadas e desbloqueadas.
-- [ ] Labels aplicadas.
-- [ ] (Se UI) referência visual ou padrão de tela indicado.
+- [ ] It has a clear description, goal and scope.
+- [ ] It has verifiable acceptance criteria.
+- [ ] It has an estimate and a priority.
+- [ ] Dependencies identified and unblocked.
+- [ ] Labels applied.
+- [ ] (If UI) a visual reference or screen pattern indicated.
 
 ## Definition of Done
 
-Uma issue está "Done" quando:
+An issue is "Done" when:
 
-- [ ] Critérios de aceite atendidos.
-- [ ] Código revisado e aprovado em PR.
-- [ ] Lint, typecheck e testes passando no CI.
-- [ ] Testes relevantes adicionados (unit/integration/e2e conforme o caso).
-- [ ] Isolamento por usuário verificado (se toca dados).
-- [ ] A11y básica verificada (se UI).
-- [ ] Sem regressão em preview deploy.
-- [ ] Documentação atualizada se necessário.
+- [ ] Acceptance criteria met.
+- [ ] Code reviewed and approved in a PR.
+- [ ] Lint, typecheck and tests passing in CI.
+- [ ] Relevant tests added (unit/integration/e2e as appropriate).
+- [ ] Per-user isolation verified (if it touches data).
+- [ ] Basic a11y verified (if UI).
+- [ ] No regression in the preview deploy.
+- [ ] Documentation updated if needed.

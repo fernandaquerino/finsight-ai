@@ -1,498 +1,498 @@
 # FinSight AI — Product Documentation
 
-> Documento de produto (Product Discovery). Escrito da perspectiva de Product Manager Sênior.
-> Versão: 0.1 · Status: living document
+> Product document (Product Discovery). Written from the perspective of a Senior Product Manager.
+> Version: 0.1 · Status: living document
 
-**Decision Needed — idioma do repositório:** este documento está em português para acompanhar o processo de discovery. Como o projeto é open source e visa portfólio internacional (vagas remotas em USD), recomenda-se traduzir os `/docs` e o README para inglês na fase de hardening (v1.0). Manter PT-BR no produto (UI) e EN na documentação técnica é uma combinação válida.
+**Decision Needed — repository language:** this document was originally in Portuguese to follow the discovery process. Since the project is open source and aimed at an international portfolio (remote roles in USD), it is recommended to translate `/docs` and the README to English in the hardening phase (v1.0). Keeping PT-BR in the product (UI) and EN in the technical documentation is a valid combination.
 
 ---
 
-## 1. Visão geral do produto
+## 1. Product overview
 
-**FinSight AI** é uma plataforma de análise financeira pessoal com IA, full-stack, production-ready e open source. O usuário conecta, importa ou cadastra seus dados financeiros e o produto transforma isso em clareza: para onde o dinheiro vai, quais padrões existem, onde há risco e onde há oportunidade de economia.
+**FinSight AI** is an AI-powered personal finance analysis platform, full-stack, production-ready and open source. The user connects, imports or enters their financial data and the product turns it into clarity: where the money goes, what patterns exist, where there's risk and where there's an opportunity to save.
 
-**Problema que resolve.** Controle financeiro pessoal hoje vive em dois extremos ruins: planilhas (poderosas mas trabalhosas, sem inteligência, fáceis de abandonar) e apps fechados (bonitos mas caixas-pretas, sem transparência sobre dados e sem capacidade de responder perguntas abertas). Entre os dois, falta uma ferramenta que seja ao mesmo tempo transparente, automatizada e conversacional.
+**Problem it solves.** Personal finance control today lives at two bad extremes: spreadsheets (powerful but laborious, no intelligence, easy to abandon) and closed apps (pretty but black boxes, no transparency about data and no ability to answer open questions). Between the two, there's a missing tool that is at the same time transparent, automated and conversational.
 
-**Para quem é.** Pessoas que querem entender e organizar a vida financeira sem virar especialistas em finanças — desde quem só quer parar de se surpreender com a fatura até quem está endividado e precisa de um plano de quitação, passando por autônomos com renda variável e por usuários técnicos que querem analisar os próprios dados.
+**Who it's for.** People who want to understand and organize their financial life without becoming finance experts — from those who just want to stop being surprised by the bill, to those in debt who need a payoff plan, to self-employed people with variable income and technical users who want to analyze their own data.
 
-**Proposta de valor.** Você conversa com seus próprios dados financeiros em linguagem natural e recebe respostas fundamentadas nos números reais — não em achismo. A categorização é automática, os insights são acionáveis, e nada acontece com seus dados sem o seu consentimento.
+**Value proposition.** You talk to your own financial data in natural language and receive answers grounded in the real numbers — not guesswork. Categorization is automatic, insights are actionable, and nothing happens to your data without your consent.
 
-**Por que IA faz sentido aqui.** Finanças pessoais são um problema de _interpretação de dados desestruturados_: extratos vêm em formatos diferentes, descrições de transação são crípticas ("PAG\*IFD3344"), e a pergunta que o usuário quer fazer ("posso me dar ao luxo de viajar?") não mapeia para um filtro de tabela. IA resolve as três pontas: normaliza e categoriza dados sujos, responde perguntas abertas com contexto, e gera insights proativos que o usuário não pensaria em buscar. Sem IA, isso vira uma planilha bonita.
+**Why AI makes sense here.** Personal finance is a problem of _interpreting unstructured data_: statements come in different formats, transaction descriptions are cryptic ("PAG\*IFD3344"), and the question the user wants to ask ("can I afford to travel?") doesn't map to a table filter. AI solves all three ends: it normalizes and categorizes messy data, answers open questions with context, and generates proactive insights the user wouldn't think to look for. Without AI, this becomes a pretty spreadsheet.
 
-**Diferença para um app financeiro comum.** Apps tradicionais mostram _o que aconteceu_ (dashboards estáticos). O FinSight responde _por que_ e _o que fazer_ — e mostra de onde tirou a resposta. Além disso, é open source e transparente sobre uso de dados, o oposto da caixa-preta.
+**Difference from a common finance app.** Traditional apps show _what happened_ (static dashboards). FinSight answers _why_ and _what to do_ — and shows where it got the answer. On top of that, it's open source and transparent about data use, the opposite of a black box.
 
-**Diferença para uma planilha.** Zero manutenção manual de fórmulas, categorização automática, perguntas em linguagem natural, e insights proativos. A planilha exige que você já saiba o que perguntar; o FinSight sugere o que vale a pena olhar.
+**Difference from a spreadsheet.** Zero manual formula maintenance, automatic categorization, natural-language questions, and proactive insights. The spreadsheet requires you to already know what to ask; FinSight suggests what's worth looking at.
 
-**Como produto real e como projeto open source.** Como produto, é usável de verdade para controle financeiro pessoal (suporta entrada manual + importação de extrato, como um Mobills com IA). Como projeto open source, é uma demonstração técnica densa: RAG sobre dados pessoais, tool calling fundamentado, ingestão de PDF/CSV, arquitetura full-stack moderna, segurança de dados sensíveis e observabilidade.
+**As a real product and as an open source project.** As a product, it's genuinely usable for personal finance control (supports manual entry + statement import, like a Mobills with AI). As an open source project, it's a dense technical demonstration: RAG over personal data, grounded tool calling, PDF/CSV ingestion, modern full-stack architecture, sensitive-data security and observability.
 
 ---
 
 ## 2. Personas
 
-### Persona 1 — Mariana, a organizadora
+### Persona 1 — Mariana, the organizer
 
-- **Perfil:** 29 anos, analista de marketing, CLT, renda estável de ~R$ 6k. Usa o cartão para tudo e olha a fatura no fim do mês com susto.
-- **Dores:** não sabe para onde o dinheiro vai; assinaturas esquecidas; sensação de que "some dinheiro".
-- **Objetivos:** ter visão clara dos gastos por categoria; identificar desperdícios; conseguir poupar um pouco todo mês.
-- **Comportamentos:** quer setup rápido, baixa tolerância a trabalho manual; usa muito no celular.
-- **Funcionalidades-chave:** importação de extrato, categorização automática, dashboard, alertas de assinatura.
-- **Riscos de experiência:** abandonar se o onboarding exigir muito esforço; frustração se a categorização errar muito.
-- **O que faz continuar:** o app entrega valor já no primeiro extrato importado (tempo até primeiro valor curto).
+- **Profile:** 29, marketing analyst, salaried, stable income ~R$ 6k. Uses the card for everything and looks at the bill at the end of the month in shock.
+- **Pains:** doesn't know where the money goes; forgotten subscriptions; a sense that "money just disappears".
+- **Goals:** a clear view of spending by category; identify waste; manage to save a little every month.
+- **Behaviors:** wants a quick setup, low tolerance for manual work; uses it heavily on mobile.
+- **Key features:** statement import, automatic categorization, dashboard, subscription alerts.
+- **Experience risks:** abandoning if onboarding takes too much effort; frustration if categorization is often wrong.
+- **What keeps her:** the app delivers value already on the first imported statement (short time-to-first-value).
 
-### Persona 2 — Rafael, o endividado
+### Persona 2 — Rafael, the indebted
 
-- **Perfil:** 35 anos, técnico, tem 3 empréstimos em bancos diferentes e se perde nas parcelas e juros.
-- **Dores:** não sabe qual dívida quitar primeiro; juros corroendo a renda; ansiedade financeira.
-- **Objetivos:** um plano claro de quitação; entender quanto economiza pagando uma dívida antes da outra.
-- **Comportamentos:** motivado mas precisa de orientação concreta e não-julgadora; checa com frequência.
-- **Funcionalidades-chave:** módulo de dívidas, estratégia de quitação (avalanche/bola de neve) sugerida pela IA, projeções.
-- **Riscos de experiência:** tom alarmista ou julgador afastaria; promessas absolutas gerariam frustração se não se concretizarem.
-- **O que faz continuar:** ver a dívida diminuir e a IA confirmar que o plano está funcionando.
+- **Profile:** 35, technician, has 3 loans at different banks and gets lost in the installments and interest.
+- **Pains:** doesn't know which debt to pay off first; interest eating into income; financial anxiety.
+- **Goals:** a clear payoff plan; understand how much he saves by paying one debt before another.
+- **Behaviors:** motivated but needs concrete, non-judgmental guidance; checks frequently.
+- **Key features:** debt module, payoff strategy (avalanche/snowball) suggested by the AI, projections.
+- **Experience risks:** an alarmist or judgmental tone would push him away; absolute promises would cause frustration if they don't come true.
+- **What keeps him:** seeing the debt shrink and the AI confirming the plan is working.
 
-### Persona 3 — Carla, a autônoma
+### Persona 3 — Carla, the freelancer
 
-- **Perfil:** 41 anos, designer freelancer, renda variável (R$ 3k a R$ 12k/mês), múltiplos clientes.
-- **Dores:** meses bons e ruins; dificuldade de separar PF de PJ; não sabe quanto pode gastar.
-- **Objetivos:** suavizar o fluxo de caixa; entender a média real de renda; planejar reserva para meses fracos.
-- **Comportamentos:** lança receitas manualmente (recebe por fora do banco às vezes); precisa de flexibilidade.
-- **Funcionalidades-chave:** lançamentos manuais, receitas recorrentes e avulsas, fluxo de caixa, metas de reserva.
-- **Riscos de experiência:** modelos rígidos de "salário fixo" não servem; precisa de visão de média móvel.
-- **O que faz continuar:** o app lida bem com a irregularidade dela em vez de assumir renda fixa.
+- **Profile:** 41, freelance designer, variable income (R$ 3k to R$ 12k/month), multiple clients.
+- **Pains:** good and bad months; difficulty separating personal from business; doesn't know how much she can spend.
+- **Goals:** smooth out cash flow; understand her real average income; plan a reserve for lean months.
+- **Behaviors:** enters income manually (sometimes paid outside the bank); needs flexibility.
+- **Key features:** manual entries, recurring and one-off income, cash flow, reserve goals.
+- **Experience risks:** rigid "fixed salary" models don't work; she needs a moving-average view.
+- **What keeps her:** the app handles her irregularity well instead of assuming fixed income.
 
-### Persona 4 — Diego, o analítico
+### Persona 4 — Diego, the analytical one
 
-- **Perfil:** 33 anos, engenheiro de software, gosta de dados e quer entender padrões finos dos próprios gastos.
-- **Dores:** apps fechados não deixam ele explorar; planilha dá trabalho; quer perguntas ad-hoc.
-- **Objetivos:** fazer perguntas abertas ("compare meu gasto com delivery vs supermercado nos últimos 6 meses"); exportar dados.
-- **Comportamentos:** explora a fundo, testa limites, valoriza transparência e a possibilidade de ver/exportar tudo.
-- **Funcionalidades-chave:** chat com IA, exportação de dados, transparência sobre fontes das respostas, open source.
-- **Riscos de experiência:** desconfia de respostas sem fonte; abandona se perceber a IA "inventando" números.
-- **O que faz continuar:** respostas auditáveis (a IA mostra de quais dados tirou cada número) e poder ver o código.
-
----
-
-## 3. Objetivos do produto
-
-### Negócio
-
-- Criar um projeto open source relevante e tecnicamente respeitado (estrelas, forks, uso real).
-- Demonstrar maturidade de produto _e_ de engenharia em um único artefato de portfólio.
-- Construir uma base arquitetural escalável que comporte integrações futuras (Open Finance) sem reescrita.
-- Reduzir a fricção da análise financeira pessoal a ponto de o autor usar o próprio produto no dia a dia ("dogfooding").
-
-### Produto
-
-- Dar clareza sobre hábitos financeiros em menos de 5 minutos após o primeiro dado.
-- Automatizar a categorização com qualidade alta (meta: >85% de acerto sem correção manual).
-- Permitir perguntas em linguagem natural com respostas fundamentadas em dados reais.
-- Gerar insights acionáveis e proativos (não só reativos).
-- Ajudar o usuário a reduzir gastos e quitar dívidas com planos concretos.
-- Ser confiável e seguro com dados sensíveis por padrão.
-
-### Experiência do usuário
-
-- Reduzir a sensação de complexidade financeira; traduzir dados em linguagem simples.
-- Evitar tom alarmista ou julgador — o produto é um copiloto, não um juiz.
-- Ajudar a decidir melhor sem prometer certezas absolutas.
-- Ser visualmente claro, confiável e acessível em desktop e mobile.
+- **Profile:** 33, software engineer, likes data and wants to understand fine patterns in his own spending.
+- **Pains:** closed apps won't let him explore; a spreadsheet is a chore; he wants ad-hoc questions.
+- **Goals:** ask open questions ("compare my delivery vs supermarket spending over the last 6 months"); export data.
+- **Behaviors:** explores deeply, tests limits, values transparency and the ability to see/export everything.
+- **Key features:** AI chat, data export, transparency about response sources, open source.
+- **Experience risks:** distrusts answers with no source; abandons if he notices the AI "making up" numbers.
+- **What keeps him:** auditable answers (the AI shows which data each number came from) and being able to see the code.
 
 ---
 
-## 4. Proposta de valor
+## 3. Product goals
 
-- **One-liner:** Converse com seu dinheiro. O FinSight AI transforma seus extratos em respostas claras.
-- **Elevator pitch:** O FinSight AI é um copiloto financeiro pessoal e open source. Você importa extratos ou lança gastos manualmente, e ele categoriza tudo automaticamente, monta seu dashboard, e responde perguntas em linguagem natural sobre a sua vida financeira — sempre mostrando de onde tirou cada número. Diferente de planilhas, não dá trabalho; diferente de apps fechados, é transparente sobre seus dados e ainda te ajuda a montar um plano para quitar dívidas e bater metas.
+### Business
 
-**Benefícios principais:** clareza imediata, categorização sem esforço, respostas auditáveis, planos acionáveis de economia e quitação, controle total dos próprios dados.
+- Create a relevant and technically respected open source project (stars, forks, real use).
+- Demonstrate product _and_ engineering maturity in a single portfolio artifact.
+- Build a scalable architectural base that supports future integrations (Open Finance) without a rewrite.
+- Reduce the friction of personal finance analysis to the point where the author uses their own product daily ("dogfooding").
 
-**Diferenciais:** chat fundamentado (tool calling sobre dados reais, sem alucinar números), transparência sobre fontes, suporte a entrada manual + importação, módulo de dívidas com estratégia, open source.
+### Product
 
-**Casos de uso:** entender gastos do mês; achar assinaturas esquecidas; planejar quitação de dívidas; acompanhar metas; suavizar fluxo de caixa de renda variável; exportar dados para análise própria.
+- Give clarity about financial habits in under 5 minutes after the first data.
+- Automate categorization at high quality (target: >85% accuracy without manual correction).
+- Allow natural-language questions with answers grounded in real data.
+- Generate actionable and proactive insights (not just reactive).
+- Help the user reduce spending and pay off debts with concrete plans.
+- Be trustworthy and secure with sensitive data by default.
 
-**Limites do produto / o que ele NÃO promete:**
+### User experience
 
-- Não é aconselhamento financeiro profissional, jurídico ou de investimento — é uma ferramenta de organização e análise. `Risk`
-- Não garante retornos, economia específica ou quitação em prazo determinado; projeções são estimativas.
-- Não executa transações nem movimenta dinheiro.
-- No MVP, não conecta automaticamente a bancos (sem Plaid/Open Finance — isso é `Future`).
-- Não substitui um contador para questões fiscais.
+- Reduce the sense of financial complexity; translate data into simple language.
+- Avoid an alarmist or judgmental tone — the product is a copilot, not a judge.
+- Help decide better without promising absolute certainties.
+- Be visually clear, trustworthy and accessible on desktop and mobile.
 
 ---
 
-## 5. Escopo do MVP
+## 4. Value proposition
+
+- **One-liner:** Talk to your money. FinSight AI turns your statements into clear answers.
+- **Elevator pitch:** FinSight AI is a personal, open source financial copilot. You import statements or enter expenses manually, and it categorizes everything automatically, builds your dashboard, and answers natural-language questions about your financial life — always showing where it got each number. Unlike spreadsheets, it's no chore; unlike closed apps, it's transparent about your data and even helps you build a plan to pay off debts and hit goals.
+
+**Main benefits:** immediate clarity, effortless categorization, auditable answers, actionable savings and payoff plans, full control of your own data.
+
+**Differentiators:** grounded chat (tool calling over real data, without hallucinating numbers), source transparency, support for manual entry + import, a debt module with strategy, open source.
+
+**Use cases:** understand the month's spending; find forgotten subscriptions; plan debt payoff; track goals; smooth out variable-income cash flow; export data for your own analysis.
+
+**Product limits / what it does NOT promise:**
+
+- It is not professional financial, legal or investment advice — it's an organization and analysis tool. `Risk`
+- It does not guarantee returns, specific savings or payoff by a given date; projections are estimates.
+- It does not execute transactions or move money.
+- In the MVP, it doesn't connect automatically to banks (no Plaid/Open Finance — that's `Future`).
+- It does not replace an accountant for tax matters.
+
+---
+
+## 5. MVP scope
 
 ### Must Have
 
-- Autenticação (OAuth) e onboarding mínimo (moeda, objetivo principal, consentimento de dados).
-- Lançamento manual de transações (despesa/receita/transferência) + recorrências.
-- Importação de CSV com preview, mapeamento de colunas, validação e deduplicação.
-- Categorização (manual + sugestão automática com confirmação).
-- Dashboard com saldo, receitas, despesas, evolução mensal, top categorias e últimas transações.
-- Listagem de transações com busca, filtros, edição, exclusão e detalhe.
-- Empty states, loading e error states de qualidade.
+- Authentication (OAuth) and minimal onboarding (currency, primary goal, data consent).
+- Manual transaction entry (expense/income/transfer) + recurrences.
+- CSV import with preview, column mapping, validation and deduplication.
+- Categorization (manual + automatic suggestion with confirmation).
+- Dashboard with balance, income, expenses, monthly trend, top categories and latest transactions.
+- Transaction listing with search, filters, edit, delete and detail.
+- Quality empty states, loading and error states.
 
 ### Should Have
 
-- Chat com IA (tool calling sobre dados reais) e histórico de conversa.
-- Importação de PDF (parsing de extratos).
-- Insights proativos básicos (gasto incomum, aumento de categoria, assinaturas).
-- Metas financeiras com acompanhamento de progresso.
-- Módulo de dívidas com estratégia de quitação.
+- AI chat (tool calling over real data) and conversation history.
+- PDF import (statement parsing).
+- Basic proactive insights (unusual spend, category increase, subscriptions).
+- Financial goals with progress tracking.
+- Debt module with a payoff strategy.
 
 ### Could Have
 
-- Relatórios mensais com resumo gerado por IA e exportação PDF/CSV.
-- Aprendizado de categorização a partir das correções do usuário.
-- Projeções de fluxo de caixa.
-- Categorização em lote.
+- Monthly reports with an AI-generated summary and PDF/CSV export.
+- Categorization learning from the user's corrections.
+- Cash flow projections.
+- Batch categorization.
 
 ### Won't Have Now (`Future`)
 
-- Integrações bancárias automáticas (Plaid / Open Finance) e webhooks.
-- Multi-usuário / contas compartilhadas / família.
-- App mobile nativo (o MVP é web responsivo).
-- Multi-moeda simultânea (MVP: moeda única por usuário).
-- Storybook publicado (decisão na Fase 2).
+- Automatic bank integrations (Plaid / Open Finance) and webhooks.
+- Multi-user / shared accounts / family.
+- Native mobile app (the MVP is responsive web).
+- Simultaneous multi-currency (MVP: a single currency per user).
+- Published Storybook (decided in Phase 2).
 
 ---
 
-## 6. Funcionalidades do produto
+## 6. Product features
 
-> Formato resumido por funcionalidade. As entidades de dados citadas estão detalhadas na seção 10.
+> Summarized format per feature. The data entities cited are detailed in section 10.
 
-### 6.1 Autenticação e onboarding
+### 6.1 Authentication and onboarding
 
-- **Objetivo:** permitir entrada segura e capturar o mínimo de contexto para personalizar a experiência.
-- **Problema que resolve:** fricção de cadastro e falta de contexto inicial para os insights.
-- **Usuário-alvo:** todas as personas.
-- **Fluxo:** login OAuth → (se primeiro acesso) onboarding de 3 passos: moeda padrão → objetivo financeiro principal → consentimento sobre uso de dados e explicação de IA/privacidade → dashboard com empty state guiado.
-- **Estados:** novo usuário (onboarding), usuário recorrente (vai direto ao dashboard), sessão expirada (re-login).
-- **Regras de negócio:** sessão via JWT; consentimento obrigatório antes de qualquer processamento de IA; logout invalida a sessão.
-- **Critérios de aceite:** usuário cria conta com OAuth e cai no onboarding; preferências persistem; logout funciona; sem consentimento, IA fica desabilitada.
-- **Dados:** `User`, `UserProfile`.
-- **Erros:** falha de OAuth, e-mail já existente em outro provider.
-- **Segurança:** nunca logar tokens; consentimento auditável.
-- **Telemetria:** `signup_completed`, `onboarding_step_completed`, `onboarding_completed`, `time_to_first_value`.
-- **MVP:** sim. **Future:** preferências avançadas, 2FA.
+- **Goal:** allow secure entry and capture the minimum context to personalize the experience.
+- **Problem it solves:** sign-up friction and lack of initial context for insights.
+- **Target user:** all personas.
+- **Flow:** OAuth login → (if first access) a 3-step onboarding: default currency → primary financial goal → consent about data use and an explanation of AI/privacy → dashboard with a guided empty state.
+- **States:** new user (onboarding), returning user (goes straight to the dashboard), expired session (re-login).
+- **Business rules:** session via JWT; mandatory consent before any AI processing; logout invalidates the session.
+- **Acceptance criteria:** the user creates an account with OAuth and lands in onboarding; preferences persist; logout works; without consent, AI is disabled.
+- **Data:** `User`, `UserProfile`.
+- **Errors:** OAuth failure, email already existing on another provider.
+- **Security:** never log tokens; auditable consent.
+- **Telemetry:** `signup_completed`, `onboarding_step_completed`, `onboarding_completed`, `time_to_first_value`.
+- **MVP:** yes. **Future:** advanced preferences, 2FA.
 
-### 6.2 Dashboard financeiro
+### 6.2 Financial dashboard
 
-- **Objetivo:** dar uma leitura do mês em um relance.
-- **Fluxo:** ao entrar, vê cards de saldo/receita/despesa/economia, gráfico de evolução, top categorias, últimas transações, insights e alertas.
-- **Estados:** sem dados (empty com CTA para importar/lançar), dados parciais (1 conta só), dados completos.
-- **Regras:** período padrão = mês corrente; valores sempre com moeda do perfil.
-- **Critérios de aceite:** métricas batem com a soma das transações do período; empty state oferece importar/lançar; insights aparecem quando há base de dados suficiente.
-- **Dados:** `Transaction`, `Category`, `AIInsight`.
-- **Telemetria:** `dashboard_viewed`, `insight_clicked`.
-- **MVP:** sim (insights são Should Have).
+- **Goal:** give a reading of the month at a glance.
+- **Flow:** on entry, see balance/income/expense/savings cards, a trend chart, top categories, latest transactions, insights and alerts.
+- **States:** no data (empty with a CTA to import/add), partial data (only 1 account), complete data.
+- **Rules:** default period = current month; values always in the profile's currency.
+- **Acceptance criteria:** metrics match the sum of the period's transactions; the empty state offers import/add; insights appear when there's enough data.
+- **Data:** `Transaction`, `Category`, `AIInsight`.
+- **Telemetry:** `dashboard_viewed`, `insight_clicked`.
+- **MVP:** yes (insights are Should Have).
 
-### 6.3 Gestão de transações
+### 6.3 Transaction management
 
-- **Objetivo:** ser a fonte da verdade dos lançamentos, vindos de import ou manual.
-- **Fluxo:** lista agrupada por data → clicar abre painel de detalhe → editar categoria/nota/valor; criar manual via formulário; excluir com confirmação.
-- **Estados:** lista cheia, vazia, filtrada sem resultados, erro de carregamento.
-- **Regras:** transação pertence a exatamente um usuário e uma conta; origem (`manual`/`import`/`recurring`) é registrada e imutável; soft delete.
-- **Critérios de aceite:** CRUD completo; busca e filtros funcionam; recategorização persiste; badge de origem visível.
-- **Dados:** `Transaction`, `Category`, `Tag`, `Account`.
-- **Telemetria:** `transaction_created_manual`, `transaction_recategorized`, `transaction_deleted`.
-- **MVP:** sim. **Future:** tags avançadas, anexos.
+- **Goal:** be the source of truth for entries, coming from import or manual.
+- **Flow:** list grouped by date → clicking opens a detail panel → edit category/note/amount; create manual via a form; delete with confirmation.
+- **States:** full list, empty, filtered with no results, loading error.
+- **Rules:** a transaction belongs to exactly one user and one account; the origin (`manual`/`import`/`recurring`) is recorded and immutable; soft delete.
+- **Acceptance criteria:** full CRUD; search and filters work; recategorization persists; origin badge visible.
+- **Data:** `Transaction`, `Category`, `Tag`, `Account`.
+- **Telemetry:** `transaction_created_manual`, `transaction_recategorized`, `transaction_deleted`.
+- **MVP:** yes. **Future:** advanced tags, attachments.
 
-### 6.4 Importação de dados
+### 6.4 Data import
 
-- **Objetivo:** trazer extratos para dentro com o mínimo de erro.
-- **Fluxo:** upload CSV/PDF → parsing → mapeamento de colunas (CSV) → preview com validação por linha → deduplicação → confirmação → persistência → resumo.
-- **Estados:** upload em progresso, parsing, preview, erros por linha, concluído, falha.
-- **Regras:** importações duplicadas detectadas por hash (data+valor+descrição+conta); confirmação obrigatória antes de salvar; histórico auditável; rollback do job quando possível.
-- **Critérios de aceite:** CSV importa com mapeamento; duplicatas sinalizadas e não duplicadas; erros por linha exibidos; histórico registrado.
-- **Dados:** `ImportJob`, `ImportRow`, `UploadedFile`, `Transaction`.
-- **Erros:** arquivo inválido/corrompido, formato não reconhecido, linha malformada.
-- **Segurança:** limite de tamanho; validação de tipo; arquivo varrido e descartado após processamento conforme política. `Risk` (dados sensíveis em arquivos).
-- **Telemetria:** `import_started`, `import_completed`, `import_failed`, `import_rows_error_count`.
-- **MVP:** CSV sim; PDF é Should Have.
+- **Goal:** bring statements in with the fewest errors.
+- **Flow:** upload CSV/PDF → parsing → column mapping (CSV) → preview with per-row validation → deduplication → confirmation → persistence → summary.
+- **States:** upload in progress, parsing, preview, per-row errors, completed, failed.
+- **Rules:** duplicate imports detected by hash (date+amount+description+account); confirmation required before saving; auditable history; job rollback when possible.
+- **Acceptance criteria:** CSV imports with mapping; duplicates flagged and not duplicated; per-row errors shown; history recorded.
+- **Data:** `ImportJob`, `ImportRow`, `UploadedFile`, `Transaction`.
+- **Errors:** invalid/corrupt file, unrecognized format, malformed row.
+- **Security:** size limit; type validation; file scanned and discarded after processing per policy. `Risk` (sensitive data in files).
+- **Telemetry:** `import_started`, `import_completed`, `import_failed`, `import_rows_error_count`.
+- **MVP:** CSV yes; PDF is Should Have.
 
-### 6.5 Categorização inteligente
+### 6.5 Smart categorization
 
-- **Objetivo:** classificar transações sem trabalho manual.
-- **Fluxo:** transação chega → IA sugere categoria com score de confiança → usuário confirma/corrige → (futuro) sistema aprende regra recorrente.
-- **Regras:** sugestões NÃO são aplicadas automaticamente sem confirmação, salvo se o usuário ativar isso nas configurações; correções têm prioridade sobre a IA.
-- **Critérios de aceite:** sugestão exibe confiança; correção persiste; aplicação em lote pede confirmação.
-- **Dados:** `Transaction`, `Category`.
-- **Telemetria:** `category_suggested`, `category_accepted`, `category_corrected`.
-- **MVP:** categorização manual + sugestão simples. **Future:** aprendizado por regras, lote.
+- **Goal:** classify transactions with no manual work.
+- **Flow:** a transaction arrives → the AI suggests a category with a confidence score → the user confirms/corrects → (future) the system learns a recurring rule.
+- **Rules:** suggestions are NOT applied automatically without confirmation, unless the user enables that in settings; corrections take priority over the AI.
+- **Acceptance criteria:** the suggestion shows confidence; a correction persists; batch application asks for confirmation.
+- **Data:** `Transaction`, `Category`.
+- **Telemetry:** `category_suggested`, `category_accepted`, `category_corrected`.
+- **MVP:** manual categorization + simple suggestion. **Future:** rules learning, batch.
 
-### 6.6 Chat com IA financeira
+### 6.6 Financial AI chat
 
-- **Objetivo:** responder perguntas abertas com base nos dados reais do usuário.
-- **Fluxo:** usuário pergunta → IA decide quais _tools_ chamar → consulta dados → responde com streaming, citando os dados usados → usuário dá feedback (👍/👎).
-- **Estados:** ocioso (com sugestões), pensando/consultando, streaming, erro, rate limit atingido.
-- **Regras:** toda resposta indica que foi gerada por IA; números vêm de tool calls (não de "memória"); disclaimers quando a pergunta pede aconselhamento; escopo limitado a finanças do próprio usuário. `Risk` (alucinação, prompt injection).
-- **Critérios de aceite:** respostas usam dados reais via tools; fontes exibidas; streaming funciona; feedback registrado; sem dados de outros usuários jamais.
-- **Dados:** `AIConversation`, `AIMessage`, `AIEmbedding`, todas as tools de leitura.
-- **Telemetria:** `ai_question_asked`, `ai_tool_called`, `ai_response_feedback`, `ai_tokens_used`.
-- **MVP:** Should Have (núcleo do diferencial).
-- **Exemplos de perguntas:** onde mais gastei esse mês; quanto gastei com delivery nos últimos 3 meses; o que posso reduzir; minha renda cobre meus gastos fixos; previsão para os próximos 2 meses; quais assinaturas recorrentes tenho; meu gasto com cartão aumentou; qual categoria mais impactou o orçamento.
+- **Goal:** answer open questions based on the user's real data.
+- **Flow:** the user asks → the AI decides which _tools_ to call → queries data → responds with streaming, citing the data used → the user gives feedback (👍/👎).
+- **States:** idle (with suggestions), thinking/querying, streaming, error, rate limit reached.
+- **Rules:** every response indicates it was generated by AI; numbers come from tool calls (not "memory"); disclaimers when the question asks for advice; scope limited to the user's own finances. `Risk` (hallucination, prompt injection).
+- **Acceptance criteria:** answers use real data via tools; sources displayed; streaming works; feedback recorded; no other users' data ever.
+- **Data:** `AIConversation`, `AIMessage`, `AIEmbedding`, all the read tools.
+- **Telemetry:** `ai_question_asked`, `ai_tool_called`, `ai_response_feedback`, `ai_tokens_used`.
+- **MVP:** Should Have (the core of the differentiator).
+- **Example questions:** where did I spend the most this month; how much did I spend on delivery over the last 3 months; what can I cut; does my income cover my fixed expenses; forecast for the next 2 months; which recurring subscriptions do I have; did my card spending go up; which category impacted the budget the most.
 
-### 6.7 Insights e recomendações
+### 6.7 Insights and recommendations
 
-- **Objetivo:** apontar proativamente o que merece atenção.
-- **Fluxo:** job analisa dados → gera insights com severidade → usuário vê, aplica, ignora ou marca como útil.
-- **Regras:** insight tem severidade e status; ignorar remove da lista; recomendações acionáveis quando possível.
-- **Critérios de aceite:** insights gerados com base em regras/IA; severidade visível; ações (aplicar/ignorar/útil) funcionam.
-- **Dados:** `AIInsight`.
-- **Telemetria:** `insight_generated`, `insight_applied`, `insight_dismissed`, `insight_marked_useful`.
-- **MVP:** Should Have (versão por regras antes de IA).
+- **Goal:** proactively point out what deserves attention.
+- **Flow:** a job analyzes data → generates insights with severity → the user sees, applies, ignores or marks as useful.
+- **Rules:** an insight has severity and status; ignoring removes it from the list; actionable recommendations when possible.
+- **Acceptance criteria:** insights generated from rules/AI; severity visible; actions (apply/ignore/useful) work.
+- **Data:** `AIInsight`.
+- **Telemetry:** `insight_generated`, `insight_applied`, `insight_dismissed`, `insight_marked_useful`.
+- **MVP:** Should Have (a rules-based version before AI).
 
-### 6.8 Relatórios
+### 6.8 Reports
 
-- **Objetivo:** consolidar períodos e permitir exportação.
-- **Fluxo:** escolher período/tipo → ver cards + gráficos + tabela → resumo por IA → exportar CSV/PDF.
-- **Critérios de aceite:** relatório por mês/categoria/período; exportação funciona; comparação entre períodos.
-- **Dados:** `Transaction`, `Category`, `AIInsight`.
+- **Goal:** consolidate periods and allow export.
+- **Flow:** choose period/type → see cards + charts + table → AI summary → export CSV/PDF.
+- **Acceptance criteria:** report by month/category/period; export works; comparison between periods.
+- **Data:** `Transaction`, `Category`, `AIInsight`.
 - **MVP:** Could Have.
 
-### 6.9 Metas financeiras
+### 6.9 Financial goals
 
-- **Objetivo:** dar direção e acompanhamento a objetivos.
-- **Fluxo:** criar meta (valor, prazo, categorias relacionadas) → acompanhar progresso → receber projeção e recomendação da IA.
-- **Regras:** meta pertence ao usuário; progresso calculado a partir de transações/aportes; status (ativa/concluída/atrasada).
-- **Critérios de aceite:** CRUD de metas; progresso correto; projeção exibida.
-- **Dados:** `FinancialGoal`.
+- **Goal:** give direction and tracking to objectives.
+- **Flow:** create a goal (amount, deadline, related categories) → track progress → receive an AI projection and recommendation.
+- **Rules:** a goal belongs to the user; progress computed from transactions/contributions; status (active/completed/late).
+- **Acceptance criteria:** goals CRUD; correct progress; projection displayed.
+- **Data:** `FinancialGoal`.
 - **MVP:** Should Have.
 
-### 6.10 Integrações (`Future`)
+### 6.10 Integrations (`Future`)
 
-- **Objetivo:** sincronizar dados bancários automaticamente.
-- **Inclui:** Plaid, Open Finance, webhooks, estado de conexão, reautorização, sincronização, logs, segurança.
-- **Dados:** `IntegrationConnection`, `WebhookEvent`.
-- **MVP:** não. Toda a arquitetura deve deixar o "encaixe" pronto (origem da transação já prevê `integration`).
+- **Goal:** sync bank data automatically.
+- **Includes:** Plaid, Open Finance, webhooks, connection state, reauthorization, sync, logs, security.
+- **Data:** `IntegrationConnection`, `WebhookEvent`.
+- **MVP:** no. The whole architecture must leave the "slot" ready (a transaction's origin already anticipates `integration`).
 
-### 6.11 Configurações
+### 6.11 Settings
 
-- **Objetivo:** dar controle de perfil, segurança, privacidade e dados.
-- **Inclui:** perfil, moeda, dia de fechamento, preferências, notificações, limites/modelo de IA, consentimentos, exportar dados, excluir conta, gerenciar integrações (Future).
-- **Regras:** usuário pode exportar e excluir todos os seus dados (LGPD/GDPR); exclusão é irreversível e confirmada.
-- **Critérios de aceite:** exportação gera JSON/CSV; exclusão remove dados; toggles de notificação persistem.
-- **Dados:** `UserProfile`, `NotificationPreference`, `AuditLog`.
-- **MVP:** sim (perfil, moeda, privacidade básica, export/delete).
+- **Goal:** give control over profile, security, privacy and data.
+- **Includes:** profile, currency, closing day, preferences, notifications, AI limits/model, consents, export data, delete account, manage integrations (Future).
+- **Rules:** the user can export and delete all their data (LGPD/GDPR); deletion is irreversible and confirmed.
+- **Acceptance criteria:** export generates JSON/CSV; deletion removes data; notification toggles persist.
+- **Data:** `UserProfile`, `NotificationPreference`, `AuditLog`.
+- **MVP:** yes (profile, currency, basic privacy, export/delete).
 
 ---
 
-## 7. Requisitos funcionais
+## 7. Functional requirements
 
 **Auth**
 
-- RF001 — O usuário deve conseguir criar conta e autenticar via OAuth.
-- RF002 — O sistema deve manter sessão segura via JWT e permitir logout.
-- RF003 — O sistema deve exigir consentimento de uso de dados antes de processar IA.
+- RF001 — The user must be able to create an account and authenticate via OAuth.
+- RF002 — The system must maintain a secure session via JWT and allow logout.
+- RF003 — The system must require data-use consent before processing AI.
 
 **Onboarding**
 
-- RF010 — O usuário deve definir moeda padrão no primeiro acesso.
-- RF011 — O usuário deve informar um objetivo financeiro principal.
-- RF012 — O sistema deve registrar a conclusão do onboarding.
+- RF010 — The user must set a default currency on first access.
+- RF011 — The user must provide a primary financial goal.
+- RF012 — The system must record the completion of onboarding.
 
 **Dashboard**
 
-- RF020 — O sistema deve exibir saldo, receitas, despesas e economia do período.
-- RF021 — O sistema deve exibir evolução mensal e top categorias.
-- RF022 — O sistema deve exibir empty state quando não houver dados.
+- RF020 — The system must display balance, income, expenses and savings for the period.
+- RF021 — The system must display the monthly trend and top categories.
+- RF022 — The system must display an empty state when there is no data.
 
 **Transactions**
 
-- RF030 — O usuário deve criar, editar e excluir transações manualmente.
-- RF031 — O usuário deve buscar, filtrar e ordenar transações.
-- RF032 — O usuário deve recategorizar e adicionar notas/tags.
-- RF033 — O sistema deve registrar a origem de cada transação.
+- RF030 — The user must create, edit and delete transactions manually.
+- RF031 — The user must search, filter and sort transactions.
+- RF032 — The user must recategorize and add notes/tags.
+- RF033 — The system must record the origin of each transaction.
 
 **Import**
 
-- RF040 — O usuário deve importar transações via CSV.
-- RF041 — O sistema deve permitir mapeamento de colunas e preview antes de salvar.
-- RF042 — O sistema deve detectar e sinalizar duplicatas.
-- RF043 — O sistema deve manter histórico auditável de importações.
-- RF044 — O usuário deve importar via PDF (`Should Have`).
+- RF040 — The user must import transactions via CSV.
+- RF041 — The system must allow column mapping and a preview before saving.
+- RF042 — The system must detect and flag duplicates.
+- RF043 — The system must keep an auditable import history.
+- RF044 — The user must import via PDF (`Should Have`).
 
 **Categories**
 
-- RF050 — O sistema deve sugerir categorias automaticamente para transações.
-- RF051 — O sistema deve exibir a confiança da sugestão.
-- RF052 — O sistema não deve aplicar sugestões sem confirmação, salvo configuração explícita.
+- RF050 — The system must suggest categories automatically for transactions.
+- RF051 — The system must display the suggestion's confidence.
+- RF052 — The system must not apply suggestions without confirmation, except with explicit configuration.
 
 **AI Chat**
 
-- RF060 — O usuário deve perguntar em linguagem natural sobre suas finanças.
-- RF061 — O sistema deve responder via streaming usando tool calling sobre dados reais.
-- RF062 — O sistema deve indicar as fontes/dados usados na resposta.
-- RF063 — O sistema deve registrar conversas e permitir feedback.
-- RF064 — O sistema deve sinalizar que a resposta foi gerada por IA.
+- RF060 — The user must ask in natural language about their finances.
+- RF061 — The system must respond via streaming using tool calling over real data.
+- RF062 — The system must indicate the sources/data used in the response.
+- RF063 — The system must record conversations and allow feedback.
+- RF064 — The system must signal that the response was generated by AI.
 
 **Insights**
 
-- RF070 — O sistema deve gerar insights com severidade e status.
-- RF071 — O usuário deve poder aplicar, ignorar ou marcar insight como útil.
+- RF070 — The system must generate insights with severity and status.
+- RF071 — The user must be able to apply, ignore or mark an insight as useful.
 
 **Reports**
 
-- RF080 — O usuário deve gerar relatórios por mês/categoria/período (`Could Have`).
-- RF081 — O usuário deve exportar relatórios em CSV/PDF.
+- RF080 — The user must generate reports by month/category/period (`Could Have`).
+- RF081 — The user must export reports in CSV/PDF.
 
 **Goals**
 
-- RF090 — O usuário deve criar, editar e excluir metas.
-- RF091 — O sistema deve acompanhar progresso e exibir projeção.
+- RF090 — The user must create, edit and delete goals.
+- RF091 — The system must track progress and display a projection.
 
 **Integrations (`Future`)**
 
-- RF100 — O sistema deve conectar contas via Plaid/Open Finance.
-- RF101 — O sistema deve processar webhooks de sincronização.
+- RF100 — The system must connect accounts via Plaid/Open Finance.
+- RF101 — The system must process sync webhooks.
 
 **Settings**
 
-- RF110 — O usuário deve editar perfil, moeda e preferências.
-- RF111 — O usuário deve exportar todos os seus dados.
-- RF112 — O usuário deve excluir a conta e todos os dados.
+- RF110 — The user must edit profile, currency and preferences.
+- RF111 — The user must export all their data.
+- RF112 — The user must delete the account and all data.
 
 ---
 
-## 8. Requisitos não funcionais
+## 8. Non-functional requirements
 
-- **Segurança:** isolamento de dados por usuário em toda query; tokens nunca logados; validação de toda entrada com Zod.
-- **Privacidade:** conformidade com LGPD/GDPR; dados nunca usados para treino; export e delete self-service.
-- **Performance:** dashboard < 1s com dados em cache; importação de 1.000 linhas < 10s; streaming de IA começa em < 2s.
-- **Acessibilidade:** WCAG 2.1 AA; navegação por teclado; foco visível; gráficos com alternativa textual.
-- **Observabilidade:** tracing distribuído (OpenTelemetry), erros (Sentry), métricas de API e de custo de IA.
-- **Escalabilidade:** arquitetura stateless no app; cache em Redis; índices adequados no Postgres.
-- **Resiliência:** falha de IA não derruba o app (degrada graciosamente); importação com rollback.
-- **Testabilidade:** lógica de negócio em services puros, testável sem I/O.
-- **DX:** setup local com um comando; seed de dados; tipos compartilhados.
-- **Custo de IA:** rate limit por usuário; cache de respostas frequentes; escolha de modelo (Haiku para tarefas baratas). `Risk`
-- **Auditoria:** ações sensíveis (export, delete, import) registradas em `AuditLog`.
-- **Manutenibilidade:** separação clara por domínio; convenções documentadas.
-
----
-
-## 9. Regras de negócio
-
-1. Toda transação pertence a exatamente um usuário e não é acessível por outros (`Risk` se violado).
-2. Dados financeiros nunca cruzam entre usuários — todo acesso filtra por `userId`.
-3. Importações duplicadas são detectadas por hash de (data + valor + descrição + conta).
-4. Sugestões de IA não são aplicadas automaticamente sem confirmação, exceto se o usuário ativar essa opção.
-5. O sistema sempre indica quando uma resposta foi gerada por IA.
-6. O sistema não apresenta aconselhamento financeiro como certeza absoluta; projeções têm disclaimer.
-7. O usuário pode exportar e excluir todos os seus dados a qualquer momento.
-8. O histórico de importação é auditável e imutável.
-9. Integrações externas armazenam apenas o necessário (tokens cifrados, dados mínimos).
-10. A origem de uma transação (`manual`/`import`/`recurring`/`integration`) é registrada e imutável.
-11. Exclusão usa soft delete no produto; hard delete só no fluxo de exclusão de conta.
+- **Security:** per-user data isolation in every query; tokens never logged; validation of every input with Zod.
+- **Privacy:** LGPD/GDPR compliance; data never used for training; self-service export and delete.
+- **Performance:** dashboard < 1s with cached data; import of 1,000 rows < 10s; AI streaming starts in < 2s.
+- **Accessibility:** WCAG 2.1 AA; keyboard navigation; visible focus; charts with a textual alternative.
+- **Observability:** distributed tracing (OpenTelemetry), errors (Sentry), API and AI-cost metrics.
+- **Scalability:** stateless app architecture; cache in Redis; adequate indexes in Postgres.
+- **Resilience:** an AI failure doesn't take down the app (degrades gracefully); import with rollback.
+- **Testability:** business logic in pure services, testable without I/O.
+- **DX:** local setup with one command; data seed; shared types.
+- **AI cost:** rate limit per user; cache of frequent responses; model choice (Haiku for cheap tasks). `Risk`
+- **Auditing:** sensitive actions (export, delete, import) recorded in `AuditLog`.
+- **Maintainability:** clear separation by domain; documented conventions.
 
 ---
 
-## 10. Modelo de dados conceitual
+## 9. Business rules
 
-> Detalhamento físico (campos, índices, constraints) está em `architecture.md`. Aqui é a visão de produto.
+1. Every transaction belongs to exactly one user and is not accessible by others (`Risk` if violated).
+2. Financial data never crosses between users — every access filters by `userId`.
+3. Duplicate imports are detected by a hash of (date + amount + description + account).
+4. AI suggestions are not applied automatically without confirmation, unless the user enables that option.
+5. The system always indicates when a response was generated by AI.
+6. The system does not present financial advice as absolute certainty; projections have a disclaimer.
+7. The user can export and delete all their data at any time.
+8. The import history is auditable and immutable.
+9. External integrations store only what's needed (encrypted tokens, minimal data).
+10. A transaction's origin (`manual`/`import`/`recurring`/`integration`) is recorded and immutable.
+11. Deletion uses soft delete in the product; hard delete only in the account-deletion flow.
 
-| Entidade                 | Responsabilidade                           | Relacionamentos                        | Nota de segurança              | MVP    |
+---
+
+## 10. Conceptual data model
+
+> The physical detail (fields, indexes, constraints) is in `architecture.md`. This is the product view.
+
+| Entity                   | Responsibility                             | Relationships                          | Security note                  | MVP    |
 | ------------------------ | ------------------------------------------ | -------------------------------------- | ------------------------------ | ------ |
-| `User`                   | Identidade e autenticação                  | 1:1 `UserProfile`; 1:N quase tudo      | Raiz do isolamento por usuário | Sim    |
-| `UserProfile`            | Preferências (moeda, objetivo, fechamento) | 1:1 `User`                             | —                              | Sim    |
-| `Account`                | Conta/origem (Nubank, Itaú, dinheiro)      | N:1 `User`; 1:N `Transaction`          | —                              | Sim    |
-| `Transaction`            | Lançamento financeiro                      | N:1 `User`, `Account`, `Category`      | Núcleo sensível                | Sim    |
-| `Category`               | Categoria de gasto/receita                 | 1:N `Transaction`                      | —                              | Sim    |
-| `Tag`                    | Marcação livre                             | N:N `Transaction` via `TransactionTag` | —                              | Could  |
-| `TransactionTag`         | Junção transação↔tag                       | —                                      | —                              | Could  |
-| `ImportJob`              | Um processo de importação                  | N:1 `User`; 1:N `ImportRow`            | Auditável                      | Sim    |
-| `ImportRow`              | Linha de um import                         | N:1 `ImportJob`                        | —                              | Sim    |
-| `UploadedFile`           | Arquivo enviado                            | N:1 `User`/`ImportJob`                 | Descarte pós-processo          | Sim    |
-| `AIConversation`         | Sessão de chat                             | N:1 `User`; 1:N `AIMessage`            | —                              | Should |
-| `AIMessage`              | Mensagem (user/assistant/tool)             | N:1 `AIConversation`                   | Sem PII em logs                | Should |
-| `AIInsight`              | Insight gerado                             | N:1 `User`                             | —                              | Should |
-| `AIEmbedding`            | Vetor para RAG                             | N:1 `User`/`Transaction`               | Isolado por usuário            | Should |
-| `FinancialGoal`          | Meta financeira                            | N:1 `User`                             | —                              | Should |
-| `Debt`                   | Dívida/empréstimo                          | N:1 `User`                             | —                              | Should |
-| `IntegrationConnection`  | Conexão bancária                           | N:1 `User`                             | Tokens cifrados                | Future |
-| `WebhookEvent`           | Evento recebido                            | N:1 `IntegrationConnection`            | —                              | Future |
-| `AuditLog`               | Trilha de ações sensíveis                  | N:1 `User`                             | Append-only                    | Sim    |
-| `NotificationPreference` | Toggles de notificação                     | 1:1/N:1 `User`                         | —                              | Sim    |
+| `User`                   | Identity and authentication                | 1:1 `UserProfile`; 1:N almost everything | Root of per-user isolation   | Yes    |
+| `UserProfile`            | Preferences (currency, goal, closing)      | 1:1 `User`                             | —                              | Yes    |
+| `Account`                | Account/origin (Nubank, Itaú, cash)        | N:1 `User`; 1:N `Transaction`          | —                              | Yes    |
+| `Transaction`            | Financial entry                            | N:1 `User`, `Account`, `Category`      | Sensitive core                 | Yes    |
+| `Category`               | Expense/income category                    | 1:N `Transaction`                      | —                              | Yes    |
+| `Tag`                    | Free-form label                            | N:N `Transaction` via `TransactionTag` | —                              | Could  |
+| `TransactionTag`         | Transaction↔tag join                       | —                                      | —                              | Could  |
+| `ImportJob`              | An import process                          | N:1 `User`; 1:N `ImportRow`            | Auditable                      | Yes    |
+| `ImportRow`              | A row of an import                         | N:1 `ImportJob`                        | —                              | Yes    |
+| `UploadedFile`           | Uploaded file                              | N:1 `User`/`ImportJob`                 | Discarded after processing     | Yes    |
+| `AIConversation`         | A chat session                             | N:1 `User`; 1:N `AIMessage`            | —                              | Should |
+| `AIMessage`              | A message (user/assistant/tool)            | N:1 `AIConversation`                   | No PII in logs                 | Should |
+| `AIInsight`              | A generated insight                        | N:1 `User`                             | —                              | Should |
+| `AIEmbedding`            | Vector for RAG                             | N:1 `User`/`Transaction`               | Isolated per user              | Should |
+| `FinancialGoal`          | A financial goal                           | N:1 `User`                             | —                              | Should |
+| `Debt`                   | A debt/loan                                | N:1 `User`                             | —                              | Should |
+| `IntegrationConnection`  | A bank connection                          | N:1 `User`                             | Encrypted tokens               | Future |
+| `WebhookEvent`           | A received event                           | N:1 `IntegrationConnection`            | —                              | Future |
+| `AuditLog`               | Trail of sensitive actions                 | N:1 `User`                             | Append-only                    | Yes    |
+| `NotificationPreference` | Notification toggles                       | 1:1/N:1 `User`                         | —                              | Yes    |
 
-> Nota: adicionei `Debt` ao modelo porque o módulo de dívidas (tela 6) virou um diferencial do produto e não estava na lista original.
-
----
-
-## 11. Fluxos principais
-
-Para cada fluxo: passo a passo, sucesso, erro, empty, dados, atenção.
-
-1. **Criar conta + onboarding** — OAuth → moeda → objetivo → consentimento → dashboard vazio guiado. _Erro:_ OAuth falha → retry. _Atenção:_ não pedir dado demais.
-2. **Primeira transação manual** — Lançamentos → tipo → preencher → salvar → aparece no dashboard. _Empty:_ CTA destacado. _Atenção:_ validar valor/data.
-3. **Importar CSV** — upload → mapear colunas → preview → resolver duplicatas → confirmar → resumo. _Erro:_ linha inválida sinalizada sem bloquear as válidas.
-4. **Importar PDF** — upload → parsing → preview (sem mapeamento manual) → confirmar. _Atenção:_ qualidade do parser varia por banco. `Risk`
-5. **Corrigir categorias** — abrir transação → trocar categoria → (opcional) aplicar a similares. _Atenção:_ confirmação antes de lote.
-6. **Perguntar à IA** — digitar → IA chama tools → streaming com fontes → feedback. _Erro:_ IA indisponível → mensagem clara, dados ainda acessíveis. _Atenção:_ nunca inventar números.
-7. **Ver dashboard** — entrar → métricas + gráficos + insights. _Empty/parcial:_ estados dedicados.
-8. **Criar meta** — definir valor/prazo/categorias → acompanhar → projeção da IA.
-9. **Relatório mensal** — período → cards/gráficos/tabela → resumo IA → exportar.
-10. **Conectar integração** (`Future`) — escolher banco → OAuth do provedor → sincronizar.
-11. **Exportar dados** — Configurações → exportar → JSON/CSV. _Atenção:_ registrar em auditoria.
-12. **Excluir conta** — Configurações → confirmar (dupla confirmação) → hard delete → logout.
+> Note: I added `Debt` to the model because the debt module (screen 6) became a product differentiator and wasn't in the original list.
 
 ---
 
-## 12. Experiência de interface
+## 11. Main flows
 
-- **Rotas principais:** `/dashboard`, `/chat`, `/transactions`, `/import`, `/entries` (lançamentos), `/categories`, `/goals`, `/debts`, `/reports`, `/settings`, `/onboarding`, `/auth`.
-- **Layout:** AppShell com sidebar fixa (desktop) + topbar; conteúdo com PageHeader consistente.
-- **Menu lateral:** grupos "Principal" (dashboard, chat, transações, importar, lançamentos) e "Análise" (categorias, metas, dívidas, relatórios) + configurações.
-- **Topbar:** logo, notificações, avatar/menu de conta.
-- **Breadcrumbs:** apenas em telas profundas (ex.: detalhe de importação). Caso contrário, PageHeader basta.
-- **Empty/loading/error states:** componentes dedicados e reutilizáveis (ver design-system.md).
-- **Feedbacks:** toasts para ações (salvo, importado, excluído); modais para confirmações destrutivas; drawer/painel lateral para detalhe de transação.
-- **Componentes principais:** MetricCard, ChartCard, TransactionRow/List, AIChat, InsightCard, ImportPreviewTable, GoalProgressCard, DebtCard.
-- **Mobile:** sidebar vira drawer/bottom-nav; tabelas viram listas; filtros colapsáveis; ações primárias sempre acessíveis.
-- **Desktop:** master-detail (lista + painel), grid de 12 colunas no dashboard.
+For each flow: step by step, success, error, empty, data, caution.
 
----
-
-## 13. Métricas de produto
-
-- **Ativação:** % que conclui onboarding; % que adiciona o primeiro dado (manual ou import).
-- **Tempo até primeiro valor (TTFV):** minutos entre signup e primeiro dashboard com dados.
-- **Retenção:** D1/D7/D30; usuários ativos semanais.
-- **Engajamento de dados:** transações criadas/importadas; importações concluídas vs falhas.
-- **IA:** perguntas feitas; tool calls por pergunta; feedback positivo/negativo; tokens/custo por usuário.
-- **Insights:** gerados, visualizados, aplicados, ignorados.
-- **Metas:** criadas; % concluídas.
-- **Relatórios:** gerados; exportações.
-- **Qualidade:** taxa de erro de importação; taxa de correção de categoria (proxy de acerto da IA).
-- **Funil de onboarding:** taxa de conclusão por passo.
+1. **Create account + onboarding** — OAuth → currency → goal → consent → guided empty dashboard. _Error:_ OAuth fails → retry. _Caution:_ don't ask for too much data.
+2. **First manual transaction** — Entries → type → fill → save → appears on the dashboard. _Empty:_ highlighted CTA. _Caution:_ validate amount/date.
+3. **Import CSV** — upload → map columns → preview → resolve duplicates → confirm → summary. _Error:_ invalid row flagged without blocking valid ones.
+4. **Import PDF** — upload → parsing → preview (no manual mapping) → confirm. _Caution:_ parser quality varies by bank. `Risk`
+5. **Fix categories** — open a transaction → change category → (optional) apply to similar ones. _Caution:_ confirmation before batch.
+6. **Ask the AI** — type → the AI calls tools → streaming with sources → feedback. _Error:_ AI unavailable → a clear message, data still accessible. _Caution:_ never make up numbers.
+7. **View dashboard** — enter → metrics + charts + insights. _Empty/partial:_ dedicated states.
+8. **Create a goal** — define amount/deadline/categories → track → AI projection.
+9. **Monthly report** — period → cards/charts/table → AI summary → export.
+10. **Connect an integration** (`Future`) — choose a bank → the provider's OAuth → sync.
+11. **Export data** — Settings → export → JSON/CSV. _Caution:_ record in auditing.
+12. **Delete account** — Settings → confirm (double confirmation) → hard delete → logout.
 
 ---
 
-## 14. Riscos e cuidados
+## 12. Interface experience
 
-| Item                                              | Tipo   | Impacto | Probabilidade | Mitigação                                                                     |
-| ------------------------------------------------- | ------ | ------- | ------------- | ----------------------------------------------------------------------------- |
-| Vazamento/cruzamento de dados entre usuários      | `Risk` | Crítico | Baixa         | Isolamento por `userId` em toda query; testes de autorização; revisão.        |
-| Dados sensíveis em arquivos importados            | `Risk` | Alto    | Média         | Limite de tamanho, validação de tipo, descarte pós-processo, sem PII em logs. |
-| Alucinação de IA (números inventados)             | `Risk` | Alto    | Média         | Números só via tool calls; exibir fontes; testes com mocks; disclaimers.      |
-| Prompt injection (via descrição de transação/PDF) | `Risk` | Alto    | Média         | Sanitização; separar dados de instruções; escopo de tools restrito.           |
-| Custo de IA descontrolado                         | `Risk` | Médio   | Média         | Rate limit, cache, modelo barato para tarefas simples, orçamento por usuário. |
-| Importação incorreta (parsing PDF)                | `Risk` | Médio   | Alta          | Preview obrigatório, confirmação, rollback, suporte incremental por banco.    |
-| Confiança do usuário (tom/segurança)              | `Risk` | Alto    | Média         | Tom não-julgador; transparência de dados; sem promessas absolutas.            |
-| Complexidade/escopo do MVP                        | `Risk` | Médio   | Alta          | Escopo Must Have enxuto; IA e PDF como Should; integrações como Future.       |
-| Interface densa demais                            | `Risk` | Médio   | Média         | Hierarquia clara, empty states, progressive disclosure.                       |
-| Dependência de APIs externas                      | `Risk` | Médio   | Baixa (MVP)   | Integrações fora do MVP; abstração de provider quando entrarem.               |
-| LGPD/GDPR                                         | `Risk` | Alto    | Baixa         | Consentimento, export/delete, auditoria, minimização de dados.                |
+- **Main routes:** `/dashboard`, `/chat`, `/transactions`, `/import`, `/entries`, `/categories`, `/goals`, `/debts`, `/reports`, `/settings`, `/onboarding`, `/auth`.
+- **Layout:** AppShell with a fixed sidebar (desktop) + topbar; content with a consistent PageHeader.
+- **Side menu:** "Main" (dashboard, chat, transactions, import, entries) and "Analysis" (categories, goals, debts, reports) groups + settings.
+- **Topbar:** logo, notifications, avatar/account menu.
+- **Breadcrumbs:** only on deep screens (e.g. import detail). Otherwise, the PageHeader is enough.
+- **Empty/loading/error states:** dedicated, reusable components (see design-system.md).
+- **Feedback:** toasts for actions (saved, imported, deleted); modals for destructive confirmations; a drawer/side panel for transaction detail.
+- **Main components:** MetricCard, ChartCard, TransactionRow/List, AIChat, InsightCard, ImportPreviewTable, GoalProgressCard, DebtCard.
+- **Mobile:** sidebar becomes a drawer/bottom-nav; tables become lists; collapsible filters; primary actions always accessible.
+- **Desktop:** master-detail (list + panel), a 12-column grid on the dashboard.
 
 ---
 
-## 15. Roadmap de produto
+## 13. Product metrics
 
-- **Fase 0 — Setup e fundação:** base técnica, design system, banco, auth, CI/CD.
-- **Fase 1 — MVP manual:** auth, dashboard básico, transações manuais, categorias, gráficos.
-- **Fase 2 — Importação:** CSV (e depois PDF), validação, preview, histórico.
-- **Fase 3 — IA financeira:** chat, tool calling, insights, categorização inteligente.
-- **Fase 4 — Relatórios e metas:** relatórios, metas, dívidas, projeções, exportação.
-- **Fase 5 — Integrações (`Future`):** Plaid/Open Finance, webhooks, sincronização.
-- **Fase 6 — Hardening:** observabilidade, segurança avançada, E2E, performance, docs OSS.
+- **Activation:** % who complete onboarding; % who add the first data (manual or import).
+- **Time to first value (TTFV):** minutes between signup and the first dashboard with data.
+- **Retention:** D1/D7/D30; weekly active users.
+- **Data engagement:** transactions created/imported; imports completed vs failed.
+- **AI:** questions asked; tool calls per question; positive/negative feedback; tokens/cost per user.
+- **Insights:** generated, viewed, applied, ignored.
+- **Goals:** created; % completed.
+- **Reports:** generated; exports.
+- **Quality:** import error rate; category correction rate (a proxy for AI accuracy).
+- **Onboarding funnel:** completion rate per step.
 
-> Detalhamento em versões (0.1 → 1.0) está em `roadmap.md`.
+---
+
+## 14. Risks and cautions
+
+| Item                                              | Type   | Impact   | Likelihood | Mitigation                                                                    |
+| ------------------------------------------------- | ------ | -------- | ---------- | ----------------------------------------------------------------------------- |
+| Leak/crossover of data between users              | `Risk` | Critical | Low        | Per-`userId` isolation in every query; authorization tests; review.           |
+| Sensitive data in imported files                  | `Risk` | High     | Medium     | Size limit, type validation, discard after processing, no PII in logs.         |
+| AI hallucination (made-up numbers)                | `Risk` | High     | Medium     | Numbers only via tool calls; display sources; tests with mocks; disclaimers.   |
+| Prompt injection (via transaction description/PDF)| `Risk` | High     | Medium     | Sanitization; separate data from instructions; restricted tool scope.          |
+| Uncontrolled AI cost                              | `Risk` | Medium   | Medium     | Rate limit, cache, a cheap model for simple tasks, a per-user budget.          |
+| Incorrect import (PDF parsing)                    | `Risk` | Medium   | High       | Mandatory preview, confirmation, rollback, incremental per-bank support.       |
+| User trust (tone/security)                        | `Risk` | High     | Medium     | Non-judgmental tone; data transparency; no absolute promises.                  |
+| MVP complexity/scope                              | `Risk` | Medium   | High       | Lean Must Have scope; AI and PDF as Should; integrations as Future.            |
+| Overly dense interface                            | `Risk` | Medium   | Medium     | Clear hierarchy, empty states, progressive disclosure.                         |
+| Dependence on external APIs                       | `Risk` | Medium   | Low (MVP)  | Integrations outside the MVP; a provider abstraction when they come in.         |
+| LGPD/GDPR                                         | `Risk` | High     | Low        | Consent, export/delete, auditing, data minimization.                           |
+
+---
+
+## 15. Product roadmap
+
+- **Phase 0 — Setup and foundation:** technical base, design system, database, auth, CI/CD.
+- **Phase 1 — Manual MVP:** auth, basic dashboard, manual transactions, categories, charts.
+- **Phase 2 — Import:** CSV (then PDF), validation, preview, history.
+- **Phase 3 — Financial AI:** chat, tool calling, insights, smart categorization.
+- **Phase 4 — Reports and goals:** reports, goals, debts, projections, export.
+- **Phase 5 — Integrations (`Future`):** Plaid/Open Finance, webhooks, sync.
+- **Phase 6 — Hardening:** observability, advanced security, E2E, performance, OSS docs.
+
+> Detail by version (0.1 → 1.0) is in `roadmap.md`.

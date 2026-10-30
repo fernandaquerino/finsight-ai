@@ -1,90 +1,92 @@
 # FinSight AI — Design System & UI Discovery
 
-> Perspectiva: Product Designer Sênior + Design System Lead.
-> Versão: 0.1 · Status: living document
+> Perspective: Senior Product Designer + Design System Lead.
+> Version: 0.1 · Status: living document
 
-> **Nota sobre referências:** a fase de discovery visual já foi feita de forma colaborativa. Existem 8 wireframes de baixa/média fidelidade aprovados (Dashboard, Chat com IA, Importar, Categorias, Metas, Dívidas, Lançamentos manuais, Configurações, Transações). Este documento extrai os padrões deles e os formaliza num sistema — os wireframes são a referência, não o layout final pixel-perfect.
+> **Note on references:** the visual discovery phase was done collaboratively. There are 8 approved low/medium-fidelity wireframes (Dashboard, AI Chat, Import, Categories, Goals, Debts, Manual entries, Settings, Transactions). This document extracts their patterns and formalizes them into a system — the wireframes are the reference, not the final pixel-perfect layout.
+
+> UI copy below is quoted in Brazilian Portuguese because that is the product's displayed text (the app's UI is in PT-BR).
 
 ---
 
 ## 1. Design direction
 
-**Tom visual:** sóbrio, confiável, "calmo". Finanças geram ansiedade; a interface precisa reduzir, não amplificar. Fundo claro/escuro neutro, superfícies brancas, bordas finas (0.5px), muito espaço em branco. Nada de gradientes chamativos, sombras pesadas ou neon.
+**Visual tone:** sober, trustworthy, "calm". Finances cause anxiety; the interface must reduce it, not amplify it. Neutral light/dark background, white surfaces, thin borders (0.5px), lots of white space. No flashy gradients, heavy shadows or neon.
 
-**Sensação desejada:** "isto é sério com meu dinheiro, mas é fácil de entender". Premium pela contenção, não pelo excesso.
+**Desired feeling:** "this is serious about my money, but it's easy to understand". Premium through restraint, not excess.
 
-**Estilo de interface:** flat, data-first. O dado é o herói; o cromo da interface recua.
+**Interface style:** flat, data-first. The data is the hero; the interface chrome recedes.
 
-**Densidade visual:** média-alta em telas de dados (transações, categorias) e média no dashboard. Densidade controlada por hierarquia tipográfica e agrupamento, não por linhas/bordas.
+**Visual density:** medium-high on data screens (transactions, categories) and medium on the dashboard. Density controlled by typographic hierarchy and grouping, not by lines/borders.
 
-**Equilíbrio fintech + IA:** o fintech traz a sobriedade (números monoespaçados, cores semânticas disciplinadas); a IA traz um sotaque próprio (uma única cor de marca — roxo — reservada para tudo que é "inteligência": chat, insights, sugestões). Assim o usuário aprende: roxo = a IA está falando.
+**Fintech + AI balance:** fintech brings the sobriety (monospaced numbers, disciplined semantic colors); AI brings its own accent (a single brand color — purple — reserved for everything that is "intelligence": chat, insights, suggestions). This way the user learns: purple = the AI is speaking.
 
-**Evitar genérico:** não usar o shadcn "cru". A diferenciação vem de (1) cor de marca roxa usada com parcimônia e propósito, (2) números em fonte monoespaçada tabular, (3) padrão master-detail consistente, (4) microcopy não-julgadora.
+**Avoid generic:** don't use "raw" shadcn. Differentiation comes from (1) a purple brand color used sparingly and with purpose, (2) numbers in a monospaced tabular font, (3) a consistent master-detail pattern, (4) non-judgmental microcopy.
 
-**Premium sem perder clareza:** menos elementos, mais respiro; uma cor de destaque só; tipografia com hierarquia forte.
+**Premium without losing clarity:** fewer elements, more breathing room; one accent color only; typography with strong hierarchy.
 
-**Transmitir confiança:** badges de origem do dado (`extrato`/`manual`), a IA sempre citando fontes, e transparência sobre privacidade visível nas Configurações.
-
----
-
-## 2. Análise de referências (síntese dos wireframes)
-
-Padrões extraídos e adotados:
-
-- **Layout:** AppShell com sidebar fixa (180px) agrupada em "Principal" / "Análise", topbar fina com logo + notificações + avatar. Conteúdo com PageHeader (título + subtítulo de contexto, ex.: "Maio 2026 · 97 lançamentos").
-- **Cards:** superfície branca, borda 0.5px, radius grande (12px), padding generoso. MetricCards usam fundo secundário (sem borda) para diferenciar de cards de conteúdo.
-- **Gráficos:** barras para evolução mensal (receita vs despesa lado a lado), donut para composição por categoria, barras de progresso horizontais para categorias/metas/dívidas.
-- **Tabelas/listas:** transações como lista agrupada por data (não tabela paginada densa) — mais legível para uso pessoal. Master-detail: clicar abre painel lateral, sem modal.
-- **Menus/filtros/ações:** filtros como chips arredondados (estado "on" em roxo claro); busca inline com ícone; ação primária sempre visível no canto do PageHeader.
-- **Empty states:** CTA claro ("Arraste seu extrato" / "Adicionar lançamento").
-- **Cores:** neutro dominante + roxo como marca/IA + verde (receita/positivo) + vermelho (despesa/negativo/risco) + âmbar (atenção). Categorias têm paleta própria, separada das cores semânticas.
-- **Hierarquia:** título 16px/500, subtítulo 12px secundário, valores em destaque 18-26px.
-- **Espaçamento:** ritmo vertical em rem (1/1.5/2rem), gaps internos em px (8/12/16).
-- **Densidade:** confortável; cada linha de transação tem ~34px de ícone + duas linhas de texto.
-- **Sensação geral:** limpa, confiável, sem ruído.
-
-**O que NÃO trazer:** gradientes, sombras fortes, excesso de cores por categoria competindo com as semânticas, tabelas densas estilo "planilha" como navegação primária.
+**Convey trust:** data-origin badges (`statement`/`manual`), the AI always citing sources, and privacy transparency visible in Settings.
 
 ---
 
-## 3. Identidade visual inicial
+## 2. Reference analysis (synthesis of the wireframes)
 
-Paleta (tokens em formato Tailwind/shadcn, HSL para facilitar dark mode):
+Patterns extracted and adopted:
+
+- **Layout:** AppShell with a fixed sidebar (180px) grouped into "Main" / "Analysis", a thin topbar with logo + notifications + avatar. Content with a PageHeader (title + context subtitle, e.g. "May 2026 · 97 entries").
+- **Cards:** white surface, 0.5px border, large radius (12px), generous padding. MetricCards use a secondary background (no border) to differentiate from content cards.
+- **Charts:** bars for monthly trend (income vs expense side by side), donut for composition by category, horizontal progress bars for categories/goals/debts.
+- **Tables/lists:** transactions as a list grouped by date (not a dense paginated table) — more readable for personal use. Master-detail: clicking opens a side panel, no modal.
+- **Menus/filters/actions:** filters as rounded chips ("on" state in light purple); inline search with an icon; the primary action always visible in the corner of the PageHeader.
+- **Empty states:** clear CTA ("Drop your statement" / "Add entry").
+- **Colors:** dominant neutral + purple as brand/AI + green (income/positive) + red (expense/negative/risk) + amber (attention). Categories have their own palette, separate from the semantic colors.
+- **Hierarchy:** title 16px/500, subtitle 12px secondary, highlighted values 18-26px.
+- **Spacing:** vertical rhythm in rem (1/1.5/2rem), inner gaps in px (8/12/16).
+- **Density:** comfortable; each transaction row has a ~34px icon + two lines of text.
+- **Overall feel:** clean, trustworthy, no noise.
+
+**What NOT to bring in:** gradients, strong shadows, excess category colors competing with the semantic ones, dense "spreadsheet"-style tables as primary navigation.
+
+---
+
+## 3. Initial visual identity
+
+Palette (tokens in Tailwind/shadcn format, HSL to make dark mode easier):
 
 ```ts
 const colors = {
-  background: "...", // page bg neutro
-  foreground: "...", // texto primário
-  primary: "...", // roxo de marca / IA
-  secondary: "...", // superfícies secundárias
-  muted: "...", // texto/fundo discreto
-  border: "...", // bordas 0.5px
-  success: "...", // receita / positivo
-  warning: "...", // atenção
-  danger: "...", // despesa / risco
-  info: "...", // informativo
+  background: "...", // neutral page bg
+  foreground: "...", // primary text
+  primary: "...", // brand / AI purple
+  secondary: "...", // secondary surfaces
+  muted: "...", // discreet text/background
+  border: "...", // 0.5px borders
+  success: "...", // income / positive
+  warning: "...", // attention
+  danger: "...", // expense / risk
+  info: "...", // informational
 };
 ```
 
-Valores propostos (CSS variables, light / dark):
+Proposed values (CSS variables, light / dark):
 
-| Token                 | Light         | Dark          | Uso                        |
-| --------------------- | ------------- | ------------- | -------------------------- |
-| `--background`        | `0 0% 99%`    | `240 6% 8%`   | fundo da página            |
-| `--foreground`        | `240 10% 12%` | `0 0% 96%`    | texto primário             |
-| `--card`              | `0 0% 100%`   | `240 5% 11%`  | superfície de card         |
-| `--muted`             | `240 5% 96%`  | `240 4% 16%`  | superfície secundária      |
-| `--muted-foreground`  | `240 4% 46%`  | `240 5% 65%`  | texto secundário           |
-| `--border`            | `240 6% 90%`  | `240 4% 20%`  | bordas                     |
-| `--primary` (roxo/IA) | `248 53% 50%` | `248 60% 68%` | marca, IA, ações primárias |
-| `--success` (receita) | `162 70% 33%` | `162 55% 52%` | valores positivos          |
-| `--danger` (despesa)  | `0 72% 48%`   | `0 70% 62%`   | valores negativos, risco   |
-| `--warning`           | `33 90% 45%`  | `38 90% 60%`  | atenção, "acima da média"  |
-| `--info`              | `212 80% 45%` | `212 75% 62%` | informativo                |
+| Token                   | Light         | Dark          | Use                        |
+| ----------------------- | ------------- | ------------- | -------------------------- |
+| `--background`          | `0 0% 99%`    | `240 6% 8%`   | page background            |
+| `--foreground`          | `240 10% 12%` | `0 0% 96%`    | primary text               |
+| `--card`                | `0 0% 100%`   | `240 5% 11%`  | card surface               |
+| `--muted`               | `240 5% 96%`  | `240 4% 16%`  | secondary surface          |
+| `--muted-foreground`    | `240 4% 46%`  | `240 5% 65%`  | secondary text             |
+| `--border`              | `240 6% 90%`  | `240 4% 20%`  | borders                    |
+| `--primary` (purple/AI) | `248 53% 50%` | `248 60% 68%` | brand, AI, primary actions |
+| `--success` (income)    | `162 70% 33%` | `162 55% 52%` | positive values            |
+| `--danger` (expense)    | `0 72% 48%`   | `0 70% 62%`   | negative values, risk      |
+| `--warning`             | `33 90% 45%`  | `38 90% 60%`  | attention, "above average" |
+| `--info`                | `212 80% 45%` | `212 75% 62%` | informational              |
 
-**Estados:** hover = superfície `muted`; focus = anel de 2px na cor `primary` com offset; disabled = opacidade 50% + cursor not-allowed.
+**States:** hover = `muted` surface; focus = a 2px ring in the `primary` color with offset; disabled = 50% opacity + not-allowed cursor.
 
-**Cores de gráfico** (sequência categórica, distinta das semânticas):
+**Chart colors** (categorical sequence, distinct from the semantic ones):
 
 ```ts
 const chartColors = [
@@ -97,7 +99,7 @@ const chartColors = [
 ];
 ```
 
-**Cores de categoria financeira** (mapa estável — a mesma categoria sempre na mesma cor):
+**Financial category colors** (stable map — the same category always in the same color):
 
 ```ts
 const categoryColors = {
@@ -111,65 +113,65 @@ const categoryColors = {
 };
 ```
 
-> Regra: receitas/despesas usam SEMPRE verde/vermelho semânticos; cores de categoria são para composição (donut, barras de categoria) e nunca para indicar positivo/negativo.
+> Rule: income/expenses ALWAYS use semantic green/red; category colors are for composition (donut, category bars) and never to indicate positive/negative.
 
 ---
 
-## 4. Tipografia
+## 4. Typography
 
-- **Fonte principal:** Geist Sans (ou Inter como fallback). Limpa, ótima para dados, gratuita.
-- **Fonte de números:** Geist Mono (ou variante tabular da principal) com `font-variant-numeric: tabular-nums` para alinhar valores em colunas.
-- **Hierarquia:**
-  - h1 / título de página: 20px / 500
-  - h2 / seção: 16px / 500
+- **Primary font:** Geist Sans (or Inter as a fallback). Clean, great for data, free.
+- **Number font:** Geist Mono (or a tabular variant of the primary) with `font-variant-numeric: tabular-nums` to align values in columns.
+- **Hierarchy:**
+  - h1 / page title: 20px / 500
+  - h2 / section: 16px / 500
   - h3 / card title: 14px / 500
   - body: 14px / 400, line-height 1.6
-  - small / meta: 12px / 400 (texto secundário)
-  - micro / labels uppercase: 11px / 500, letter-spacing 0.06em
-  - valores grandes (métricas): 18–26px / 500, tabular-nums
-- **Pesos:** apenas 400 e 500. Evitar 600/700 (peso visual desnecessário).
-- **Line-height:** 1.6 para prosa, 1.3 para títulos.
-- **Letter-spacing:** só em labels uppercase.
-- **Regra anti-poluição:** no máximo dois pesos e três tamanhos por tela; nunca uppercase em conteúdo (só em labels de seção).
+  - small / meta: 12px / 400 (secondary text)
+  - micro / uppercase labels: 11px / 500, letter-spacing 0.06em
+  - large values (metrics): 18–26px / 500, tabular-nums
+- **Weights:** only 400 and 500. Avoid 600/700 (unnecessary visual weight).
+- **Line-height:** 1.6 for prose, 1.3 for titles.
+- **Letter-spacing:** only on uppercase labels.
+- **Anti-clutter rule:** at most two weights and three sizes per screen; never uppercase in content (only in section labels).
 
 ---
 
 ## 5. Layout system
 
-- **Grid:** dashboard em 12 colunas; cards usam `repeat(auto-fit, minmax(...))`.
-- **Container:** max-width ~1200px no conteúdo, sidebar fora do container.
-- **Sidebar:** fixa 180px no desktop; grupos "Principal" e "Análise".
-- **Topbar:** ~48px, logo à esquerda, ações à direita.
-- **PageHeader:** título + subtítulo de contexto + ação primária à direita; padrão em todas as telas.
-- **Cards:** radius 12px, borda 0.5px, padding 1rem 1.25rem.
-- **Responsividade / breakpoints:** `sm 640`, `md 768`, `lg 1024`, `xl 1280`.
-- **Mobile:** sidebar → bottom-nav (4-5 itens principais) + drawer para o resto; tabelas → listas; filtros colapsáveis; painel de detalhe vira tela cheia (push) em vez de painel lateral.
-- **Desktop:** master-detail (lista + painel lateral 230px).
-- **Densidade:** dashboard arejado; telas de dados mais densas.
-- **Largura de tabelas / overflow:** `table-layout: fixed` em telas estreitas; scroll horizontal no wrapper quando inevitável.
-- **Telas com muitos filtros:** barra de filtros que colapsa em um botão "Filtros" no mobile.
+- **Grid:** dashboard in 12 columns; cards use `repeat(auto-fit, minmax(...))`.
+- **Container:** max-width ~1200px on content, sidebar outside the container.
+- **Sidebar:** fixed 180px on desktop; "Main" and "Analysis" groups.
+- **Topbar:** ~48px, logo on the left, actions on the right.
+- **PageHeader:** title + context subtitle + primary action on the right; a pattern on all screens.
+- **Cards:** radius 12px, border 0.5px, padding 1rem 1.25rem.
+- **Responsiveness / breakpoints:** `sm 640`, `md 768`, `lg 1024`, `xl 1280`.
+- **Mobile:** sidebar → bottom-nav (4-5 main items) + drawer for the rest; tables → lists; collapsible filters; the detail panel becomes full screen (push) instead of a side panel.
+- **Desktop:** master-detail (list + 230px side panel).
+- **Density:** airy dashboard; denser data screens.
+- **Table width / overflow:** `table-layout: fixed` on narrow screens; horizontal scroll on the wrapper when unavoidable.
+- **Screens with many filters:** a filter bar that collapses into a "Filters" button on mobile.
 
 ---
 
-## 6. Componentes base do design system
+## 6. Design system base components
 
-> Convenção: `genérico` vive em `components/ui` (base shadcn), `produto` vive em `features/*/components` ou `components/app`.
+> Convention: `generic` lives in `components/ui` (shadcn base), `product` lives in `features/*/components` or `components/app`.
 
-### Foundation (shadcn como base)
+### Foundation (shadcn as a base)
 
 Button, IconButton, Input, Textarea, Select, Combobox, Checkbox, Radio, Switch, Badge, Tooltip, Popover, Dialog, Drawer, Tabs, Toast.
 
-- Variantes típicas (Button): `primary | secondary | ghost | destructive`, tamanhos `sm | md`.
-- Estados: default, hover, focus-visible, disabled, loading.
-- A11y: focus trap em Dialog/Drawer; labels em todos os inputs; `aria-label` em IconButton.
+- Typical variants (Button): `primary | secondary | ghost | destructive`, sizes `sm | md`.
+- States: default, hover, focus-visible, disabled, loading.
+- A11y: focus trap in Dialog/Drawer; labels on all inputs; `aria-label` on IconButton.
 
-### Layout (produto)
+### Layout (product)
 
 AppShell, Sidebar, Topbar, PageHeader, SectionHeader, Card, MetricCard, ChartCard, EmptyState, LoadingState, ErrorState.
 
 ### Data display
 
-Table, DataTable (TanStack Table), DataFilterBar, Pagination, DateRangePicker, CategoryBadge, TransactionAmount (formata + colore por sinal), StatusBadge, TrendIndicator (▲▼ com cor).
+Table, DataTable (TanStack Table), DataFilterBar, Pagination, DateRangePicker, CategoryBadge, TransactionAmount (formats + colors by sign), StatusBadge, TrendIndicator (▲▼ with color).
 
 ### Finance-specific
 
@@ -181,98 +183,100 @@ AIChat, AIChatMessage, AIInput, AISuggestionPrompt, AIInsightCard, AIThinkingSta
 
 ### Charts
 
-SpendingByCategoryChart (donut), MonthlyTrendChart (linha), IncomeVsExpenseChart (barras), CashflowChart, GoalProgressChart, RecurringExpensesChart.
+SpendingByCategoryChart (donut), MonthlyTrendChart (line), IncomeVsExpenseChart (bars), CashflowChart, GoalProgressChart, RecurringExpensesChart.
 
-Para cada componente, documentar (no Storybook ou em MDX): objetivo, variantes, estados, props principais, regras de a11y, exemplo de uso, base (shadcn ou não), genérico vs produto.
+For each component, document (in Storybook or in MDX): purpose, variants, states, main props, a11y rules, usage example, base (shadcn or not), generic vs product.
 
 ---
 
-## 7. Padrões de tela
+## 7. Screen patterns
 
-(Resumo; as 8 telas de referência já materializam estes padrões.)
+(Summary; the 8 reference screens already materialize these patterns.)
 
-- **Dashboard:** PageHeader → grid de MetricCards (3-4) → ChartCard de evolução → top categorias → últimas transações → insights/alertas. Empty: CTA importar/lançar. Parcial: banner "conecte mais contas para insights melhores".
-- **Transações:** PageHeader com seletor de período + exportar → MetricCards do período → DataFilterBar (busca + chips) → lista agrupada por data → painel de detalhe (master-detail) com histórico e insight da IA → paginação.
-- **Importação CSV/PDF:** dropzone → lista de arquivos com progresso → (CSV) mapeamento de colunas → ImportPreviewTable com validação por linha → resolução de duplicatas → confirmação → ImportStatusCard com pipeline (parse → categorização → embeddings → indexado).
-- **Chat IA:** layout duas colunas (conversa + sidebar de insights/sugestões); mensagens user/assistant; AIThinkingState durante tool calls; SourceReference ao fim das respostas; AIResponseFeedback.
-- **Insights:** lista de InsightCards com severidade (cor), motivo, ação recomendada, botões aplicar/ignorar/útil; filtros por tipo/severidade.
-- **Relatórios:** filtros de período → cards de resumo → gráficos → tabela → resumo por IA → exportar.
-- **Metas:** lista de GoalProgressCards com barra de progresso, prazo, e insight contextual da IA ("no ritmo atual você chega em outubro").
-- **Dívidas:** MetricCards (total, parcelas/mês, juros) → DebtCards ordenados por estratégia → DebtStrategyPanel da IA (avalanche/bola de neve) com economia estimada.
-- **Configurações:** seções em cards (Perfil, Contas conectadas, Notificações com switches, IA & dados com escolha de modelo + "dados para treino: Nunca" + exportar/excluir).
+- **Dashboard:** PageHeader → grid of MetricCards (3-4) → trend ChartCard → top categories → latest transactions → insights/alerts. Empty: import/add CTA. Partial: "connect more accounts for better insights" banner.
+- **Transactions:** PageHeader with a period selector + export → period MetricCards → DataFilterBar (search + chips) → list grouped by date → detail panel (master-detail) with history and an AI insight → pagination.
+- **CSV/PDF import:** dropzone → file list with progress → (CSV) column mapping → ImportPreviewTable with per-row validation → duplicate resolution → confirmation → ImportStatusCard with a pipeline (parse → categorization → embeddings → indexed).
+- **AI chat:** two-column layout (conversation + insights/suggestions sidebar); user/assistant messages; AIThinkingState during tool calls; SourceReference at the end of responses; AIResponseFeedback.
+- **Insights:** list of InsightCards with severity (color), reason, recommended action, apply/ignore/useful buttons; filters by type/severity.
+- **Reports:** period filters → summary cards → charts → table → AI summary → export.
+- **Goals:** list of GoalProgressCards with a progress bar, deadline, and a contextual AI insight ("at the current pace you'll get there in October").
+- **Debts:** MetricCards (total, installments/month, interest) → DebtCards ordered by strategy → AI DebtStrategyPanel (avalanche/snowball) with estimated savings.
+- **Settings:** sections in cards (Profile, Connected accounts, Notifications with switches, AI & data with a model choice + "data for training: Never" + export/delete).
 
 ---
 
 ## 8. UX states
 
-| Estado                              | Mensagem                                                         | Ação primária     | Ação secundária  | Componente       | Tom              |
+> The "Message" column shows the product's displayed copy, in Brazilian Portuguese.
+
+| State                               | Message                                                          | Primary action    | Secondary action | Component        | Tone             |
 | ----------------------------------- | ---------------------------------------------------------------- | ----------------- | ---------------- | ---------------- | ---------------- |
-| Empty (sem dados)                   | "Vamos começar? Importe um extrato ou lance um gasto."           | Importar extrato  | Lançar manual    | EmptyState       | Convidativo      |
-| First experience                    | Onboarding guiado de 3 passos                                    | Avançar           | —                | Onboarding       | Acolhedor        |
-| Loading                             | Skeletons na forma do conteúdo                                   | —                 | —                | LoadingState     | Neutro           |
-| Error                               | "Não consegui carregar isso agora."                              | Tentar de novo    | —                | ErrorState       | Calmo, sem culpa |
-| Success                             | Toast "Transação salva"                                          | —                 | Desfazer         | Toast            | Leve             |
-| Partial data                        | Banner "Conecte mais contas para insights completos"             | Conectar          | Dispensar        | Card             | Informativo      |
-| Import in progress                  | Pipeline com etapas                                              | —                 | Cancelar         | ImportStatusCard | Transparente     |
-| Import failed                       | "3 linhas tiveram problema."                                     | Revisar linhas    | Importar o resto | ImportStatusCard | Construtivo      |
-| Import completed                    | "97 transações importadas."                                      | Ver transações    | —                | ImportStatusCard | Positivo         |
-| AI loading                          | "Consultando seus dados..."                                      | —                 | —                | AIThinkingState  | Transparente     |
-| AI failed                           | "Não consegui responder agora. Seus dados continuam acessíveis." | Tentar de novo    | —                | AIChatMessage    | Calmo            |
-| No transactions                     | igual Empty                                                      | —                 | —                | EmptyState       | —                |
-| No insights yet                     | "Ainda não há insights — preciso de mais dados."                 | Importar mais     | —                | EmptyState       | Honesto          |
-| Integration disconnected (`Future`) | "Conexão com o banco expirou."                                   | Reautorizar       | —                | Card             | Neutro           |
-| Rate limit                          | "Você atingiu o limite de perguntas por agora."                  | Ver quando reseta | —                | Toast/Card       | Sem culpar       |
-| Permission denied                   | "Você não tem acesso a isso."                                    | Voltar            | —                | ErrorState       | Neutro           |
-| Offline/degraded                    | "Você está offline. Mostrando dados em cache."                   | —                 | —                | Banner           | Informativo      |
+| Empty (no data)                     | "Vamos começar? Importe um extrato ou lance um gasto."           | Import statement  | Add manual       | EmptyState       | Inviting         |
+| First experience                    | A guided 3-step onboarding                                       | Next              | —                | Onboarding       | Welcoming        |
+| Loading                             | Skeletons in the shape of the content                            | —                 | —                | LoadingState     | Neutral          |
+| Error                               | "Não consegui carregar isso agora."                              | Try again         | —                | ErrorState       | Calm, no blame   |
+| Success                             | Toast "Transação salva"                                          | —                 | Undo             | Toast            | Light            |
+| Partial data                        | Banner "Conecte mais contas para insights completos"            | Connect           | Dismiss          | Card             | Informational    |
+| Import in progress                  | Pipeline with steps                                              | —                 | Cancel           | ImportStatusCard | Transparent      |
+| Import failed                       | "3 linhas tiveram problema."                                     | Review rows       | Import the rest  | ImportStatusCard | Constructive     |
+| Import completed                    | "97 transações importadas."                                      | See transactions  | —                | ImportStatusCard | Positive         |
+| AI loading                          | "Consultando seus dados..."                                      | —                 | —                | AIThinkingState  | Transparent      |
+| AI failed                           | "Não consegui responder agora. Seus dados continuam acessíveis." | Try again         | —                | AIChatMessage    | Calm             |
+| No transactions                     | same as Empty                                                    | —                 | —                | EmptyState       | —                |
+| No insights yet                     | "Ainda não há insights — preciso de mais dados."                 | Import more       | —                | EmptyState       | Honest           |
+| Integration disconnected (`Future`) | "Conexão com o banco expirou."                                   | Reauthorize       | —                | Card             | Neutral          |
+| Rate limit                          | "Você atingiu o limite de perguntas por agora."                  | See when it resets| —                | Toast/Card       | No blame         |
+| Permission denied                   | "Você não tem acesso a isso."                                    | Back              | —                | ErrorState       | Neutral          |
+| Offline/degraded                    | "Você está offline. Mostrando dados em cache."                   | —                 | —                | Banner           | Informational    |
 
 ---
 
-## 9. Acessibilidade
+## 9. Accessibility
 
-- WCAG 2.1 AA; contraste mínimo 4.5:1 (texto), 3:1 (componentes/gráficos).
-- Navegação por teclado completa; foco visível (anel de 2px); ordem de tabulação lógica.
-- Labels em todos os campos; mensagens de erro associadas via `aria-describedby`.
-- Tabelas com `<th scope>`; DataTable navegável por teclado.
-- Modais/Drawers com focus trap e retorno de foco ao fechar.
-- Toasts com `role="status"` (não interrompem); confirmações destrutivas em Dialog com `role="alertdialog"`.
-- Gráficos com `role="img"` + `aria-label` descritivo e tabela alternativa acessível.
-- Chat acessível: regiões `aria-live="polite"` para streaming; mensagens com autoria clara.
-- Navegação por headings (h1 por página, h2 por seção).
-- Informação nunca só por cor: sinal de valor também por `+/−` e ícone; severidade de insight por ícone + texto.
+- WCAG 2.1 AA; minimum contrast 4.5:1 (text), 3:1 (components/charts).
+- Full keyboard navigation; visible focus (2px ring); logical tab order.
+- Labels on all fields; error messages associated via `aria-describedby`.
+- Tables with `<th scope>`; DataTable navigable by keyboard.
+- Modals/Drawers with focus trap and focus return on close.
+- Toasts with `role="status"` (non-interrupting); destructive confirmations in a Dialog with `role="alertdialog"`.
+- Charts with `role="img"` + a descriptive `aria-label` and an accessible alternative table.
+- Accessible chat: `aria-live="polite"` regions for streaming; messages with clear authorship.
+- Navigation by headings (h1 per page, h2 per section).
+- Information never by color alone: the value sign also by `+/−` and an icon; insight severity by icon + text.
 
 ---
 
 ## 10. Data visualization guidelines
 
-- **Linha:** evolução temporal contínua (saldo, fluxo de caixa ao longo dos meses).
-- **Barra:** comparação entre categorias discretas ou receita vs despesa por mês.
-- **Donut/pie:** composição de um todo (gasto por categoria) — máximo ~6 fatias, resto em "Outros".
-- **Evitar gráfico:** quando 1-2 números bastam → use MetricCard.
-- **Positivo/negativo:** verde para entradas, vermelho para saídas; nunca depender só da cor (usar sinal).
-- **Tendência:** TrendIndicator com seta + % + cor.
-- **Dados insuficientes:** estado "preciso de mais dados" em vez de gráfico vazio enganoso.
-- **Legendas:** sempre presentes em gráficos multi-série; clicáveis para destacar.
-- **Tooltip:** valor formatado + categoria + data; aparece no hover/focus.
-- **A11y:** alternativa textual/tabela; cores com contraste suficiente.
-- **Muitos dados:** agregar (por mês, por categoria), permitir drill-down.
-- **Comparação mês a mês:** barras agrupadas ou linha com duas séries + delta em texto.
+- **Line:** continuous time trend (balance, cash flow across months).
+- **Bar:** comparison between discrete categories or income vs expense per month.
+- **Donut/pie:** composition of a whole (spending by category) — at most ~6 slices, the rest in "Others".
+- **Avoid a chart:** when 1-2 numbers are enough → use a MetricCard.
+- **Positive/negative:** green for inflows, red for outflows; never rely on color alone (use the sign).
+- **Trend:** TrendIndicator with an arrow + % + color.
+- **Insufficient data:** a "need more data" state instead of a misleading empty chart.
+- **Legends:** always present in multi-series charts; clickable to highlight.
+- **Tooltip:** formatted value + category + date; appears on hover/focus.
+- **A11y:** textual/table alternative; colors with sufficient contrast.
+- **Lots of data:** aggregate (by month, by category), allow drill-down.
+- **Month-over-month comparison:** grouped bars or a line with two series + a delta in text.
 
 ---
 
 ## 11. AI UX guidelines
 
-- **Indicar IA:** toda resposta tem marcador visual (ícone/borda roxa) e a IA se identifica.
-- **Consultando dados:** AIThinkingState mostra "consultando seus dados" e, opcionalmente, ToolCallPreview ("buscando transações de alimentação").
-- **Mostrar tool calls:** resumir em linguagem humana o que foi consultado; detalhe expansível para o usuário técnico.
-- **Fontes/contexto:** SourceReference ao fim ("baseado em 23 transações de maio").
-- **Incerteza:** quando a IA não tem dados suficientes, dizer isso — não chutar.
-- **Confirmação antes de mudar:** qualquer ação que altere dados (aplicar categoria em lote) pede confirmação explícita.
-- **Tom:** copiloto, não autoridade; sem julgamento ("você gastou demais" → "seu gasto com X foi 17% acima da sua média").
-- **Disclaimers financeiros:** projeções e recomendações vêm com aviso de que são estimativas, não aconselhamento profissional.
-- **Feedback:** 👍/👎 em cada resposta, alimentando avaliação de qualidade.
-- **Alucinação:** números só de tool calls; se a tool não retornou, a IA não inventa.
-- **Limitações:** explicar escopo (só finanças do próprio usuário).
-- **Sem promessas absolutas:** "você pode economizar até X" em vez de "você vai economizar X".
+- **Indicate AI:** every response has a visual marker (icon/purple border) and the AI identifies itself.
+- **Querying data:** AIThinkingState shows "querying your data" and, optionally, a ToolCallPreview ("fetching food transactions").
+- **Show tool calls:** summarize in human language what was queried; an expandable detail for the technical user.
+- **Sources/context:** SourceReference at the end ("based on 23 transactions from May").
+- **Uncertainty:** when the AI doesn't have enough data, say so — don't guess.
+- **Confirmation before changing:** any action that changes data (apply a category in batch) asks for explicit confirmation.
+- **Tone:** copilot, not authority; no judgment ("you spent too much" → "your spending on X was 17% above your average").
+- **Financial disclaimers:** projections and recommendations come with a notice that they are estimates, not professional advice.
+- **Feedback:** 👍/👎 on each response, feeding a quality evaluation.
+- **Hallucination:** numbers only from tool calls; if the tool returned nothing, the AI doesn't make it up.
+- **Limitations:** explain the scope (only the user's own finances).
+- **No absolute promises:** "you could save up to X" instead of "you will save X".
 
 ---
 
@@ -306,7 +310,7 @@ export const tokens = {
   },
   fontWeight: { regular: 400, medium: 500 },
   lineHeight: { tight: 1.3, normal: 1.6 },
-  shadow: { none: "none", focus: "0 0 0 2px hsl(var(--primary))" }, // sombras só funcionais
+  shadow: { none: "none", focus: "0 0 0 2px hsl(var(--primary))" }, // shadows only functional
   zIndex: {
     base: 0,
     dropdown: 10,
@@ -329,49 +333,49 @@ export const tokens = {
 
 ## 13. shadcn/ui strategy
 
-- **Usar como base:** Button, Input, Select, Dialog, Drawer, Dropdown, Popover, Tooltip, Tabs, Switch, Checkbox, Badge, Toast (Sonner), Skeleton.
-- **Customizar fortemente:** tokens de cor/tipografia (theme), Card (radius/borda do FinSight), Table (envolver TanStack Table no DataTable).
-- **Organização:**
-  - `components/ui/*` — primitivos shadcn (não editar a lógica, só tokens).
-  - `components/app/*` — componentes de layout/produto genéricos (AppShell, PageHeader, MetricCard).
-  - `features/*/components/*` — componentes de domínio (TransactionRow, AIChat...).
-- **Consistência:** todas as cores via CSS variables; sem hex hardcoded.
-- **Evitar duplicação:** um único `TransactionAmount`, `CategoryBadge`, `EmptyState` reutilizados.
-- **Variantes:** documentadas via `cva` (class-variance-authority).
-- **Testar base:** smoke tests dos componentes críticos (Button, Input, Dialog) + visual no Storybook.
-- **Tema claro/escuro:** via `next-themes` + variáveis; testar ambos.
+- **Use as a base:** Button, Input, Select, Dialog, Drawer, Dropdown, Popover, Tooltip, Tabs, Switch, Checkbox, Badge, Toast (Sonner), Skeleton.
+- **Customize heavily:** color/typography tokens (theme), Card (FinSight radius/border), Table (wrap TanStack Table in DataTable).
+- **Organization:**
+  - `components/ui/*` — shadcn primitives (don't edit the logic, only tokens).
+  - `components/app/*` — generic layout/product components (AppShell, PageHeader, MetricCard).
+  - `features/*/components/*` — domain components (TransactionRow, AIChat...).
+- **Consistency:** all colors via CSS variables; no hardcoded hex.
+- **Avoid duplication:** a single `TransactionAmount`, `CategoryBadge`, `EmptyState` reused.
+- **Variants:** documented via `cva` (class-variance-authority).
+- **Test the base:** smoke tests of the critical components (Button, Input, Dialog) + visual in Storybook.
+- **Light/dark theme:** via `next-themes` + variables; test both.
 
 ---
 
 ## 14. Storybook / component documentation
 
-**`Decision Needed`:** Storybook entra no MVP ou na v1.0?
+**`Decision Needed`:** does Storybook come in the MVP or in v1.0?
 
-- **Recomendação:** configurar cedo (Fase 0/1) mas crescer incrementalmente. Para portfólio open source, um Storybook publicado é alto valor de sinalização (mostra rigor de design system).
-- **Componentes com stories prioritários:** Button, Input, MetricCard, ChartCard, TransactionRow, EmptyState/Loading/Error, InsightCard, AIChatMessage.
-- **Estados a documentar:** todas as variantes/estados (hover, focus, disabled, loading, empty, error).
-- **Organização:** por camada (Foundation / Layout / Data / Finance / AI / Charts).
-- **Uso como doc visual + portfólio:** publicar via Chromatic ou GitHub Pages.
+- **Recommendation:** set it up early (Phase 0/1) but grow it incrementally. For an open source portfolio, a published Storybook is high signaling value (shows design-system rigor).
+- **Components with priority stories:** Button, Input, MetricCard, ChartCard, TransactionRow, EmptyState/Loading/Error, InsightCard, AIChatMessage.
+- **States to document:** all variants/states (hover, focus, disabled, loading, empty, error).
+- **Organization:** by layer (Foundation / Layout / Data / Finance / AI / Charts).
+- **Use as visual doc + portfolio:** publish via Chromatic or GitHub Pages.
 
 ---
 
-## 15. Entregáveis desta fase
+## 15. Deliverables of this phase
 
-1. ✅ Direção visual — seção 1.
-2. ✅ Paleta inicial — seção 3.
-3. ✅ Tokens iniciais — seção 12.
-4. ✅ Tipografia — seção 4.
-5. ✅ Layout system — seção 5.
-6. ✅ Componentes base — seção 6.
-7. ✅ Padrões de tela — seção 7.
-8. ✅ Estados de UX — seção 8.
-9. ✅ Guidelines de gráficos — seção 10.
-10. ✅ Guidelines de IA — seção 11.
-11. ✅ Estratégia shadcn — seção 13.
-12. **Primeiros componentes a implementar:** theme/tokens → AppShell (Sidebar + Topbar) → PageHeader → Button/Input/Card → MetricCard → EmptyState/Loading/Error → TransactionRow/List → ChartCard. (Ver EPIC-01 no backlog.)
-13. **Riscos e decisões em aberto:**
-    - `Decision Needed` — Storybook no MVP? (recomendado: sim, incremental)
-    - `Decision Needed` — fonte: Geist vs Inter.
-    - `Decision Needed` — idioma da UI (PT-BR) vs docs (EN).
-    - `Risk` — densidade das telas de dados em mobile; validar cedo com protótipo.
-    - `Risk` — consistência de cor de categoria conforme a lista de categorias cresce.
+1. ✅ Visual direction — section 1.
+2. ✅ Initial palette — section 3.
+3. ✅ Initial tokens — section 12.
+4. ✅ Typography — section 4.
+5. ✅ Layout system — section 5.
+6. ✅ Base components — section 6.
+7. ✅ Screen patterns — section 7.
+8. ✅ UX states — section 8.
+9. ✅ Chart guidelines — section 10.
+10. ✅ AI guidelines — section 11.
+11. ✅ shadcn strategy — section 13.
+12. **First components to implement:** theme/tokens → AppShell (Sidebar + Topbar) → PageHeader → Button/Input/Card → MetricCard → EmptyState/Loading/Error → TransactionRow/List → ChartCard. (See EPIC-01 in the backlog.)
+13. **Open risks and decisions:**
+    - `Decision Needed` — Storybook in the MVP? (recommended: yes, incremental)
+    - `Decision Needed` — font: Geist vs Inter.
+    - `Decision Needed` — UI language (PT-BR) vs docs (EN).
+    - `Risk` — data-screen density on mobile; validate early with a prototype.
+    - `Risk` — category color consistency as the category list grows.

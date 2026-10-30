@@ -1,69 +1,69 @@
 # FinSight AI — Roadmap
 
-> Roadmap incremental por versão. Cada versão é deployável e entrega valor.
+> Incremental roadmap per version. Each version is deployable and delivers value.
 
 ## v0.1 — Foundation
 
-- Setup do projeto (Next.js 15, TS, npm, ESLint/Prettier).
+- Project setup (Next.js 15, TS, npm, ESLint/Prettier).
 - Docker Compose (Postgres+pgvector, Redis), `.env.example`.
-- Design tokens + tema Tailwind + shadcn configurado.
-- AppShell (Sidebar/Topbar) + componentes base + feedback states.
-- Auth.js (OAuth + JWT) + proteção de rotas.
-- Schema Drizzle inicial + migrations + seed.
+- Design tokens + Tailwind theme + shadcn configured.
+- AppShell (Sidebar/Topbar) + base components + feedback states.
+- Auth.js (OAuth + JWT) + route protection.
+- Initial Drizzle schema + migrations + seed.
 - CI (lint, typecheck, unit, build, drizzle-check).
-- **Resultado:** app autenticável, navegável, com banco e design system, sem features de domínio ainda.
+- **Result:** an authenticatable, navigable app, with a database and a design system, no domain features yet.
 
 ## v0.2 — Manual finance MVP
 
-- Onboarding (moeda, objetivo, consentimento).
-- Lançamentos manuais (despesa/receita/transferência) + recorrências.
-- CRUD de transações + lista master-detail + filtros/busca.
-- Categorias (manual) + CategoryBadge.
-- Dashboard básico (métricas + evolução + top categorias + últimas).
-- **Resultado:** já dá para usar de verdade para controle manual (estilo Mobills sem IA).
+- Onboarding (currency, goal, consent).
+- Manual entries (expense/income/transfer) + recurrences.
+- Transaction CRUD + master-detail list + filters/search.
+- Categories (manual) + CategoryBadge.
+- Basic dashboard (metrics + trend + top categories + latest).
+- **Result:** already genuinely usable for manual tracking (Mobills-style without AI).
 
 ## v0.3 — Import MVP
 
-- Upload CSV + validação.
-- Mapeamento de colunas + ImportPreviewTable.
-- Deduplicação + confirmação transacional.
-- Histórico de importações + ImportStatusCard.
-- **Resultado:** entra extrato de banco; tempo até primeiro valor cai drasticamente.
+- CSV upload + validation.
+- Column mapping + ImportPreviewTable.
+- Deduplication + transactional confirmation.
+- Import history + ImportStatusCard.
+- **Result:** bank statements come in; time-to-first-value drops drastically.
 
 ## v0.4 — AI MVP
 
-- Componentes de chat de IA.
-- Orquestração com Vercel AI SDK + streaming + system prompts + guards.
-- Tools de leitura + isolamento por usuário.
+- AI chat components.
+- Orchestration with the Vercel AI SDK + streaming + system prompts + guards.
+- Read tools + per-user isolation.
 - Embeddings (pgvector) + RAG.
-- Endpoint de chat + histórico + feedback.
-- Rate limit + cache de IA.
-- Primeiros insights (motor por regras) + InsightCard.
-- **Resultado:** o diferencial do produto — conversar com os próprios dados, com respostas fundamentadas.
+- Chat endpoint + history + feedback.
+- Rate limit + AI cache.
+- First insights (rules engine) + InsightCard.
+- **Result:** the product's differentiator — talking to your own data, with grounded answers.
 
 ## v0.5 — Reports, Goals & Debts
 
-- Metas (CRUD + progresso + projeção da IA).
-- Dívidas (CRUD + estratégia de quitação avalanche/bola de neve).
-- Relatórios (cards/gráficos/tabela + resumo IA).
-- Exportação CSV/PDF.
-- Parser PDF de extratos.
-- **Resultado:** cobertura completa do uso pessoal, incluindo dívidas e planejamento.
+- Goals (CRUD + progress + AI projection).
+- Debts (CRUD + avalanche/snowball payoff strategy).
+- Reports (cards/charts/table + AI summary).
+- CSV/PDF export.
+- PDF statement parser.
+- **Result:** full coverage of personal use, including debts and planning.
 
 ## v1.0 — Production ready
 
-- Observabilidade (Sentry + OpenTelemetry + logs estruturados + métricas de IA).
-- Segurança avançada (rate limit global, RLS `Decision Needed`, export/delete LGPD/GDPR).
-- Testes E2E dos fluxos críticos + testes de isolamento + a11y.
-- Performance e hardening.
-- Documentação open source completa (README, docs, templates) + tradução EN.
-- Storybook publicado `Decision Needed`.
-- **Resultado:** projeto sólido, seguro, testado e apresentável como portfólio.
+- Observability (Sentry + OpenTelemetry + structured logs + AI metrics).
+- Advanced security (global rate limit, RLS `Decision Needed`, LGPD/GDPR export/delete).
+- E2E tests of the critical flows + isolation tests + a11y.
+- Performance and hardening.
+- Complete open source documentation (README, docs, templates) + EN translation.
+- Published Storybook `Decision Needed`.
+- **Result:** a solid, secure, tested project, presentable as a portfolio piece.
 
-## Future (pós-1.0)
+## Future (post-1.0)
 
-- Integrações bancárias automáticas (Plaid / Open Finance) + webhooks.
-- Aprendizado de categorização por regras do usuário.
-- App mobile nativo.
-- Multi-moeda simultânea.
-- Contas compartilhadas / família.
+- Automatic bank integrations (Plaid / Open Finance) + webhooks.
+- Categorization learning from the user's rules.
+- Native mobile app.
+- Simultaneous multi-currency.
+- Shared / family accounts.

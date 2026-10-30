@@ -1,14 +1,14 @@
 # AGENTS.md — FinSight AI
 
-> Instruções operacionais para coding agents (Codex/OpenAI). Direto ao ponto.
+> Operational instructions for coding agents (Codex/OpenAI). Straight to the point.
 
 ---
 
 ## 1. Project instructions
 
-**Projeto:** FinSight AI
-**Objetivo:** Plataforma de análise financeira pessoal com IA — full-stack, production-ready, open source.
-**Resumo:** usuário importa extratos ou lança dados manualmente; conversa com os próprios dados via IA; recebe insights acionáveis, metas e estratégia de quitação de dívidas.
+**Project:** FinSight AI
+**Goal:** AI-powered personal finance analysis platform — full-stack, production-ready, open source.
+**Summary:** the user imports statements or enters data manually; talks to their own data via AI; receives actionable insights, goals and a debt-payoff strategy.
 
 **Stack:**
 
@@ -22,75 +22,75 @@
 - Vitest + Testing Library + Playwright
 - Sentry + OpenTelemetry
 
-**Prioridades técnicas (em ordem):**
+**Technical priorities (in order):**
 
-1. Segurança e isolamento de dados por usuário
-2. Corretude e testabilidade
-3. Simplicidade e clareza
+1. Security and per-user data isolation
+2. Correctness and testability
+3. Simplicity and clarity
 4. Performance
-5. Elegância de código
+5. Code elegance
 
 ---
 
 ## 2. How to work in this repository
 
-**Antes de editar qualquer arquivo:**
+**Before editing any file:**
 
-- Ler os arquivos relevantes (`CLAUDE.md`, `docs/architecture.md`, arquivos que serão alterados).
-- Verificar a estrutura de pastas abaixo (Architecture Map).
-- Identificar padrões já usados no projeto para o mesmo tipo de problema.
+- Read the relevant files (`CLAUDE.md`, `docs/architecture.md`, the files to be changed).
+- Check the folder structure below (Architecture Map).
+- Identify patterns already used in the project for the same kind of problem.
 
-**Durante a edição:**
+**While editing:**
 
-- Fazer alterações mínimas e focadas no escopo da task.
-- Não refatorar arquivos que não são necessários para a task.
-- Preservar padrões existentes de nomenclatura, estrutura e estilo.
-- Não criar novas dependências sem justificar (propósito + alternativa descartada).
-- Não mexer em arquivos fora do escopo descrito.
-- Não reescrever arquitetura sem pedido explícito.
+- Make minimal changes focused on the task's scope.
+- Don't refactor files that aren't needed for the task.
+- Preserve existing naming, structure and style patterns.
+- Don't add new dependencies without justification (purpose + alternative rejected).
+- Don't touch files outside the described scope.
+- Don't rewrite architecture without an explicit request.
 
-**Após editar:**
+**After editing:**
 
-- Atualizar testes quando comportamento mudar.
-- Atualizar comentários/documentação quando contrato mudar.
-- Não remover testes para fazer o build passar.
-- Verificar se lint e typecheck passam.
+- Update tests when behavior changes.
+- Update comments/documentation when a contract changes.
+- Don't remove tests to make the build pass.
+- Verify that lint and typecheck pass.
 
 ---
 
 ## 3. Commands
 
-> `Decision Needed` — scripts exatos podem variar; confirmar com o `package.json` do projeto.
+> `Decision Needed` — exact scripts may vary; confirm against the project's `package.json`.
 
 ```bash
-npm dev              # Iniciar servidor de desenvolvimento
+npm dev              # Start the development server
 npm lint             # ESLint
 npm type-check       # tsc --noEmit
 npm test             # Vitest (unit + integration)
 npm test:e2e         # Playwright
-npm build            # Build de produção
+npm build            # Production build
 
-npm db:generate      # Gerar migration (drizzle-kit generate)
-npm db:migrate       # Aplicar migrations (drizzle-kit migrate)
-npm db:studio        # Abrir Drizzle Studio
-npm db:seed          # Popular banco de dev
+npm db:generate      # Generate a migration (drizzle-kit generate)
+npm db:migrate       # Apply migrations (drizzle-kit migrate)
+npm db:studio        # Open Drizzle Studio
+npm db:seed          # Seed the dev database
 
-docker compose up -d  # Subir Postgres+pgvector e Redis localmente
+docker compose up -d  # Start Postgres+pgvector and Redis locally
 ```
 
 ---
 
 ## 4. Code style
 
-- **TypeScript strict.** `noImplicitAny: true`. Sem `any` sem comentário de justificativa.
-- **Tipos explícitos nas bordas:** props de componente, retorno de route handlers, parâmetros de service/repository. Inferência OK dentro de funções.
-- **Componentes pequenos.** Uma responsabilidade. Se o componente crescer, quebrar.
-- **Separar server/client.** `"use client"` só quando necessário. Server Component por padrão.
-- **Sem lógica de domínio em componentes UI.** Lógica vai nos services (`server/services/`).
-- **Zod para validação.** Todo input de API validado antes de processar. Mesmo schema no front e no back (via `server/validators/`).
-- **Nomes claros.** `getTransactionsByUserId` não `getData`. `ImportPreviewTable` não `Table2`.
-- **Código testável.** Se está difícil de testar, o design está errado. Injetar dependências quando necessário.
-- **Commits no formato Conventional Commits:** `feat(transactions): add grouped list`.
+- **TypeScript strict.** `noImplicitAny: true`. No `any` without a justification comment.
+- **Explicit types at the edges:** component props, route handler return types, service/repository parameters. Inference is fine inside functions.
+- **Small components.** One responsibility. If a component grows, split it.
+- **Separate server/client.** `"use client"` only when needed. Server Component by default.
+- **No domain logic in UI components.** Logic goes in services (`server/services/`).
+- **Zod for validation.** Every API input validated before processing. Same schema on front and back (via `server/validators/`).
+- **Clear names.** `getTransactionsByUserId`, not `getData`. `ImportPreviewTable`, not `Table2`.
+- **Testable code.** If it's hard to test, the design is wrong. Inject dependencies when needed.
+- **Commits in Conventional Commits format:** `feat(transactions): add grouped list`.
 
 ---
 
@@ -98,114 +98,114 @@ docker compose up -d  # Subir Postgres+pgvector e Redis localmente
 
 ```
 src/
-  app/          Roteamento. Grupos: (auth) e (app). api/ para route handlers.
-                Handlers: extraem sessão → validam Zod → delegam service → retornam.
+  app/          Routing. Groups: (auth) and (app). api/ for route handlers.
+                Handlers: extract session → validate Zod → delegate to service → return.
 
   components/
-    ui/         Primitivos shadcn. Não editar lógica.
-    app/        Componentes genéricos reutilizáveis: AppShell, PageHeader, MetricCard, etc.
-    charts/     Wrappers de Recharts/D3. Dados chegam prontos.
+    ui/         shadcn primitives. Don't edit the logic.
+    app/        Generic reusable components: AppShell, PageHeader, MetricCard, etc.
+    charts/     Recharts/D3 wrappers. Data arrives ready.
     feedback/   EmptyState, LoadingState, ErrorState.
 
-  features/     Um diretório por domínio: transactions, imports, ai-chat, goals, debts...
-                Cada um tem: components/, hooks/, types/.
+  features/     One directory per domain: transactions, imports, ai-chat, goals, debts...
+                Each has: components/, hooks/, types/.
 
   server/
-    actions/    Server Actions para mutações simples.
+    actions/    Server Actions for simple mutations.
     api/        Helpers: response envelope, error handling, middleware.
-    services/   Regras de negócio. Funções puras + testáveis.
-    repositories/ Acesso ao banco. SEMPRE filtra por userId. Nunca sem userId.
-    validators/ Schemas Zod compartilhados.
+    services/   Business rules. Pure + testable functions.
+    repositories/ Database access. ALWAYS filters by userId. Never without userId.
+    validators/ Shared Zod schemas.
 
   db/
-    schema/     Tabelas Drizzle. Tipos inferidos daqui.
-    migrations/ Geradas pelo Drizzle. Nunca editar manualmente.
-    seed/       Dados de dev. Nunca dados reais.
+    schema/     Drizzle tables. Types inferred from here.
+    migrations/ Generated by Drizzle. Never edit manually.
+    seed/       Dev data. Never real data.
 
   ai/
-    tools/      Tools de IA. userId vem da sessão do servidor, nunca do prompt.
-    prompts/    System prompts versionados.
-    rag/        Recuperação de contexto.
-    embeddings/ Geração de embeddings.
-    guards/     Sanitização, anti injection.
+    tools/      AI tools. userId comes from the server session, never from the prompt.
+    prompts/    Versioned system prompts.
+    rag/        Context retrieval.
+    embeddings/ Embedding generation.
+    guards/     Sanitization, anti-injection.
 
-  lib/          Utilitários sem estado: formatadores, helpers.
-  hooks/        Hooks React reutilizáveis.
-  types/        Tipos TypeScript globais.
+  lib/          Stateless utilities: formatters, helpers.
+  hooks/        Reusable React hooks.
+  types/        Global TypeScript types.
 
-docs/           Documentação do projeto.
+docs/           Project documentation.
 ```
 
 ---
 
 ## 6. Domain rules
 
-- **Usuário só acessa os próprios dados.** Toda query filtra por `userId` vindo da sessão — nunca do cliente.
-- **Transações pertencem a contas.** `Transaction` tem FK para `Account`. `Account` tem FK para `User`.
-- **Categorias:** podem ser padrão (seed) ou customizadas por usuário. Verificar escopo antes de filtrar.
-- **Importações precisam de preview antes de persistir.** Fluxo: upload → parse → preview → confirmação → persistência. Nunca salvar sem confirmação.
-- **Deduplicação obrigatória.** `dedupe_hash = sha256(date + amount + description + accountId)`. Sinalizar duplicatas ao usuário; não inserir silenciosamente.
-- **Sugestões de IA precisam de confirmação antes de alterar dados.** A IA propõe; o usuário confirma. Sem aplicação automática, salvo configuração explícita.
-- **Relatórios e exports respeitam filtros e permissões.** Nunca retornar dados fora do `userId` da sessão.
-- **Dados financeiros não aparecem em logs.** Nem valores, nem descrições de transação, nem extratos.
+- **A user only accesses their own data.** Every query filters by `userId` from the session — never from the client.
+- **Transactions belong to accounts.** `Transaction` has an FK to `Account`. `Account` has an FK to `User`.
+- **Categories:** can be default (seed) or user-custom. Check the scope before filtering.
+- **Imports require a preview before persisting.** Flow: upload → parse → preview → confirmation → persistence. Never save without confirmation.
+- **Deduplication is mandatory.** `dedupe_hash = sha256(date + amount + description + accountId)`. Flag duplicates to the user; don't insert silently.
+- **AI suggestions need confirmation before changing data.** The AI proposes; the user confirms. No automatic application, except with explicit configuration.
+- **Reports and exports respect filters and permissions.** Never return data outside the session's `userId`.
+- **Financial data does not appear in logs.** Neither amounts, nor transaction descriptions, nor statements.
 
 ---
 
 ## 7. AI feature rules
 
-- **Tool calling:** toda tool recebe `userId` da sessão do servidor. Nunca do prompt. Toda tool tem schema Zod de input e output.
-- **RAG:** busca de embedding sempre filtra por `userId` antes de ordenar por similaridade.
-- **Embeddings:** gerados ao criar/importar transação. Representação: `"YYYY-MM-DD · descrição · categoria · valor"`. Armazenar com `userId`.
-- **Streaming:** via `streamText` do Vercel AI SDK. `aria-live="polite"` na região do chat.
-- **Prompt injection:** conteúdo vindo de dados do usuário (descrições, PDFs) é tratado como dado — não como instrução. Separar explicitamente no system prompt.
-- **Confirmação antes de mutações:** tools de escrita (criar insight, categorizar em lote) exigem confirmação visual. Implementar fluxo de confirmação — não efetivar direto.
-- **Disclaimers:** toda projeção ou recomendação financeira tem disclaimer de que é estimativa, não aconselhamento profissional.
-- **Segurança de dados:** números só via tool calls. Nunca incluir extratos brutos no system prompt.
-- **Testes:** tools com fixtures de banco (Vitest). Chat com modelo mockado — nunca chamar API real em testes.
+- **Tool calling:** every tool receives `userId` from the server session. Never from the prompt. Every tool has an input and output Zod schema.
+- **RAG:** embedding search always filters by `userId` before ranking by similarity.
+- **Embeddings:** generated when a transaction is created/imported. Representation: `"YYYY-MM-DD · description · category · amount"`. Store with `userId`.
+- **Streaming:** via the Vercel AI SDK's `streamText`. `aria-live="polite"` on the chat region.
+- **Prompt injection:** content coming from user data (descriptions, PDFs) is treated as data — not as instructions. Separate it explicitly in the system prompt.
+- **Confirmation before mutations:** write tools (create insight, batch categorize) require visual confirmation. Implement a confirmation flow — don't apply directly.
+- **Disclaimers:** every financial projection or recommendation carries a disclaimer that it is an estimate, not professional advice.
+- **Data security:** numbers only via tool calls. Never include raw statements in the system prompt.
+- **Tests:** tools with database fixtures (Vitest). Chat with a mocked model — never call the real API in tests.
 
 ---
 
 ## 8. Testing expectations
 
-- **Nova regra de negócio** → teste unitário no service.
-- **Novo componente relevante** → teste de renderização + estados (Loading, Error, Empty).
-- **Novo fluxo crítico** → E2E no Playwright.
-- **Bug corrigido** → teste de regressão antes da correção.
-- **Tool de IA** → teste com fixture de banco.
-- **Upload/importação** → casos de erro: arquivo inválido, linha malformada, duplicata.
-- **Isolamento por usuário** → teste explícito: usuário A não acessa dados do usuário B.
-- **Nunca usar dados financeiros reais em fixtures.**
-- **Testes não são removidos para fazer build passar.**
+- **New business rule** → unit test in the service.
+- **New relevant component** → render test + states (Loading, Error, Empty).
+- **New critical flow** → E2E in Playwright.
+- **Fixed bug** → regression test before the fix.
+- **AI tool** → test with a database fixture.
+- **Upload/import** → error cases: invalid file, malformed row, duplicate.
+- **Per-user isolation** → explicit test: user A does not access user B's data.
+- **Never use real financial data in fixtures.**
+- **Tests are not removed to make the build pass.**
 
 ---
 
 ## 9. Pull request expectations
 
-Todo PR deve ter:
+Every PR must have:
 
-- **Descrição clara** do que foi feito e por quê.
-- **Issue relacionada** (`Closes #N`).
-- **Como testar** — passos para verificar localmente.
-- **Screenshots** quando houver mudança de UI.
-- **Riscos** identificados (marcar com `Risk`).
-- **Checklist** verificado: lint, typecheck, testes, isolamento por usuário, acessibilidade (se UI), sem dados sensíveis em logs.
-- **Estimativa de risco:** Low / Medium / High.
+- **A clear description** of what was done and why.
+- **A related issue** (`Closes #N`).
+- **How to test** — steps to verify locally.
+- **Screenshots** when there is a UI change.
+- **Risks** identified (mark with `Risk`).
+- **Checklist** verified: lint, typecheck, tests, per-user isolation, accessibility (if UI), no sensitive data in logs.
+- **Risk estimate:** Low / Medium / High.
 
 ---
 
 ## 10. Do not do
 
-- ❌ Commitar secrets, chaves de API ou tokens de qualquer tipo.
-- ❌ Logar dados financeiros, descrições de transação, CPF, tokens de integração.
-- ❌ Adicionar dependência sem justificar (propósito + alternativa descartada).
-- ❌ Criar abstração prematura (esperar dois usos reais antes de abstrair).
-- ❌ Reescrever arquitetura sem pedido explícito.
-- ❌ Aplicar sugestão de IA diretamente nos dados do usuário sem confirmação visual.
-- ❌ Ignorar acessibilidade em componentes de UI.
-- ❌ Remover testes para fazer build ou lint passar.
-- ❌ Usar dados financeiros reais em fixtures ou seed.
-- ❌ Fazer query sem filtrar por `userId`.
-- ❌ Usar `any` sem justificar e sem plano de remoção.
-- ❌ Editar migrations geradas manualmente.
-- ❌ Fazer mudanças grandes sem explicar o plano primeiro.
-- ❌ Refatorar arquivos fora do escopo da task.
+- ❌ Commit secrets, API keys or tokens of any kind.
+- ❌ Log financial data, transaction descriptions, CPF, integration tokens.
+- ❌ Add a dependency without justification (purpose + alternative rejected).
+- ❌ Create premature abstraction (wait for two real usages before abstracting).
+- ❌ Rewrite architecture without an explicit request.
+- ❌ Apply an AI suggestion directly to the user's data without visual confirmation.
+- ❌ Ignore accessibility in UI components.
+- ❌ Remove tests to make the build or lint pass.
+- ❌ Use real financial data in fixtures or seed.
+- ❌ Run a query without filtering by `userId`.
+- ❌ Use `any` without justification and without a removal plan.
+- ❌ Edit generated migrations manually.
+- ❌ Make large changes without explaining the plan first.
+- ❌ Refactor files outside the task's scope.
